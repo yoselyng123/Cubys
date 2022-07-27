@@ -10,7 +10,7 @@ import React from "react";
 import colors from "../assets/colors";
 import { AntDesign } from "@expo/vector-icons";
 
-const Login = () => {
+const Welcome = () => {
   return (
     <View style={styles.container}>
       <SafeAreaView>
@@ -18,20 +18,20 @@ const Login = () => {
       </SafeAreaView>
       <View style={styles.welcomeContainer}>
         <Text style={styles.subtitle}>Welcome</Text>
-        <Text style={styles.text}>
-          Enjoy your life being easier than yesterday.
+        <Text style={styles.description}>
+          Enjoy your life being{'\n'}easier than yesterday.
         </Text>
       </View>
       <View style={styles.footer}>
         <TouchableOpacity activeOpacity={0.7}>
-          <View style={styles.btn1}>
-            <Text style={styles.btnText1}>Sign In</Text>
+          <View style={styles.btnSignIn}>
+            <Text style={styles.textSignIn}>Sign In</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.7}>
-          <View style={styles.btn2}>
+          <View style={styles.btnSignInGoogle}>
             <AntDesign name="google" size={24} color="white" />
-            <Text style={styles.btnText2}>Sign In using Google</Text>
+            <Text style={styles.textSignInGoogle}>Sign In using Google</Text>
           </View>
         </TouchableOpacity>
         <View style={styles.noAccount}>
@@ -45,19 +45,18 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Welcome;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: "15%",
-    paddingBottom: "10%",
-    paddingHorizontal: "15%",
+    paddingVertical: 64,
+    paddingHorizontal: 15,
     flex: 1,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.purple,
     justifyContent: "space-between",
   },
   title: {
-    fontFamily: "Gilroy-Bold",
+    fontFamily: "Gilroy-Semibold",
     fontSize: 32,
     color: "#fff",
     textAlign: "center",
@@ -71,45 +70,48 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: "#fff",
     marginBottom: 7,
+    letterSpacing: 0.6,
   },
-  text: {
+  description: {
     fontFamily: "Roboto-Regular",
     fontSize: 15,
     color: "#fff",
     textAlign: "center",
     lineHeight: 26,
-    width: "55%",
+    letterSpacing: 0.6,
   },
-  footer: {},
-  btn1: {
+  btnSignIn: {
     borderColor: "#fff",
     borderWidth: 2,
     borderRadius: 10,
     backgroundColor: "#fff",
-    paddingVertical: 17,
+    paddingVertical: 15,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 15,
   },
-  btnText1: {
+  textSignIn: {
     fontFamily: "Roboto-Medium",
     fontSize: 15,
+    color: colors.dark,
+    letterSpacing: 0.6,
   },
-  btn2: {
+  btnSignInGoogle: {
     borderColor: "#fff",
     borderWidth: 2,
     flexDirection: "row",
     borderRadius: 10,
-    paddingVertical: 17,
+    paddingVertical: 15,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 25,
   },
-  btnText2: {
+  textSignInGoogle: {
     fontFamily: "Roboto-Medium",
     fontSize: 15,
     color: "#fff",
     marginLeft: 10,
+    letterSpacing: 0.6,
   },
   noAccount: {
     flexDirection: "row",
@@ -121,10 +123,12 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Medium",
     fontSize: 15,
     color: "#fff",
+    letterSpacing: 0.6,
   },
   textNoAction: {
     fontFamily: "Roboto-Regular",
     fontSize: 15,
     color: "#fff",
+    letterSpacing: 0.6,
   },
 });

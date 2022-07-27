@@ -4,13 +4,14 @@ import * as SplashScreen from "expo-splash-screen";
 /* Custom Font, Icon, Colors */
 import { useFonts } from "expo-font";
 
-import Login from "./Screens/Login";
+import Welcome from "./Screens/Welcome";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   let [fontsLoaded] = useFonts({
     "Gilroy-Bold": require("./assets/fonts/Gilroy-Bold.ttf"),
+    "Gilroy-Semibold": require("./assets/fonts/Gilroy-Semibold.ttf"),
     "Roboto-Black": require("./assets/fonts/Roboto-Black.ttf"),
     "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
     "Roboto-Italic": require("./assets/fonts/Roboto-Italic.ttf"),
@@ -26,7 +27,7 @@ export default function App() {
   } else {
     return (
       <View style={styles.container}>
-        <Login />
+        <Welcome />
         <StatusBar style="light" />
       </View>
     );
