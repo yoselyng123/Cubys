@@ -81,8 +81,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.6,
   },
   btnSignIn: {
-    borderColor: "#fff",
-    borderWidth: 2,
     borderRadius: 10,
     backgroundColor: "#fff",
     paddingVertical: 15,

@@ -5,6 +5,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 
 import Welcome from "./Screens/Welcome";
+import SignIn from "./Screens/SignIn";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -27,7 +28,8 @@ export default function App() {
   } else {
     return (
       <View style={styles.container}>
-        <Welcome />
+        <SignIn />
+        {/*<Welcome />*/}
         <StatusBar style="light" />
       </View>
     );
