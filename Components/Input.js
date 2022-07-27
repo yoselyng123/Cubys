@@ -11,23 +11,32 @@ import { Ionicons } from '@expo/vector-icons';
 /* ASSETS */
 import colors from "../assets/colors";
 
-const Input = ({ title, placeholder, isPassword = false }) => {
+const Input = ({ title, placeholder, isPassword = false, isSignInPassword = false }) => {
 
 const [text, onChangeText] = React.useState("");
+const [passwordVisible, setPasswordVisible] = React.useState(false);
 
 return (
     <View style={styles.container}>
-        <Text style={styles.emailTitle}>{title}</Text>
+        <View style={styles.titleContainer}>
+            <Text style={styles.title}>{title}</Text>
+            {isSignInPassword && (
+                <TouchableOpacity activeOpacity={0.7}>
+                    <Text style={styles.passForgot}>Forgot Your Password?</Text>
+                </TouchableOpacity>
+            )}
+        </View>
         <TextInput 
-        style={styles.emailInput}
+        style={styles.input}
         onChangeText={onChangeText}
         value={text}
         placeholder={placeholder}
+        secureTextEntry={passwordVisible}
         />
 
         {isPassword && (
-            <TouchableOpacity activeOpacity={0.7}>
-                <Ionicons style={styles.eyeicon} name="eye" size={24} color={colors.gray} />
+            <TouchableOpacity activeOpacity={0.7} onPress={() => setPasswordVisible(!passwordVisible)}>
+                <Ionicons style={styles.eyeicon} name={passwordVisible ? "eye" : "eye-off"} size={24} color={colors.gray} />
             </TouchableOpacity>
         )}
     </View>
@@ -40,13 +49,23 @@ const styles = StyleSheet.create({
     container: {
         marginBottom: 45,
     },
-    emailTitle: {
+    titleContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    title: {
         fontFamily: "Roboto-Medium",
         letterSpacing: 0.6,
         fontSize: 13,
         color: colors.gray,
     },
-        emailInput: {
+    passForgot: {
+        fontFamily: "Roboto-Regular",
+        letterSpacing: 0.6,
+        fontSize: 13,
+        color: colors.purple,
+    },
+    input: {
         height: 40,
         borderBottomWidth: 1,
         borderBottomColor: colors.gray,

@@ -22,7 +22,7 @@ const SignIn = () => {
       <View style={styles.content}>
         <View style={styles.inputContainer}>
           <Input style={styles.input} title="Email Address" placeholder="Enter your email" />
-          <Input style={styles.input} title="Password" placeholder="Enter your password" isPassword={true}/>
+          <Input style={styles.input} title="Password" placeholder="Enter your password" isPassword={true} isSignInPassword={true}/>
         </View>
 
         <View style={styles.footer}>
