@@ -10,7 +10,6 @@ import Notifications from "../Screens/Notifications";
 import colors from "../assets/colors";
 /* Icons */
 import { Ionicons } from "@expo/vector-icons";
-import { Entypo } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
@@ -25,7 +24,7 @@ const Tabs = () => {
           borderTopRightRadius:10,
           shadowColor: "rgba(0, 0, 0, 0.5)",
           elevation: 15,
-          shadowOffset: { width: 0, height: 2 },
+          shadowOffset: { width: 0, height: -2 },
         },
         tabBarItemStyle:{
           marginBottom: 20

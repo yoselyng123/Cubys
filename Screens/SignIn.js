@@ -49,24 +49,14 @@ export default SignIn;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    zIndex: 1,
-    position: "absolute",
+    backgroundColor: colors.background,
   },
   content: {
-    paddingTop: 154,
+    paddingTop: 44,
     paddingBottom: 64,
     paddingHorizontal: 15,
     flex: 1,
     justifyContent: "space-between",
-    backgroundColor: colors.background,
-    position: "absolute",
-    zIndex: -1,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
   },
   btnSignIn: {
     borderRadius: 10,

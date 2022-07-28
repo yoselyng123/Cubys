@@ -1,9 +1,9 @@
 import {
-  TextInput,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
+    TextInput,
+    StyleSheet,
+    Text,
+    View,
+    TouchableOpacity,
 } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -12,12 +12,13 @@ import { Ionicons } from "@expo/vector-icons";
 import colors from "../assets/colors";
 
 const Input = ({
-  title,
-  placeholder,
-  isPassword = false,
-  isSignInPassword = false,
+    title,
+    placeholder,
+    isPassword = false,
+    isSignInPassword = false,
+    defaultValue,
 }) => {
-  const [text, onChangeText] = React.useState("");
+  const [text, onChangeText] = React.useState(undefined);
   const [passwordVisible, setPasswordVisible] = React.useState(true);
 
   return (
@@ -30,14 +31,27 @@ const Input = ({
           </TouchableOpacity>
         )}
       </View>
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeText}
-        value={text}
-        placeholder={placeholder}
-        secureTextEntry={passwordVisible}
-      />
 
+      {isPassword ? (
+        <TextInput
+          style={styles.input}
+          onChangeText={onChangeText}
+          value={text}
+          defaultValue={defaultValue}
+          placeholder={placeholder}
+          secureTextEntry={passwordVisible}
+        />
+      ) : (
+        <TextInput
+          style={styles.input}
+          onChangeText={onChangeText}
+          value={text}
+          defaultValue={defaultValue}
+          placeholder={placeholder}
+        />
+      )}
+
+      
       {isPassword && (
         <TouchableOpacity
           activeOpacity={0.7}
@@ -59,7 +73,7 @@ export default Input;
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 45,
+    marginBottom: 40,
   },
   titleContainer: {
     flexDirection: "row",

@@ -8,9 +8,8 @@ const Header = ({ title, navigateAvailable }) => {
   return (
     <View style={styles.container}>
       {navigateAvailable && (
-        <TouchableOpacity activeOpacity={0.7}>
+        <TouchableOpacity style={styles.chevron} activeOpacity={0.7}>
           <Entypo
-            style={styles.chevron}
             name="chevron-left"
             size={32}
             color={colors.dark}
@@ -39,7 +38,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    marginTop: 60,
+    marginTop: 65,
     fontFamily: "Roboto-Medium",
     fontSize: 20,
     color: colors.dark,
