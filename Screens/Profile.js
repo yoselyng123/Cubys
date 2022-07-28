@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import React from "react";
 /* Assets */
 import colors from "../assets/colors";
@@ -12,51 +19,55 @@ const Profile = () => {
     <View style={styles.container}>
       <Header title="cubys" navigateAvailable={false} />
 
-      <View style={styles.content}>
-
-
-
-        <Image source={{uri: 'https://www.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png'}} style={styles.profileImage} />
-        <Text style={styles.profileName}>Javier Jerez</Text>
-        <Text style={styles.profileJob}>Full Stack Developer</Text>
-
-
-        <View style={styles.inputContainer}>
-          <Input
-            style={styles.input}
-            title="Email Address"
-            defaultValue="javierjerezantonetti@gmail.com"
-            placeholder="Enter your email"
-            isPassword={false}
-            isSignInPassword={false}
+      <ScrollView>
+        <View style={styles.content}>
+          <Image
+            source={{
+              uri: "https://www.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png",
+            }}
+            style={styles.profileImage}
           />
-          <Input
-            style={styles.input}
-            title="Username"
-            defaultValue="JotaJota"
-            placeholder="Enter your username"
-          />
-          <Input
-            style={styles.input}
-            title="Password"
-            placeholder="Enter your password"
-            defaultValue="password"
-            isPassword={true}
-          />
-          <DateInput
-            style={styles.input}
-            title="Birth Date (Optional)"
-            placeholder="Enter your birth date"
-          />
+          <Text style={styles.profileName}>Javier Jerez</Text>
+          <Text style={styles.profileJob}>Full Stack Developer</Text>
 
+          <View style={styles.inputContainer}>
+            <Input
+              style={styles.input}
+              title="Email Address"
+              defaultValue="javierjerezantonetti@gmail.com"
+              placeholder="Enter your email"
+              isPassword={false}
+              isSignInPassword={false}
+            />
+            <Input
+              style={styles.input}
+              title="Username"
+              defaultValue="JotaJota"
+              placeholder="Enter your username"
+            />
+            <Input
+              style={styles.input}
+              title="Password"
+              placeholder="Enter your password"
+              defaultValue="password"
+              isPassword={true}
+            />
+            <DateInput
+              style={styles.input}
+              title="Birth Date (Optional)"
+              placeholder="Enter your birth date"
+            />
+          </View>
+          <View style={styles.footer}>
+            <Text style={styles.joinedtext}>
+              Joined <Text style={styles.joineddate}>22 Jan 2022</Text>
+            </Text>
+            <TouchableOpacity activeOpacity={0.7}>
+              <Text style={styles.logout}>Log Out</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.footer}>
-          <Text style={styles.joinedtext}>Joined <Text style={styles.joineddate}>22 Jan 2022</Text></Text>
-          <TouchableOpacity activeOpacity={0.7}>
-            <Text style={styles.logout}>Log Out</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -127,5 +138,5 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Medium",
     color: colors.dark,
     letterSpacing: 0.6,
-  }
+  },
 });

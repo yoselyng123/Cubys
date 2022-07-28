@@ -1,4 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
 /* Assets */
 import colors from "../assets/colors";
@@ -15,7 +21,10 @@ const Home = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Header title="cubys" navigateAvailable={false} />
-      <View style={styles.contentWrapper}>
+      <ScrollView
+        style={styles.contentWrapper}
+        showsVerticalScrollIndicator={false}
+      >
         <Text style={styles.greetingsTitle}>Hello John,</Text>
         <Text style={styles.greetingsText}>
           Book your cubicle whenever you want.
@@ -70,7 +79,7 @@ const Home = ({ navigation }) => {
         />
         <Text style={styles.reservationsTitle}>Upcoming reservations</Text>
         <Reservation />
-      </View>
+      </ScrollView>
     </View>
   );
 };
