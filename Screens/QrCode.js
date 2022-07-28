@@ -31,6 +31,7 @@ const QrCode = ({ navigation }) => {
             value="Your text goes here"
             size={270}
             color={colors.purple}
+            backgroundColor="rgba(0,0,0,0)"
           />
         </View>
       </View>
