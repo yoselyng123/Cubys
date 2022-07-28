@@ -10,6 +10,7 @@ import Notifications from "../Screens/Notifications";
 import colors from "../assets/colors";
 /* Icons */
 import { Ionicons } from "@expo/vector-icons";
+import { Entypo } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,14 +18,26 @@ const Tabs = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        tabBarStyle: {
+          backgroundColor:'#fff',
+          height: 90,
+          borderTopLeftRadius:10,
+          borderTopRightRadius:10,
+          shadowColor: "rgba(0, 0, 0, 0.5)",
+          elevation: 15,
+          shadowOffset: { width: 0, height: 2 },
+        },
+        tabBarItemStyle:{
+          marginBottom: 20
+        },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           let iconWrapperColor;
 
           if (route.name === "Home") {
-            iconName = "home";
+            iconName = "home-sharp";
           } else if (route.name === "Settings") {
-            iconName = "settings";
+            iconName = "settings-sharp";
           } else if (route.name === "Profile") {
             iconName = "person";
           } else if (route.name === "Notifications") {
@@ -38,10 +51,10 @@ const Tabs = () => {
             <View
               style={[
                 styles.iconWrapper,
-                { backgroundColor: iconWrapperColor, width: 50 },
+                { backgroundColor: iconWrapperColor},
               ]}
             >
-              <Ionicons name={iconName} size={26} color={color} />
+              <Ionicons name={iconName} size={30} color={color} />
             </View>
           );
         },
@@ -63,7 +76,8 @@ const styles = StyleSheet.create({
   iconWrapper: {
     justifyContent: "center",
     alignItems: "center",
-    padding: 8,
+    width: 45,
+    height: 45,
     borderRadius: 10,
   },
 });

@@ -63,8 +63,8 @@ const Home = ({ navigation }) => {
 
         <View
           style={{
-            borderBottomColor: "black",
-            borderBottomWidth: StyleSheet.hairlineWidth,
+            borderBottomColor: colors.light,
+            borderBottomWidth: 2,
             marginBottom: 20,
           }}
         />
