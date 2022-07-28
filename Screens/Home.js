@@ -25,65 +25,66 @@ const Home = ({ navigation }) => {
         style={styles.contentWrapper}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.greetingsTitle}>Hello John,</Text>
-        <Text style={styles.greetingsText}>
-          Book your cubicle whenever you want.
-        </Text>
+        <View style={styles.scrollContainer}>
+          <Text style={styles.greetingsTitle}>Hello John,</Text>
+          <Text style={styles.greetingsText}>
+            Book your cubicle whenever you want.
+          </Text>
 
-        {/* Cards */}
+          {/* Cards */}
 
-        <View style={styles.cardsWrapper}>
-          <TouchableOpacity
-            style={[styles.cardItem, { width: cardWidth, marginRight: 18 }]}
-            activeOpacity={0.8}
-            onPress={() => {
-              navigation.navigate("ReservationDetails");
+          <View style={styles.cardsWrapper}>
+            <TouchableOpacity
+              style={[styles.cardItem, { width: cardWidth, marginRight: 18 }]}
+              activeOpacity={0.8}
+            >
+              <Card title="Available cubicle" subtitle="6" icon="" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.cardItem, { width: cardWidth }]}
+              activeOpacity={0.8}
+              onPress={() => {
+                navigation.navigate("ReservedCubicles");
+              }}
+            >
+              <Card title="Reserved cubicles" subtitle="2/3" icon="" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.cardItem, { width: cardWidth, marginRight: 18 }]}
+              activeOpacity={0.8}
+              onPress={() => {
+                navigation.navigate("QRCode");
+              }}
+            >
+              <Card title="Your QR code" subtitle="Code" icon="" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.cardItem, { width: cardWidth }]}
+              activeOpacity={0.8}
+              onPress={() => {
+                navigation.navigate("History");
+              }}
+            >
+              <Card title="History" subtitle="9" icon="" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Separation Line */}
+
+          <View
+            style={{
+              borderBottomColor: colors.light,
+              borderBottomWidth: 2,
+              marginBottom: 20,
             }}
-          >
-            <Card title="Available cubicle" subtitle="6" icon="" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.cardItem, { width: cardWidth }]}
-            activeOpacity={0.8}
-            onPress={() => {
-              navigation.navigate("ReservedCubicles");
-            }}
-          >
-            <Card title="Reserved cubicles" subtitle="2/3" icon="" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.cardItem, { width: cardWidth, marginRight: 18 }]}
-            activeOpacity={0.8}
-            onPress={() => {
-              navigation.navigate("QRCode");
-            }}
-          >
-            <Card title="Your QR code" subtitle="Code" icon="" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.cardItem, { width: cardWidth }]}
-            activeOpacity={0.8}
-            onPress={() => {
-              navigation.navigate("History");
-            }}
-          >
-            <Card title="History" subtitle="9" icon="" />
-          </TouchableOpacity>
+          />
+          <Text style={styles.reservationsTitle}>Upcoming reservations</Text>
+          <Reservation />
+          <Reservation />
+          <Reservation />
+          <Reservation />
+          <Reservation />
         </View>
-
-        {/* Separation Line */}
-
-        <View
-          style={{
-            borderBottomColor: colors.light,
-            borderBottomWidth: 2,
-            marginBottom: 20,
-          }}
-        />
-        <Text style={styles.reservationsTitle}>Upcoming reservations</Text>
-        <Reservation />
-        <Reservation />
-        <Reservation />
       </ScrollView>
     </View>
   );
@@ -96,7 +97,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  contentWrapper: {
+  scrollContainer: {
     flex: 1,
     marginHorizontal: 16,
     marginTop: 28,
