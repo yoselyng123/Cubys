@@ -11,7 +11,7 @@ const Reservation = () => {
       <View
         style={{
           borderColor: colors.purple,
-          borderLeftWidth: 4,
+          borderLeftWidth: 3,
           paddingLeft: 8,
         }}
       >
