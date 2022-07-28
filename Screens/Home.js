@@ -36,6 +36,9 @@ const Home = ({ navigation }) => {
           <TouchableOpacity
             style={[styles.cardItem, { width: cardWidth, marginRight: 18 }]}
             activeOpacity={0.8}
+            onPress={() => {
+              navigation.navigate("ReservationDetails");
+            }}
           >
             <Card title="Available cubicle" subtitle="6" icon="" />
           </TouchableOpacity>
