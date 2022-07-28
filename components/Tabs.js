@@ -10,6 +10,7 @@ import Notifications from "../Screens/Notifications";
 import colors from "../assets/colors";
 /* Icons */
 import { Ionicons } from "@expo/vector-icons";
+import { Entypo } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,9 +23,9 @@ const Tabs = () => {
           let iconWrapperColor;
 
           if (route.name === "Home") {
-            iconName = "home";
+            iconName = "home-sharp";
           } else if (route.name === "Settings") {
-            iconName = "settings";
+            iconName = "settings-sharp";
           } else if (route.name === "Profile") {
             iconName = "person";
           } else if (route.name === "Notifications") {
@@ -38,10 +39,10 @@ const Tabs = () => {
             <View
               style={[
                 styles.iconWrapper,
-                { backgroundColor: iconWrapperColor, width: 50 },
+                { backgroundColor: iconWrapperColor},
               ]}
             >
-              <Ionicons name={iconName} size={26} color={color} />
+              <Ionicons name={iconName} size={30} color={color} />
             </View>
           );
         },
@@ -63,7 +64,8 @@ const styles = StyleSheet.create({
   iconWrapper: {
     justifyContent: "center",
     alignItems: "center",
-    padding: 8,
+    width: 50,
+    height: 50,
     borderRadius: 10,
   },
 });
