@@ -16,24 +16,28 @@ const History = ({ navigation }) => {
         navigation={navigation}
       />
       <View style={styles.contentWrapper}>
-        <Text style={styles.description}>
-          Here you can check your past reservations
-        </Text>
-        <View
-          style={{
-            borderBottomColor: colors.light,
-            borderBottomWidth: 2,
-            marginBottom: 18,
-          }}
-        />
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Reservation />
-          <Reservation />
-          <Reservation />
-          <Reservation />
-          <Reservation />
+        <View style={styles.descriptionContainer}>
+          <Text style={styles.description}>
+            Here you can check your past reservations
+          </Text>
+          <View
+            style={{
+              borderBottomColor: colors.light,
+              borderBottomWidth: 2,
+            }}
+          />
+        </View>
+        <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollview}>
+          <View style={styles.scrollContainer}>
+            <Reservation />
+            <Reservation />
+            <Reservation />
+            <Reservation />
+            <Reservation />
+            <Reservation />
+            <Reservation />
+          </View>
         </ScrollView>
-
       </View>
     </View>
   );
@@ -46,10 +50,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     flex: 1,
   },
-  contentWrapper: {
-    flex: 1,
+  descriptionContainer: {
     paddingHorizontal: 16,
     paddingTop: 20,
+  },
+  contentWrapper: {
+    flex: 1,
+  },
+  scrollContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 18,
   },
   description: {
     fontFamily: "Roboto-Regular",
