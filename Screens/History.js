@@ -26,7 +26,7 @@ const History = ({ navigation }) => {
             marginBottom: 18,
           }}
         />
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <Reservation />
           <Reservation />
           <Reservation />

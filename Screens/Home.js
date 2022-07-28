@@ -79,6 +79,8 @@ const Home = ({ navigation }) => {
         />
         <Text style={styles.reservationsTitle}>Upcoming reservations</Text>
         <Reservation />
+        <Reservation />
+        <Reservation />
       </ScrollView>
     </View>
   );
