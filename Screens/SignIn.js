@@ -1,28 +1,29 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 /* ASSETS */
 import colors from "../assets/colors";
-import { AntDesign } from "@expo/vector-icons";
-import Header from "../Components/Header";
-import Input from "../Components/Input";
+import Header from "../components/Header";
+import Input from "../components/Input";
 
 const SignIn = () => {
-
   return (
     <View style={styles.container}>
-
-      <Header style={styles.header} title="Sign In" />
+      <Header style={styles.header} title="Sign In" navigateAvailable={true} />
 
       <View style={styles.content}>
         <View style={styles.inputContainer}>
-          <Input style={styles.input} title="Email Address" placeholder="Enter your email" />
-          <Input style={styles.input} title="Password" placeholder="Enter your password" isPassword={true} isSignInPassword={true}/>
+          <Input
+            style={styles.input}
+            title="Email Address"
+            placeholder="Enter your email"
+          />
+          <Input
+            style={styles.input}
+            title="Password"
+            placeholder="Enter your password"
+            isPassword={true}
+            isSignInPassword={true}
+          />
         </View>
 
         <View style={styles.footer}>

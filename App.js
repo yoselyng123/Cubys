@@ -3,11 +3,17 @@ import { StyleSheet, View } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 /* Custom Font, Icon, Colors */
 import { useFonts } from "expo-font";
-
+/* Navigation */
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+/* Screens */
 import Welcome from "./Screens/Welcome";
 import SignIn from "./Screens/SignIn";
+import Tabs from "./components/Tabs";
 
 SplashScreen.preventAutoHideAsync();
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -27,11 +33,19 @@ export default function App() {
     return null;
   } else {
     return (
-      <View style={styles.container}>
-        <SignIn />
-        {/*<Welcome />*/}
-        <StatusBar style="light" />
-      </View>
+      <NavigationContainer>
+        <Stack.Navigator
+          /* initialRouteName="Welcome" */
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          {/* <Stack.Screen name="Welcome" component={Welcome} />
+          <Stack.Screen name="SignIn" component={SignIn} /> */}
+          <Stack.Screen name="Tabs" component={Tabs} />
+        </Stack.Navigator>
+        <StatusBar style="auto" />
+      </NavigationContainer>
     );
   }
 }

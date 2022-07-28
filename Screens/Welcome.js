@@ -1,3 +1,4 @@
+import { StatusBar } from "expo-status-bar";
 import {
   SafeAreaView,
   StyleSheet,
@@ -19,7 +20,7 @@ const Welcome = () => {
       <View style={styles.welcomeContainer}>
         <Text style={styles.subtitle}>Welcome</Text>
         <Text style={styles.description}>
-          Enjoy your life being{'\n'}easier than yesterday.
+          Enjoy your life being{"\n"}easier than yesterday.
         </Text>
       </View>
       <View style={styles.footer}>
@@ -41,6 +42,7 @@ const Welcome = () => {
           </TouchableOpacity>
         </View>
       </View>
+      <StatusBar style="light" />
     </View>
   );
 };
