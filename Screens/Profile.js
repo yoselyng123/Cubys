@@ -15,6 +15,7 @@ import Input from "../components/Input";
 import DateInput from "../components/DateInput";
 
 const Profile = () => {
+
   return (
     <View style={styles.container}>
       <Header title="cubys" navigateAvailable={false} />
