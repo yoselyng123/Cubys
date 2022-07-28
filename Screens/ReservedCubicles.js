@@ -15,20 +15,22 @@ const ReservedCubicles = ({ navigation }) => {
         navigateAvailable={true}
         navigation={navigation}
       />
-      <ScrollView style={styles.container}>
-        <Text style={styles.description}>
-          Here you can check your current reservations
-        </Text>
-        <View
-          style={{
-            borderBottomColor: colors.light,
-            borderBottomWidth: 2,
-            marginBottom: 18,
-          }}
-        />
-        <Reservation />
-        <Reservation />
-      </ScrollView>
+      <View style={styles.container}>
+        <ScrollView>
+          <Text style={styles.description}>
+            Here you can check your current reservations
+          </Text>
+          <View
+            style={{
+              borderBottomColor: colors.light,
+              borderBottomWidth: 2,
+              marginBottom: 18,
+            }}
+          />
+          <Reservation />
+          <Reservation />
+        </ScrollView>
+      </View>
     </View>
   );
 };
