@@ -13,6 +13,7 @@ import Tabs from "./components/Tabs";
 import ReservedCubicles from "./Screens/ReservedCubicles";
 import History from "./Screens/History";
 import QrCode from "./Screens/QrCode";
+import ReservationDetails from "./Screens/ReservationDetails";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -49,6 +50,10 @@ export default function App() {
           <Stack.Screen name="ReservedCubicles" component={ReservedCubicles} />
           <Stack.Screen name="History" component={History} />
           <Stack.Screen name="QRCode" component={QrCode} />
+          <Stack.Screen
+            name="ReservationDetails"
+            component={ReservationDetails}
+          />
         </Stack.Navigator>
         <StatusBar style="auto" />
       </NavigationContainer>
