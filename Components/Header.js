@@ -9,6 +9,7 @@ const Header = ({ title, navigateAvailable, navigation }) => {
     <View style={styles.container}>
       {navigateAvailable && (
         <TouchableOpacity
+          style={styles.chevron}
           activeOpacity={0.6}
           onPress={() => {
             navigation.goBack();
@@ -51,8 +52,8 @@ const styles = StyleSheet.create({
   },
   chevron: {
     position: "absolute",
-    left: -180,
-    top: 60,
+    left: 10,
+    top: 65,
   },
   cubys: {
     marginTop: 60,
