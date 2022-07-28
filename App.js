@@ -10,6 +10,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Welcome from "./Screens/Welcome";
 import SignIn from "./Screens/SignIn";
 import Tabs from "./components/Tabs";
+import ReservedCubicles from "./Screens/ReservedCubicles";
+import History from "./Screens/History";
+import QrCode from "./Screens/QrCode";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -35,24 +38,20 @@ export default function App() {
     return (
       <NavigationContainer>
         <Stack.Navigator
-          /* initialRouteName="Welcome" */
+          initialRouteName="Welcome"
           screenOptions={{
             headerShown: false,
           }}
         >
-          {/* <Stack.Screen name="Welcome" component={Welcome} />
-          <Stack.Screen name="SignIn" component={SignIn} /> */}
+          <Stack.Screen name="Welcome" component={Welcome} />
+          <Stack.Screen name="SignIn" component={SignIn} />
           <Stack.Screen name="Tabs" component={Tabs} />
+          <Stack.Screen name="ReservedCubicles" component={ReservedCubicles} />
+          <Stack.Screen name="History" component={History} />
+          <Stack.Screen name="QRCode" component={QrCode} />
         </Stack.Navigator>
         <StatusBar style="auto" />
       </NavigationContainer>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-});

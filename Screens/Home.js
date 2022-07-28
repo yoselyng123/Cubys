@@ -8,7 +8,7 @@ import Header from "../components/Header";
 import Card from "../components/Card";
 import Reservation from "../components/Reservation";
 
-const Home = () => {
+const Home = ({ navigation }) => {
   const windowWidth = Dimensions.get("window").width;
   const cardWidth = (windowWidth - 32) / 2 - 9;
 
@@ -33,18 +33,27 @@ const Home = () => {
           <TouchableOpacity
             style={[styles.cardItem, { width: cardWidth }]}
             activeOpacity={0.8}
+            onPress={() => {
+              navigation.navigate("ReservedCubicles");
+            }}
           >
             <Card title="Reserved cubicles" subtitle="2/3" icon="" />
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.cardItem, { width: cardWidth, marginRight: 18 }]}
             activeOpacity={0.8}
+            onPress={() => {
+              navigation.navigate("QRCode");
+            }}
           >
             <Card title="Your QR code" subtitle="Code" icon="" />
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.cardItem, { width: cardWidth }]}
             activeOpacity={0.8}
+            onPress={() => {
+              navigation.navigate("History");
+            }}
           >
             <Card title="History" subtitle="9" icon="" />
           </TouchableOpacity>

@@ -5,10 +5,20 @@ import colors from "../assets/colors";
 import Header from "../components/Header";
 import Input from "../components/Input";
 
-const SignIn = () => {
+const SignIn = ({ navigation }) => {
+  const handleSignIn = () => {
+    // AQUI SE MANEJA EL INPUT DEL USUARIO
+    navigation.navigate("Tabs");
+  };
+
   return (
     <View style={styles.container}>
-      <Header style={styles.header} title="Sign In" navigateAvailable={true} />
+      <Header
+        style={styles.header}
+        title="Sign In"
+        navigateAvailable={true}
+        navigation={navigation}
+      />
 
       <View style={styles.content}>
         <View style={styles.inputContainer}>
@@ -27,15 +37,20 @@ const SignIn = () => {
         </View>
 
         <View style={styles.footer}>
-          <TouchableOpacity activeOpacity={0.7}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => {
+              handleSignIn();
+            }}
+          >
             <View style={styles.btnSignIn}>
               <Text style={styles.textSignIn}>Sign In</Text>
             </View>
           </TouchableOpacity>
           <View style={styles.noAccount}>
-            <Text style={styles.textNoAction}>Already Got An Account?</Text>
+            <Text style={styles.textNoAction}>No account yet?</Text>
             <TouchableOpacity activeOpacity={0.7}>
-              <Text style={styles.textAction}>Sign In</Text>
+              <Text style={styles.textAction}>Sign Up</Text>
             </TouchableOpacity>
           </View>
         </View>

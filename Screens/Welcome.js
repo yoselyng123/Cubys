@@ -11,7 +11,7 @@ import React from "react";
 import colors from "../assets/colors";
 import { AntDesign } from "@expo/vector-icons";
 
-const Welcome = () => {
+const Welcome = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <SafeAreaView>
@@ -24,7 +24,12 @@ const Welcome = () => {
         </Text>
       </View>
       <View style={styles.footer}>
-        <TouchableOpacity activeOpacity={0.7}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => {
+            navigation.navigate("SignIn");
+          }}
+        >
           <View style={styles.btnSignIn}>
             <Text style={styles.textSignIn}>Sign In</Text>
           </View>
