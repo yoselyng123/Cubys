@@ -56,6 +56,5 @@ const styles = StyleSheet.create({
     fontFamily: "Gilroy-Semibold",
     fontSize: 32,
     textAlign: "center",
-    letterSpacing: 0.6,
   },
 });

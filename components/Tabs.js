@@ -18,6 +18,18 @@ const Tabs = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        tabBarStyle: {
+          backgroundColor:'#fff',
+          height: 90,
+          borderTopLeftRadius:10,
+          borderTopRightRadius:10,
+          shadowColor: "rgba(0, 0, 0, 0.5)",
+          elevation: 15,
+          shadowOffset: { width: 0, height: 2 },
+        },
+        tabBarItemStyle:{
+          marginBottom: 20
+        },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           let iconWrapperColor;
@@ -64,8 +76,8 @@ const styles = StyleSheet.create({
   iconWrapper: {
     justifyContent: "center",
     alignItems: "center",
-    width: 50,
-    height: 50,
+    width: 45,
+    height: 45,
     borderRadius: 10,
   },
 });
