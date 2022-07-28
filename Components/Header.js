@@ -4,11 +4,16 @@ import React from "react";
 import colors from "../assets/colors";
 import { Entypo } from "@expo/vector-icons";
 
-const Header = ({ title, navigateAvailable }) => {
+const Header = ({ title, navigateAvailable, navigation }) => {
   return (
     <View style={styles.container}>
       {navigateAvailable && (
-        <TouchableOpacity activeOpacity={0.7}>
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={() => {
+            navigation.goBack();
+          }}
+        >
           <Entypo
             style={styles.chevron}
             name="chevron-left"
@@ -43,13 +48,12 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Medium",
     fontSize: 20,
     color: colors.dark,
-    textAlign: "center",
     letterSpacing: 0.6,
   },
   chevron: {
     position: "absolute",
-    left: 15,
-    top: 64,
+    left: -180,
+    top: 60,
   },
   cubys: {
     marginTop: 60,

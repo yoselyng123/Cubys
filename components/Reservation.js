@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     shadowColor: "rgba(0,0,0,0.5)",
     elevation: 3,
     shadowOffset: { width: 0, height: 2 },
+    marginBottom: 20,
   },
   infoWrapper: {
     flexDirection: "row",
