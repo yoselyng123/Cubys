@@ -8,14 +8,14 @@ import Reservation from "../components/Reservation";
 
 const History = ({ navigation }) => {
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <Header
         style={styles.header}
         title="History"
         navigateAvailable={true}
         navigation={navigation}
       />
-      <ScrollView style={styles.container}>
+      <View style={styles.contentWrapper}>
         <Text style={styles.description}>
           Here you can check your past reservations
         </Text>
@@ -26,10 +26,15 @@ const History = ({ navigation }) => {
             marginBottom: 18,
           }}
         />
-        <Reservation />
-        <Reservation />
-        <Reservation />
-      </ScrollView>
+        <ScrollView>
+          <Reservation />
+          <Reservation />
+          <Reservation />
+          <Reservation />
+          <Reservation />
+        </ScrollView>
+
+      </View>
     </View>
   );
 };
@@ -38,8 +43,13 @@ export default History;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 20,
+    backgroundColor: colors.background,
+    flex: 1,
+  },
+  contentWrapper: {
+    flex: 1,
     paddingHorizontal: 16,
+    paddingTop: 20,
   },
   description: {
     fontFamily: "Roboto-Regular",
