@@ -13,6 +13,9 @@ import { Dimensions } from "react-native";
 import Header from "../components/Header";
 import Card from "../components/Card";
 import Reservation from "../components/Reservation";
+/* ICONS */
+import { FontAwesome5 } from "@expo/vector-icons";
+import { MaterialIcons } from '@expo/vector-icons';
 
 const Home = ({ navigation }) => {
   const windowWidth = Dimensions.get("window").width;
@@ -41,7 +44,7 @@ const Home = ({ navigation }) => {
                 navigation.navigate("ReservationDetails");
               }}
             >
-              <Card title="Available cubicle" subtitle="6" icon="" />
+              <Card title="Available cubicle" subtitle="6" icon={<FontAwesome5 name="check" size={38} color={colors.purple} />} />
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.cardItem, { width: cardWidth }]}
@@ -50,7 +53,7 @@ const Home = ({ navigation }) => {
                 navigation.navigate("ReservedCubicles");
               }}
             >
-              <Card title="Reserved cubicles" subtitle="2/3" icon="" />
+              <Card title="Reserved cubicles" subtitle="2/3" icon={<FontAwesome5 name="calendar-check" size={38} color={colors.purple} />} />
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.cardItem, { width: cardWidth, marginRight: 18 }]}
@@ -59,7 +62,7 @@ const Home = ({ navigation }) => {
                 navigation.navigate("QRCode");
               }}
             >
-              <Card title="Your QR code" subtitle="Code" icon="" />
+              <Card title="Your QR code" subtitle="Code" icon={<FontAwesome5 name="qrcode" size={38} color={colors.purple} />} />
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.cardItem, { width: cardWidth }]}
@@ -68,7 +71,7 @@ const Home = ({ navigation }) => {
                 navigation.navigate("History");
               }}
             >
-              <Card title="History" subtitle="9" icon="" />
+              <Card title="History" subtitle="9" icon={<MaterialIcons name="restore" size={38} color={colors.purple} />} />
             </TouchableOpacity>
           </View>
 

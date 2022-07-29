@@ -6,6 +6,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import colors from "../assets/colors";
 
 const Card = ({ title, subtitle, icon }) => {
+
   return (
     <View style={styles.container}>
       <View style={styles.topWrapper}>
@@ -21,7 +22,7 @@ const Card = ({ title, subtitle, icon }) => {
       )}
 
       <View style={styles.iconWrapper}>
-        <FontAwesome5 name="check" size={38} color={colors.purple} />
+        {icon ? icon : null}
       </View>
     </View>
   );
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
   iconWrapper: {
     position: "absolute",
     bottom: 10,
-    right: 10,
+    right: 15,
   },
   reservedNumber: {
     fontFamily: "Roboto-Bold",
