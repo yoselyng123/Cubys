@@ -4,8 +4,11 @@ import React from "react";
 import colors from "../assets/colors";
 import Header from "../components/Header";
 import Input from "../components/Input";
+/* ICONS */
+import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
-const SignIn = ({ navigation }) => {
+const SignUp = ({ navigation }) => {
   const handleSignIn = () => {
     // AQUI SE MANEJA EL INPUT DEL USUARIO
     navigation.navigate("Tabs");
@@ -15,7 +18,7 @@ const SignIn = ({ navigation }) => {
     <View style={styles.container}>
       <Header
         style={styles.header}
-        title="Sign In"
+        title="Sign Up"
         navigateAvailable={true}
         navigation={navigation}
       />
@@ -32,8 +35,41 @@ const SignIn = ({ navigation }) => {
             title="Password"
             placeholder="Enter your password"
             isPassword={true}
-            isSignInPassword={true}
           />
+          <Input
+            style={styles.input}
+            title="Confirm Password"
+            placeholder="Repeat your password"
+            isPassword={true}
+          />
+        </View>
+
+        <View style={styles.validations}>
+          <View style={styles.validationItem}>
+            <Ionicons name="md-checkmark-sharp" size={15} color={colors.green} />
+            <Text style={styles.validationText}>
+              At least 7 characters
+            </Text>
+          </View>
+          <View style={styles.validationItem}>
+            <Ionicons name="md-checkmark-sharp" size={15} color={colors.green} />
+            <Text style={styles.validationText}>
+              At least 1 lowercase and 1 uppercase
+            </Text>
+          </View>
+          <View style={styles.validationItem}>
+            <Ionicons name="md-checkmark-sharp" size={15} color={colors.green} />
+            <Text style={styles.validationText}>
+              At least 1 number
+            </Text>
+          </View>
+          <View style={styles.validationItem}>
+            <Feather name="x" size={15} color={colors.gray} />
+            <Text style={styles.validationText}>
+              At least 1 special character
+            </Text>
+          </View>
+
         </View>
 
         <View style={styles.footer}>
@@ -48,14 +84,14 @@ const SignIn = ({ navigation }) => {
             </View>
           </TouchableOpacity>
           <View style={styles.noAccount}>
-            <Text style={styles.textNoAction}>No account yet?</Text>
+            <Text style={styles.textNoAction}>Already got an account?</Text>
             <TouchableOpacity 
               activeOpacity={0.7}
               onPress={() => {
-                navigation.navigate("SignUp");
+                navigation.navigate("SignIn");
               }}
             >
-              <Text style={styles.textAction}>Sign Up</Text>
+              <Text style={styles.textAction}>Sign In</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -64,7 +100,7 @@ const SignIn = ({ navigation }) => {
   );
 };
 
-export default SignIn;
+export default SignUp;
 
 const styles = StyleSheet.create({
   container: {
@@ -110,4 +146,21 @@ const styles = StyleSheet.create({
     color: colors.gray,
     letterSpacing: 0.6,
   },
+  validations: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
+  validationItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  validationText: {
+    fontFamily: "Roboto-Medium",
+    fontSize: 11,
+    color: colors.gray,
+    letterSpacing: 0.6,
+    marginLeft: 5,
+  }
 });

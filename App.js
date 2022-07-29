@@ -9,6 +9,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 /* Screens */
 import Welcome from "./Screens/Welcome";
 import SignIn from "./Screens/SignIn";
+import SignUp from "./Screens/SignUp";
 import Tabs from "./components/Tabs";
 import ReservedCubicles from "./Screens/ReservedCubicles";
 import History from "./Screens/History";
@@ -46,6 +47,7 @@ export default function App() {
         >
           <Stack.Screen name="Welcome" component={Welcome} />
           <Stack.Screen name="SignIn" component={SignIn} />
+          <Stack.Screen name="SignUp" component={SignUp} />
           <Stack.Screen name="Tabs" component={Tabs} />
           <Stack.Screen name="ReservedCubicles" component={ReservedCubicles} />
           <Stack.Screen name="History" component={History} />

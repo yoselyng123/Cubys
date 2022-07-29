@@ -42,7 +42,12 @@ const Welcome = ({ navigation }) => {
         </TouchableOpacity>
         <View style={styles.noAccount}>
           <Text style={styles.textNoAction}>No account yet?</Text>
-          <TouchableOpacity activeOpacity={0.7}>
+          <TouchableOpacity 
+            activeOpacity={0.7}
+            onPress={() => {
+              navigation.navigate("SignUp");
+            }}
+          >
             <Text style={styles.textAction}>Sign Up</Text>
           </TouchableOpacity>
         </View>
