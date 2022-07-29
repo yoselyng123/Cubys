@@ -9,9 +9,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 
 const SignUp = ({ navigation }) => {
-  const handleSignIn = () => {
+  const handleSignUp = () => {
     // AQUI SE MANEJA EL INPUT DEL USUARIO
-    navigation.navigate("Tabs");
+    //navigation.navigate("SignIn");
   };
 
   return (
@@ -76,11 +76,11 @@ const SignUp = ({ navigation }) => {
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => {
-              handleSignIn();
+              handleSignUp();
             }}
           >
             <View style={styles.btnSignIn}>
-              <Text style={styles.textSignIn}>Sign In</Text>
+              <Text style={styles.textSignIn}>Sign Up</Text>
             </View>
           </TouchableOpacity>
           <View style={styles.noAccount}>
