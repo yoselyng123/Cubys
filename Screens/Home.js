@@ -36,7 +36,7 @@ const Home = ({ navigation }) => {
           <View style={styles.cardsWrapper}>
             <TouchableOpacity
               style={[styles.cardItem, { width: cardWidth, marginRight: 18 }]}
-              activeOpacity={0.8}
+              activeOpacity={0.7}
               onPress={() => {
                 navigation.navigate("ReservationDetails");
               }}
@@ -45,7 +45,7 @@ const Home = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.cardItem, { width: cardWidth }]}
-              activeOpacity={0.8}
+              activeOpacity={0.7}
               onPress={() => {
                 navigation.navigate("ReservedCubicles");
               }}
@@ -54,7 +54,7 @@ const Home = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.cardItem, { width: cardWidth, marginRight: 18 }]}
-              activeOpacity={0.8}
+              activeOpacity={0.7}
               onPress={() => {
                 navigation.navigate("QRCode");
               }}
@@ -63,7 +63,7 @@ const Home = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.cardItem, { width: cardWidth }]}
-              activeOpacity={0.8}
+              activeOpacity={0.7}
               onPress={() => {
                 navigation.navigate("History");
               }}
