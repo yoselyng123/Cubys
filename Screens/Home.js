@@ -44,7 +44,7 @@ const Home = ({ navigation }) => {
                 navigation.navigate("ReservationDetails");
               }}
             >
-              <Card title="Available cubicle" subtitle="6" icon={<FontAwesome5 name="check" size={38} color={colors.purple} />} />
+              <Card title="Available cubicles" subtitle="6" icon={<FontAwesome5 name="check" size={38} color={colors.purple} />} />
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.cardItem, { width: cardWidth }]}
