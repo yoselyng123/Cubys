@@ -28,8 +28,6 @@ const Profile = ({ navigation }) => {
     setUser(null);
   };
 
-  console.log(`PROFILE: name: ${user.name}, email: ${user.email}`);
-
   if (user) {
     return (
       <View style={styles.container}>
@@ -59,11 +57,6 @@ const Profile = ({ navigation }) => {
             />
             <Input
               style={styles.input}
-              title='Username'
-              placeholder='Enter your username'
-            />
-            <Input
-              style={styles.input}
               title='Password'
               placeholder='Enter your password'
               isPassword={true}
@@ -73,6 +66,11 @@ const Profile = ({ navigation }) => {
               title='Birth Date (Optional)'
               placeholder='Enter your birth date'
             />
+            <TouchableOpacity>
+              <View style={styles.saveChangesBtn}>
+                <Text style={styles.saveChangesText}>Save Changes</Text>
+              </View>
+            </TouchableOpacity>
           </ScrollView>
           <View style={styles.footer}>
             <Text style={styles.joinedtext}>
@@ -160,6 +158,18 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: 'Roboto-Medium',
     color: colors.dark,
+    letterSpacing: 0.6,
+  },
+  saveChangesBtn: {
+    backgroundColor: colors.purple,
+    paddingVertical: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  saveChangesText: {
+    color: '#FFF',
+    fontFamily: 'Roboto-Medium',
     letterSpacing: 0.6,
   },
 });

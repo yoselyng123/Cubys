@@ -6,6 +6,7 @@ import { useFonts } from 'expo-font';
 import { ApolloProvider } from '@apollo/client';
 import { client } from './apollo';
 import Navigation from './navigation/Navigation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -21,6 +22,8 @@ export default function App() {
     'Roboto-Regular': require('./assets/fonts/Roboto-Regular.ttf'),
     'Roboto-Thin': require('./assets/fonts/Roboto-Thin.ttf'),
   });
+
+  AsyncStorage.removeItem('token');
 
   if (!fontsLoaded) {
     SplashScreen.hideAsync();

@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { userContext } from '../context/userContext';
 
 const SplashScreen = () => {
   const navigation = useNavigation();
+  const { setToken } = useContext(userContext);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -21,6 +23,7 @@ const SplashScreen = () => {
   const isAuthenticated = async () => {
     // Get token from phone storage
     const token = await AsyncStorage.getItem('token');
+    setToken(token);
     return !!token;
   };
 

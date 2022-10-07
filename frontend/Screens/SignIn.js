@@ -21,7 +21,6 @@ const SIGN_IN_MUTATION = gql`
     signIn(input: { email: $email, password: $password }) {
       token
       user {
-        id
         name
         email
       }
@@ -39,7 +38,6 @@ const SignIn = ({ navigation }) => {
     onCompleted: (data) => {
       // Store Token
       AsyncStorage.setItem('token', data.signIn.token).then(() => {
-        // Set user in context
         setUser(data.signIn.user);
         // Redirect to HomeScreen
         navigation.navigate('Tabs');

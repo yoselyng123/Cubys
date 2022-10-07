@@ -25,6 +25,10 @@ const getUserFromToken = async (token, db) => {
 // that together define the "shape" of queries that are executed against
 // your data.
 const typeDefs = gql`
+  type Query {
+    getActiveUser(name: String!): User!
+    users: [User]!
+  }
   type Mutation {
     signUp(input: SignUpInput!): AuthUser
     signIn(input: SignInInput!): AuthUser
@@ -51,9 +55,6 @@ const typeDefs = gql`
     name: String!
     email: String!
     profilePic: String
-  }
-  type Query {
-    users: [User]!
   }
 `;
 

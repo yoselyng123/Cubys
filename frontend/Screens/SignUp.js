@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 /* ASSETS */
 import colors from '../assets/colors';
@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 /* APOLLO SERVER */
 import { useMutation, gql } from '@apollo/client';
+import { userContext } from '../context/userContext';
 
 const SIGN_UP_MUTATION = gql`
   mutation signUp($email: String!, $password: String!, $name: String!) {
@@ -31,6 +32,7 @@ const SIGN_UP_MUTATION = gql`
 `;
 
 const SignUp = ({ navigation }) => {
+  const { setUser } = useContext(userContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -40,6 +42,7 @@ const SignUp = ({ navigation }) => {
     onCompleted: (data) => {
       // Store Token
       AsyncStorage.setItem('token', data.signUp.token).then(() => {
+        setUser(data.signUp.user);
         // Redirect to HomeScreen
         navigation.navigate('Tabs');
       });

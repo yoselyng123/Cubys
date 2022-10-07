@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 /* Assets */
 import colors from '../assets/colors';
 import { Dimensions } from 'react-native';
@@ -16,8 +16,11 @@ import Reservation from '../components/Reservation';
 /* ICONS */
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import { userContext } from '../context/userContext';
 
 const Home = ({ navigation }) => {
+  const { user } = useContext(userContext);
+
   const windowWidth = Dimensions.get('window').width;
   const cardWidth = (windowWidth - 32) / 2 - 9;
 
@@ -29,7 +32,9 @@ const Home = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.scrollContainer}>
-          <Text style={styles.greetingsTitle}>Hello John,</Text>
+          <Text style={styles.greetingsTitle}>
+            Hello {user ? user.name : ''},
+          </Text>
           <Text style={styles.greetingsText}>
             Book your cubicle whenever you want.
           </Text>
