@@ -1,10 +1,106 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { gql, useMutation } from '@apollo/client';
+import { useState } from 'react';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 /* Assets */
 import colors from '../assets/colors';
 /* Components */
 import Header from '../components/Header';
+import ReserveForm from '../components/ReserveForm';
+import SectionDivider from '../components/SectionDivider';
 
-const ReservationDetails = ({ navigation }) => {
+const CREATE_RESERVATION = gql`
+  mutation createReservation(
+    $startTime: String!
+    $endTime: String!
+    $cubicleID: ID!
+    $companions: [CreateCompanion!]!
+    $date: String!
+  ) {
+    createReservation(
+      input: {
+        startTime: $startTime
+        endTime: $endTime
+        cubicleID: $cubicleID
+        date: $date
+        companions: $companions
+      }
+    ) {
+      id
+      cubicleID
+      startTime
+      endTime
+      date
+      createdBy
+    }
+  }
+`;
+
+const GET_RESERVATIONS = gql`
+  query getMyReservations {
+    getMyReservations {
+      id
+      cubicleID
+      createdBy
+      startTime
+      endTime
+      date
+    }
+  }
+`;
+
+const ReservationDetails = ({ route, navigation }) => {
+  const { cubicleInfo, resInfo } = route.params;
+  const [companion1, setCompanion1] = useState({
+    name: '',
+    carrera: '',
+    carnet: '',
+  });
+  const [companion2, setCompanion2] = useState({
+    name: '',
+    carrera: '',
+    carnet: '',
+  });
+  const [companion3, setCompanion3] = useState({
+    name: '',
+    carrera: '',
+    carnet: '',
+  });
+
+  const [createReservation, { loading: loadingReservation }] = useMutation(
+    CREATE_RESERVATION,
+    {
+      onCompleted: () => {
+        Alert.alert('Se ha creado la reservación con Exito!');
+        navigation.navigate('Home');
+      },
+      onError: () => {
+        Alert.alert(
+          'No se pudo cancelar la reservación. Por favor intente de nuevo'
+        );
+      },
+      refetchQueries: [{ query: GET_RESERVATIONS }],
+    }
+  );
+
+  const handleSubmitForm = () => {
+    let startTime = resInfo.startTime;
+    let endTime = resInfo.endTime;
+    let cubicleID = cubicleInfo.id;
+    let date = resInfo.date;
+    let companions = [companion1, companion2, companion3];
+
+    createReservation({
+      variables: { startTime, endTime, cubicleID, date, companions },
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Header
@@ -13,43 +109,56 @@ const ReservationDetails = ({ navigation }) => {
         navigateAvailable={true}
         navigation={navigation}
       />
-      <View style={styles.contentWrapper}>
+      <ScrollView style={styles.contentWrapper}>
         <Text style={styles.description}>
           Please review the reservation details and make sure everything is
           correct
         </Text>
-        <View
-          style={{
-            borderBottomColor: colors.light,
-            borderBottomWidth: 2,
-            marginBottom: 18,
-          }}
-        />
+        <SectionDivider />
         <View style={styles.reservationInfoWrapper}>
           <View style={styles.topSection}>
-            <Text style={styles.title}>Cubicle #5</Text>
-            <Text style={styles.floor}>2nd Floor</Text>
+            <Text style={styles.title}>
+              Cubicle #{cubicleInfo.cubicleNumber}
+            </Text>
+            <Text style={styles.floor}>{cubicleInfo.floor}nd Floor</Text>
           </View>
           <View style={styles.cubicleAddOns}>
             <Text style={styles.textDesc}>4 Chairs</Text>
             <Text style={styles.textDesc}>White board</Text>
-            <Text style={styles.textDesc}>Window</Text>
           </View>
-          <View
-            style={{
-              borderBottomColor: colors.light,
-              borderBottomWidth: 2,
-              marginBottom: 20,
-            }}
+          <SectionDivider />
+          <View style={styles.dateWrapperContainer}>
+            <View style={styles.dateWrapper}>
+              <Text style={styles.title}>Start Time</Text>
+              <Text style={styles.textDesc}>
+                {resInfo.date},{`\n`}
+                {resInfo.startTime}
+              </Text>
+            </View>
+            <View style={styles.dateWrapper}>
+              <Text style={styles.title}>End Time</Text>
+              <Text style={styles.textDesc}>
+                {resInfo.date},{`\n`}
+                {resInfo.endTime}
+              </Text>
+            </View>
+          </View>
+
+          <ReserveForm
+            number={1}
+            companion={companion1}
+            setCompanion={setCompanion1}
           />
-          <View style={styles.dateWrapper}>
-            <Text style={styles.title}>Start Time</Text>
-            <Text style={styles.textDesc}>29 Nov 2022, 03:30pm</Text>
-          </View>
-          <View style={styles.dateWrapper}>
-            <Text style={styles.title}>End Time</Text>
-            <Text style={styles.textDesc}>29 Nov 2022, 05:30pm</Text>
-          </View>
+          <ReserveForm
+            number={2}
+            companion={companion2}
+            setCompanion={setCompanion2}
+          />
+          <ReserveForm
+            number={3}
+            companion={companion3}
+            setCompanion={setCompanion3}
+          />
         </View>
 
         <View style={styles.footer}>
@@ -57,13 +166,13 @@ const ReservationDetails = ({ navigation }) => {
             This is the final step, after you press the Reserve button, the
             reservation will be completed
           </Text>
-          <TouchableOpacity activeOpacity={0.7}>
+          <TouchableOpacity activeOpacity={0.7} onPress={handleSubmitForm}>
             <View style={styles.reserveBtn}>
               <Text style={styles.reserveBtnText}>Reserve</Text>
             </View>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -121,10 +230,11 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   cubicleAddOns: {
-    marginBottom: 22,
+    marginBottom: 15,
   },
   dateWrapper: {
     marginBottom: 30,
+    marginRight: 'auto',
   },
   footer: {
     flex: 1,
@@ -145,5 +255,10 @@ const styles = StyleSheet.create({
     lineHeight: 17.58,
     color: '#fff',
     marginBottom: 4,
+  },
+  dateWrapperContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

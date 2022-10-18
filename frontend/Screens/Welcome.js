@@ -18,9 +18,9 @@ const Welcome = ({ navigation }) => {
         <Text style={styles.title}>cubys</Text>
       </SafeAreaView>
       <View style={styles.welcomeContainer}>
-        <Text style={styles.subtitle}>Welcome</Text>
+        <Text style={styles.subtitle}>Bienvenido</Text>
         <Text style={styles.description}>
-          Enjoy your life being{'\n'}easier than yesterday.
+          Reserva cubiculos desde{'\n'}cualquier lugar en la UNIMET.
         </Text>
       </View>
       <View style={styles.footer}>
@@ -31,24 +31,26 @@ const Welcome = ({ navigation }) => {
           }}
         >
           <View style={styles.btnSignIn}>
-            <Text style={styles.textSignIn}>Sign In</Text>
+            <Text style={styles.textSignIn}>Iniciar Sesión</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.7}>
           <View style={styles.btnSignInGoogle}>
             <AntDesign name='google' size={24} color='white' />
-            <Text style={styles.textSignInGoogle}>Sign In using Google</Text>
+            <Text style={styles.textSignInGoogle}>
+              Iniciar sesión con Google
+            </Text>
           </View>
         </TouchableOpacity>
         <View style={styles.noAccount}>
-          <Text style={styles.textNoAction}>No account yet?</Text>
+          <Text style={styles.textNoAction}>No tienes cuenta?</Text>
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => {
               navigation.navigate('SignUp');
             }}
           >
-            <Text style={styles.textAction}>Sign Up</Text>
+            <Text style={styles.textAction}>Registrarse</Text>
           </TouchableOpacity>
         </View>
       </View>

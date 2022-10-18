@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import colors from '../assets/colors';
 
-const Card = ({ title, subtitle, icon }) => {
+const Card = ({ title, subtitle, icon, reservedNumber }) => {
   return (
     <View style={styles.container}>
       <View style={styles.topWrapper}>
@@ -16,7 +16,8 @@ const Card = ({ title, subtitle, icon }) => {
         <Text style={styles.availability}>{subtitle}</Text>
       ) : (
         <Text style={styles.reservedNumber}>
-          2<Text style={styles.reservedAvailability}>/3</Text>
+          {reservedNumber}
+          <Text style={styles.reservedAvailability}>/1</Text>
         </Text>
       )}
 

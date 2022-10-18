@@ -9,6 +9,7 @@ import {
 import { useState, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 /* ASSETS */
+import { StatusBar } from 'expo-status-bar';
 import colors from '../assets/colors';
 import Header from '../components/Header';
 import Input from '../components/Input';
@@ -171,6 +172,7 @@ const SignUp = ({ navigation }) => {
           </View>
         </View>
       </View>
+      <StatusBar style='dark' />
     </View>
   );
 };

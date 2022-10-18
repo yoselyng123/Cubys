@@ -1,28 +1,99 @@
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import React, { useContext } from 'react';
+import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
 /* Assets */
 import colors from '../assets/colors';
-import { Dimensions } from 'react-native';
 /* Components */
 import Header from '../components/Header';
-import Card from '../components/Card';
 import Reservation from '../components/Reservation';
-/* ICONS */
-import { FontAwesome5 } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
+import CardsList from '../components/CardsList';
 import { userContext } from '../context/userContext';
+/* APOLLO SERVER */
+import { useQuery, useMutation, gql } from '@apollo/client';
+
+const GET_RESERVATIONS = gql`
+  query getMyReservations {
+    getMyReservations {
+      id
+      cubicleID
+      createdBy
+      startTime
+      endTime
+      date
+    }
+  }
+`;
+
+const GET_CUBICLES = gql`
+  query getCubicles {
+    getCubicles {
+      sala
+      cubicleNumber
+      availability
+    }
+  }
+`;
+
+const DELETE_RESERVATION_MUTATION = gql`
+  mutation deleteReservation($id: ID!) {
+    deleteReservation(id: $id)
+  }
+`;
 
 const Home = ({ navigation }) => {
   const { user } = useContext(userContext);
+  const [pressedCancel, setPressedCancel] = useState(false);
+  const [reservedNumber, setReservedNumber] = useState(0);
+  const [availableCubicles, setAvailableCubicles] = useState(0);
 
-  const windowWidth = Dimensions.get('window').width;
-  const cardWidth = (windowWidth - 32) / 2 - 9;
+  const [deleteReservation, { loading: loadingReservation }] = useMutation(
+    DELETE_RESERVATION_MUTATION,
+    {
+      onCompleted: () => {
+        setPressedCancel(false);
+        Alert.alert('Se ha cancelado la reservación');
+        refetchCubicles();
+      },
+      onError: () => {
+        Alert.alert(
+          'No se pudo cancelar la reservación. Por favor intente de nuevo'
+        );
+      },
+      refetchQueries: [{ query: GET_RESERVATIONS, GET_CUBICLES }],
+    }
+  );
+
+  const {
+    loading: loadingReservations,
+    error: errorReservations,
+    data: dataReservations,
+  } = useQuery(GET_RESERVATIONS, {
+    onCompleted: (data) => {
+      setReservedNumber(data.getMyReservations.length);
+    },
+  });
+
+  const {
+    loading: loadingCubicles,
+    error: errorCubicles,
+    data: dataCubicles,
+    refetch: refetchCubicles,
+  } = useQuery(GET_CUBICLES, {
+    onCompleted: (data) => {
+      console.log('REFETCHING CUBICLES');
+      let counter = 0;
+      data.getCubicles.map((cubicle) => {
+        if (cubicle.availability) {
+          counter += 1;
+        }
+      });
+      setAvailableCubicles(counter);
+    },
+  });
+
+  if (errorCubicles) return Alert.alert(`Error! ${errorCubicles.message}`);
+
+  if (errorReservations)
+    return Alert.alert(`Error! ${errorReservations.message}`);
 
   return (
     <View style={styles.container}>
@@ -33,87 +104,22 @@ const Home = ({ navigation }) => {
       >
         <View style={styles.scrollContainer}>
           <Text style={styles.greetingsTitle}>
-            Hello {user ? user.name : ''},
+            Hola {user ? user.name : ''},
           </Text>
           <Text style={styles.greetingsText}>
-            Book your cubicle whenever you want.
+            Reserva un cubículo cuando quieras.
           </Text>
 
           {/* Cards */}
-
-          <View style={styles.cardsWrapper}>
-            <TouchableOpacity
-              style={[styles.cardItem, { width: cardWidth, marginRight: 18 }]}
-              activeOpacity={0.7}
-              onPress={() => {
-                navigation.navigate('AvailableCubicles');
-              }}
-            >
-              <Card
-                title='Available cubicles'
-                subtitle='6'
-                icon={
-                  <FontAwesome5 name='check' size={38} color={colors.purple} />
-                }
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.cardItem, { width: cardWidth }]}
-              activeOpacity={0.7}
-              onPress={() => {
-                navigation.navigate('ReservedCubicles');
-              }}
-            >
-              <Card
-                title='Reserved cubicles'
-                subtitle='2/3'
-                icon={
-                  <FontAwesome5
-                    name='calendar-check'
-                    size={38}
-                    color={colors.purple}
-                  />
-                }
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.cardItem, { width: cardWidth, marginRight: 18 }]}
-              activeOpacity={0.7}
-              onPress={() => {
-                navigation.navigate('QRCode');
-              }}
-            >
-              <Card
-                title='Your QR code'
-                subtitle='Code'
-                icon={
-                  <FontAwesome5 name='qrcode' size={38} color={colors.purple} />
-                }
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.cardItem, { width: cardWidth }]}
-              activeOpacity={0.7}
-              onPress={() => {
-                navigation.navigate('History');
-              }}
-            >
-              <Card
-                title='History'
-                subtitle='9'
-                icon={
-                  <MaterialIcons
-                    name='restore'
-                    size={38}
-                    color={colors.purple}
-                  />
-                }
-              />
-            </TouchableOpacity>
-          </View>
+          <CardsList
+            navigation={navigation}
+            reservedNumber={reservedNumber}
+            loadingReservations={loadingReservations}
+            availableCubicles={availableCubicles}
+            loadingCubicles={loadingCubicles}
+          />
 
           {/* Separation Line */}
-
           <View
             style={{
               borderBottomColor: colors.light,
@@ -122,11 +128,24 @@ const Home = ({ navigation }) => {
             }}
           />
           <Text style={styles.reservationsTitle}>Upcoming reservations</Text>
-          <Reservation />
-          <Reservation />
-          <Reservation />
-          <Reservation />
-          <Reservation />
+          {loadingReservations ? (
+            <Text>Loading...</Text>
+          ) : dataReservations.getMyReservations &&
+            dataReservations.getMyReservations.length > 0 ? (
+            dataReservations.getMyReservations.map((reservation, index) => {
+              return (
+                <Reservation
+                  key={index}
+                  info={reservation}
+                  id={reservation.cubicleID}
+                  deleteReservation={deleteReservation}
+                  pressedCancel={pressedCancel}
+                />
+              );
+            })
+          ) : (
+            <Text style={styles.noReservationsText}>No reservations</Text>
+          )}
         </View>
       </ScrollView>
     </View>
@@ -160,17 +179,6 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     color: colors.gray,
   },
-  cardsWrapper: {
-    marginTop: 30,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    width: '100%',
-    marginBottom: 25,
-  },
-  cardItem: {
-    marginBottom: 15,
-  },
-
   reservationsTitle: {
     fontFamily: 'Roboto-Medium',
     fontSize: 15,
@@ -178,5 +186,13 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     color: colors.dark,
     marginBottom: 20,
+  },
+  noReservationsText: {
+    fontFamily: 'Roboto-Italic',
+    fontSize: 14,
+    letterSpacing: 0.6,
+    lineHeight: 26,
+    color: colors.gray,
+    marginLeft: 10,
   },
 });

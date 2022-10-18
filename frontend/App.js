@@ -1,5 +1,4 @@
 import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
 /* Custom Font, Icon, Colors */
 import { useFonts } from 'expo-font';
 /* Apollo Server */
@@ -32,7 +31,6 @@ export default function App() {
     return (
       <ApolloProvider client={client}>
         <Navigation />
-        <StatusBar style='auto' />
       </ApolloProvider>
     );
   }

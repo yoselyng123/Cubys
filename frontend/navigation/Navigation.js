@@ -7,6 +7,7 @@ import {
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // React Assets
 import * as React from 'react';
+import { StatusBar } from 'expo-status-bar';
 // Context
 import UserContextProvider from '../context/userContext';
 /* Screens */
@@ -56,6 +57,7 @@ function RootNavigator() {
           component={ReservationDetails}
         />
       </Stack.Navigator>
+      <StatusBar style='auto' />
     </UserContextProvider>
   );
 }

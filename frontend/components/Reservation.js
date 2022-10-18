@@ -1,51 +1,114 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 /* Assets */
 import Tag from './Tag';
 import colors from '../assets/colors';
 import { Ionicons } from '@expo/vector-icons';
+/* APOLLO SERVER */
+import { useQuery, useMutation, gql } from '@apollo/client';
 
-const Reservation = () => {
-  return (
-    <View style={styles.container}>
-      <View
-        style={{
-          borderColor: colors.purple,
-          borderLeftWidth: 3,
-          paddingLeft: 8,
-        }}
-      >
-        <View style={styles.infoWrapper}>
-          <View style={styles.LeftInfoWrapper}>
-            <Text style={styles.idCubicle}>Cubicle #5</Text>
-            <Text style={styles.cubicleFloor}>2nd Floor</Text>
+const GET_CUBICLE_BY_ID = gql`
+  query getCubiclebyID($id: ID!) {
+    getCubicleByID(id: $id) {
+      id
+      cubicleNumber
+      floor
+      sala
+      availability
+      maxCapacity
+      minCapacity
+    }
+  }
+`;
+
+const Reservation = ({ info, id, deleteReservation, pressedCancel }) => {
+  const { loading, error, data } = useQuery(GET_CUBICLE_BY_ID, {
+    variables: { id },
+  });
+
+  const handleDeleteReservation = () => {
+    const id = info.id;
+    deleteReservation({
+      variables: { id },
+    });
+  };
+
+  if (loading) {
+    return <View style={styles.containerLoading}></View>;
+  } else {
+    return (
+      <View style={styles.container}>
+        <View
+          style={{
+            borderColor: colors.purple,
+            borderLeftWidth: 3,
+            paddingLeft: 8,
+          }}
+        >
+          <View style={styles.infoWrapper}>
+            <View style={styles.LeftInfoWrapper}>
+              {loading ? (
+                <View style={styles.LeftInfoWrapper}>
+                  <Text style={styles.idCubicle}>Cubicle #</Text>
+                  <Text style={styles.cubicleFloor}>Floor</Text>
+                </View>
+              ) : (
+                <View style={styles.LeftInfoWrapper}>
+                  <Text style={styles.idCubicle}>
+                    Cubicle #{data.getCubicleByID.cubicleNumber}
+                  </Text>
+                  <Text style={styles.cubicleFloor}>
+                    {data.getCubicleByID.floor}nd Floor
+                  </Text>
+                </View>
+              )}
+            </View>
+            <TouchableOpacity
+              style={styles.rightInfoWrapper}
+              activeOpacity={0.7}
+              onPress={() => handleDeleteReservation()}
+              disabled={pressedCancel}
+            >
+              <Text
+                style={
+                  pressedCancel
+                    ? [styles.cancelRes, { opacity: 0.5 }]
+                    : styles.cancelRes
+                }
+              >
+                Cancel
+              </Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.rightInfoWrapper} activeOpacity={0.7}>
-            <Text style={styles.cancelRes}>Cancel</Text>
-          </TouchableOpacity>
+          <View style={styles.tagsWrapper}>
+            <Tag name='x4' icon='person' />
+            <Tag name='Board' />
+          </View>
         </View>
-        <View style={styles.tagsWrapper}>
-          <Tag name='x4' icon='person' />
-          <Tag name='Board' />
+        <View style={styles.bottomSection}>
+          <View>
+            <Text style={styles.timeTitle}>Start Time</Text>
+            <Text style={styles.time}>
+              {info.date},{'\n'}
+              {info.startTime}
+            </Text>
+          </View>
+          <Ionicons
+            name='chevron-forward-circle-outline'
+            size={24}
+            color={colors.gray}
+          />
+          <View>
+            <Text style={styles.timeTitle}>End Time</Text>
+            <Text style={styles.time}>
+              {info.date},{'\n'}
+              {info.endTime}
+            </Text>
+          </View>
         </View>
       </View>
-      <View style={styles.bottomSection}>
-        <View>
-          <Text style={styles.timeTitle}>Start Time</Text>
-          <Text style={styles.time}>29 Nov 2022,{'\n'}03:30pm</Text>
-        </View>
-        <Ionicons
-          name='chevron-forward-circle-outline'
-          size={24}
-          color={colors.gray}
-        />
-        <View>
-          <Text style={styles.timeTitle}>End Time</Text>
-          <Text style={styles.time}>29 Nov 2022,{'\n'}05:30pm</Text>
-        </View>
-      </View>
-    </View>
-  );
+    );
+  }
 };
 
 export default Reservation;
@@ -53,6 +116,18 @@ export default Reservation;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
+    paddingHorizontal: 15,
+    paddingVertical: 25,
+    borderRadius: 10,
+    shadowColor: 'rgba(0,0,0,0.5)',
+    elevation: 15,
+    shadowOffset: { width: 0, height: 2 },
+    marginBottom: 20,
+  },
+  containerLoading: {
+    backgroundColor: '#cacaca',
+    width: '100%',
+    height: 175,
     paddingHorizontal: 15,
     paddingVertical: 25,
     borderRadius: 10,
