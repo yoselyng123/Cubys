@@ -75,7 +75,7 @@ export default Input;
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 40,
+    marginBottom: 30,
   },
   titleContainer: {
     flexDirection: 'row',

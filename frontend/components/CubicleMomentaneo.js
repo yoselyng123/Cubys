@@ -2,16 +2,23 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import colors from '../assets/colors';
 
-const CubicleMomentaneo = ({ cubicle, navigation, resInfo }) => {
+const CubicleMomentaneo = ({
+  cubicle,
+  navigation,
+  resInfo,
+  inputValidation,
+}) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
         activeOpacity={0.6}
         onPress={() => {
-          navigation.navigate('ReservationDetails', {
-            cubicleInfo: cubicle,
-            resInfo: resInfo,
-          });
+          if (inputValidation()) {
+            navigation.navigate('ReservationDetails', {
+              cubicleInfo: cubicle,
+              resInfo: resInfo,
+            });
+          }
         }}
       >
         <View style={styles.contentWrapper}>

@@ -103,9 +103,7 @@ const Home = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.scrollContainer}>
-          <Text style={styles.greetingsTitle}>
-            Hola {user ? user.name : ''},
-          </Text>
+          <Text style={styles.greetingsTitle}>Hola</Text>
           <Text style={styles.greetingsText}>
             Reserva un cubículo cuando quieras.
           </Text>

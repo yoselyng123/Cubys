@@ -28,6 +28,8 @@ const Profile = ({ navigation }) => {
     setUser(null);
   };
 
+  console.log(user.email);
+
   if (user) {
     return (
       <View style={styles.container}>
@@ -41,7 +43,7 @@ const Profile = ({ navigation }) => {
             style={styles.profileImage}
           />
           <Text style={styles.profileName}>{user.name}</Text>
-          <Text style={styles.profileJob}>Full Stack Developer</Text>
+          <Text style={styles.profileJob}>{user.carrera}</Text>
           <ScrollView
             style={styles.inputContainer}
             showsVerticalScrollIndicator={false}
@@ -61,16 +63,18 @@ const Profile = ({ navigation }) => {
               placeholder='Enter your password'
               isPassword={true}
             />
+            <Input
+              style={styles.input}
+              title='Carnet'
+              placeholder='Enter your password'
+              isPassword={false}
+              text={user.carnet}
+            />
             <DateInput
               style={styles.input}
               title='Birth Date (Optional)'
               placeholder='Enter your birth date'
             />
-            <TouchableOpacity>
-              <View style={styles.saveChangesBtn}>
-                <Text style={styles.saveChangesText}>Save Changes</Text>
-              </View>
-            </TouchableOpacity>
           </ScrollView>
           <View style={styles.footer}>
             <Text style={styles.joinedtext}>

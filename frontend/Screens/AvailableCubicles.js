@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 /* Assets */
 import colors from '../assets/colors';
 import CubicleMomentaneo from '../components/CubicleMomentaneo';
@@ -58,6 +58,67 @@ const AvailableCubicles = ({ navigation }) => {
 
   if (errorCubicles) return Alert.alert(`Error! ${errorCubicles.message}`);
 
+  const inputValidation = () => {
+    // Check if AM or PM
+    let bothPM =
+      startTime.split(':')[1].substring(2, 4) === 'pm' &&
+      endTime.split(':')[1].substring(2, 4) === 'pm';
+    let bothAM =
+      startTime.split(':')[1].substring(2, 4) === 'am' &&
+      endTime.split(':')[1].substring(2, 4) === 'am';
+    let AM_PM =
+      startTime.split(':')[1].substring(2, 4) === 'am' &&
+      endTime.split(':')[1].substring(2, 4) === 'pm';
+
+    // if (bothAM && bothPM) {
+    //   if (startTime.split(':')[0] > endTime.split(':')[0]) {
+    //     Alert.alert(
+    //       'Error. La hora de salida debe ser mayor a la hora de entrada.'
+    //     );
+    //     return false;
+    //   }
+    // } else {
+    //   if (startTime.split(':')[0] > endTime.split(':')[0]) {
+    //     Alert.alert(
+    //       'Error. La hora de salida debe ser mayor a la hora de entrada.'
+    //     );
+    //     return false;
+    //   }
+    // }
+    let outOfWork = outOfWorkingHoursValidation();
+
+    return outOfWork;
+  };
+
+  const outOfWorkingHoursValidation = () => {
+    let lessThan7AM =
+      (startTime.split(':')[1].substring(2, 4) === 'am' &&
+        startTime.split(':')[0] < 7) ||
+      (endTime.split(':')[1].substring(2, 4) === 'am' &&
+        endTime.split(':')[0] < 7);
+    let greaterThan5PM =
+      (endTime.split(':')[1].substring(2, 4) === 'pm' &&
+        endTime.split(':')[0] > 5) ||
+      (startTime.split(':')[1].substring(2, 4) === 'pm' &&
+        startTime.split(':')[0] > 5);
+    let equalTo5PMButMoreMinutes =
+      (endTime.split(':')[1].substring(2, 4) === 'pm' &&
+        endTime.split(':')[0] >= 5 &&
+        endTime.split(':')[1].substring(0, 2) > 0) ||
+      (startTime.split(':')[1].substring(2, 4) === 'pm' &&
+        startTime.split(':')[0] >= 5 &&
+        startTime.split(':')[1].substring(0, 2) > 0);
+
+    if (lessThan7AM || greaterThan5PM || equalTo5PMButMoreMinutes) {
+      Alert.alert(
+        'Error. La biblioteca abre a las 7:00am y cierra a las 5:00pm'
+      );
+      return false;
+    }
+
+    return true;
+  };
+
   return (
     <View style={styles.container}>
       <Header
@@ -109,6 +170,7 @@ const AvailableCubicles = ({ navigation }) => {
                   endTime,
                   floor,
                 }}
+                inputValidation={inputValidation}
               />
             );
           })

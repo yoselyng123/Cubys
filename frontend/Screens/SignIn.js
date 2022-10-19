@@ -22,7 +22,10 @@ const SIGN_IN_MUTATION = gql`
     signIn(input: { email: $email, password: $password }) {
       token
       user {
+        id
         name
+        carnet
+        carrera
         email
       }
     }
@@ -81,7 +84,7 @@ const SignIn = ({ navigation }) => {
             isPassword={true}
             isSignInPassword={true}
             text={password}
-            onChangeText={(newText) => setPassword(newText.toLowerCase())}
+            onChangeText={(newText) => setPassword(newText)}
           />
         </View>
 

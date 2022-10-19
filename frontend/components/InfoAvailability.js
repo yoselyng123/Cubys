@@ -12,6 +12,7 @@ import RNPickerSelect from 'react-native-picker-select';
 
 const InfoAvailability = ({ label, content, setContent }) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const momentDate = new Date();
 
   const monthNames = [
     'Ene',
@@ -28,6 +29,8 @@ const InfoAvailability = ({ label, content, setContent }) => {
     'Dic',
   ];
 
+  console.log();
+
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -43,7 +46,7 @@ const InfoAvailability = ({ label, content, setContent }) => {
       setContent(
         `${currentDate.getDate()} ${
           monthNames[currentDate.getMonth()]
-        } ${currentDate.getFullYear()}`
+        } ${new Date().getFullYear()}`
       );
     } else {
       const currentTime = date.toString().split(' ')[4];
@@ -116,6 +119,8 @@ const InfoAvailability = ({ label, content, setContent }) => {
         mode={label === 'Fecha' ? 'date' : 'time'}
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
+        maximumDate={new Date(`${momentDate.getFullYear()}-12-31`)}
+        minimumDate={new Date(`${momentDate.getFullYear()}-01-31`)}
       />
     </View>
   );

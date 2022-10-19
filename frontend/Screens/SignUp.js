@@ -5,8 +5,9 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  ScrollView,
 } from 'react-native';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 /* ASSETS */
 import { StatusBar } from 'expo-status-bar';
@@ -19,14 +20,31 @@ import { Feather } from '@expo/vector-icons';
 /* APOLLO SERVER */
 import { useMutation, gql } from '@apollo/client';
 import { userContext } from '../context/userContext';
+import Validation from '../components/Validation';
 
 const SIGN_UP_MUTATION = gql`
-  mutation signUp($email: String!, $password: String!, $name: String!) {
-    signUp(input: { email: $email, password: $password, name: $name }) {
+  mutation signUp(
+    $email: String!
+    $password: String!
+    $name: String!
+    $carrera: String!
+    $carnet: String!
+  ) {
+    signUp(
+      input: {
+        email: $email
+        password: $password
+        name: $name
+        carrera: $carrera
+        carnet: $carnet
+      }
+    ) {
       token
       user {
         id
         name
+        carrera
+        carnet
       }
     }
   }
@@ -34,10 +52,18 @@ const SIGN_UP_MUTATION = gql`
 
 const SignUp = ({ navigation }) => {
   const { setUser } = useContext(userContext);
-  const [name, setName] = useState('');
+  const [carrera, setCarrera] = useState('');
+  const [carnet, setCarnet] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [validations, setValidations] = useState({
+    eightCharacters: false,
+    upperAndLower: false,
+    numeric: false,
+    specialChar: false,
+  });
 
   const [signUp, { loading }] = useMutation(SIGN_UP_MUTATION, {
     onCompleted: (data) => {
@@ -57,10 +83,64 @@ const SignUp = ({ navigation }) => {
     // AQUI SE MANEJA EL INPUT DEL USUARIO
     if (password === confirmPassword) {
       signUp({
-        variables: { name, email, password },
+        variables: { carrera, email, password, carnet, name },
       });
     } else {
-      Alert.alert('Passwords do not match');
+      Alert.alert('Passwords do not match.');
+    }
+  };
+
+  useEffect(() => {
+    let eightCharacters = validateEightChar(password);
+    let upperAndLower = validateUpperAndLower(password);
+    let numeric = validateNumeric(password);
+    let specialChar = validateSpecialChar(password);
+
+    setValidations({
+      eightCharacters,
+      upperAndLower,
+      numeric,
+      specialChar,
+    });
+  }, [password]);
+
+  const handleInputPassword = (newInput) => {
+    setPassword(newInput);
+  };
+
+  const validateUpperAndLower = (password) => {
+    const oneUpperCase = new RegExp('^(?=.*[A-Z])');
+    const oneLowerCase = new RegExp('^(?=.*[a-z])');
+    if (oneUpperCase.test(password) && oneLowerCase.test(password)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const validateNumeric = (password) => {
+    const oneNumeric = new RegExp('^(?=.*\\d)');
+    if (oneNumeric.test(password)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const validateEightChar = (password) => {
+    if (password.length >= 8) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const validateSpecialChar = (password) => {
+    const oneSpecialChar = new RegExp('^(?=.*[-+_!@#$%^&*.,?])');
+    if (oneSpecialChar.test(password)) {
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -73,15 +153,8 @@ const SignUp = ({ navigation }) => {
         navigation={navigation}
       />
 
-      <View style={styles.content}>
+      <ScrollView style={styles.content}>
         <View style={styles.inputContainer}>
-          <Input
-            style={styles.input}
-            title='Name'
-            placeholder='Enter your name'
-            text={name}
-            onChangeText={(newText) => setName(newText)}
-          />
           <Input
             style={styles.input}
             title='Email Address'
@@ -91,11 +164,32 @@ const SignUp = ({ navigation }) => {
           />
           <Input
             style={styles.input}
+            title='Name'
+            placeholder='Enter your name'
+            text={name}
+            onChangeText={(newText) => setName(newText)}
+          />
+          <Input
+            style={styles.input}
+            title='Carnet'
+            placeholder='Ingresa tu carnet UNIMET'
+            text={carnet}
+            onChangeText={(newText) => setCarnet(newText)}
+          />
+          <Input
+            style={styles.input}
+            title='Carrera'
+            placeholder='Ingresa la carrera que cursas'
+            text={carrera}
+            onChangeText={(newText) => setCarrera(newText)}
+          />
+          <Input
+            style={styles.input}
             title='Password'
             placeholder='Enter your password'
             isPassword={true}
             text={password}
-            onChangeText={(newText) => setPassword(newText)}
+            onChangeText={(newText) => handleInputPassword(newText)}
           />
           <Input
             style={styles.input}
@@ -106,42 +200,65 @@ const SignUp = ({ navigation }) => {
             onChangeText={(newText) => setConfirmPassword(newText)}
           />
         </View>
-
         <View style={styles.validations}>
-          <View style={styles.validationItem}>
-            <Ionicons
-              name='md-checkmark-sharp'
-              size={15}
-              color={colors.green}
-            />
-            <Text style={styles.validationText}>At least 7 characters</Text>
-          </View>
-          <View style={styles.validationItem}>
-            <Ionicons
-              name='md-checkmark-sharp'
-              size={15}
-              color={colors.green}
-            />
-            <Text style={styles.validationText}>
-              At least 1 lowercase and 1 uppercase
-            </Text>
-          </View>
-          <View style={styles.validationItem}>
-            <Ionicons
-              name='md-checkmark-sharp'
-              size={15}
-              color={colors.green}
-            />
-            <Text style={styles.validationText}>At least 1 number</Text>
-          </View>
-          <View style={styles.validationItem}>
-            <Feather name='x' size={15} color={colors.gray} />
-            <Text style={styles.validationText}>
-              At least 1 special character
-            </Text>
-          </View>
-        </View>
+          <Validation
+            icon={
+              validations.eightCharacters ? (
+                <Ionicons
+                  name='md-checkmark-sharp'
+                  size={15}
+                  color={colors.green}
+                />
+              ) : (
+                <Feather name='x' size={15} color={colors.gray} />
+              )
+            }
+            text='Al menos 8 caracteres'
+          />
 
+          <Validation
+            icon={
+              validations.upperAndLower ? (
+                <Ionicons
+                  name='md-checkmark-sharp'
+                  size={15}
+                  color={colors.green}
+                />
+              ) : (
+                <Feather name='x' size={15} color={colors.gray} />
+              )
+            }
+            text='Al menos 1 mayuscula y 1 minuscula'
+          />
+          <Validation
+            icon={
+              validations.numeric ? (
+                <Ionicons
+                  name='md-checkmark-sharp'
+                  size={15}
+                  color={colors.green}
+                />
+              ) : (
+                <Feather name='x' size={15} color={colors.gray} />
+              )
+            }
+            text='Al menos 1 numero'
+          />
+          <Validation
+            icon={
+              validations.specialChar ? (
+                <Ionicons
+                  name='md-checkmark-sharp'
+                  size={15}
+                  color={colors.green}
+                />
+              ) : (
+                <Feather name='x' size={15} color={colors.gray} />
+              )
+            }
+            text='Al menos 1 caracter especial'
+          />
+        </View>
         <View style={styles.footer}>
           <TouchableOpacity
             activeOpacity={0.7}
@@ -171,7 +288,7 @@ const SignUp = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </ScrollView>
       <StatusBar style='dark' />
     </View>
   );
@@ -185,11 +302,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   content: {
-    paddingTop: 44,
-    paddingBottom: 64,
+    paddingTop: 40,
+    paddingBottom: 40,
     paddingHorizontal: 15,
-    flex: 1,
-    justifyContent: 'space-between',
   },
   btnSignIn: {
     borderRadius: 10,
@@ -224,20 +339,11 @@ const styles = StyleSheet.create({
     letterSpacing: 0.6,
   },
   validations: {
-    flex: 1,
     flexDirection: 'column',
     alignItems: 'flex-start',
+    marginBottom: 20,
   },
-  validationItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  validationText: {
-    fontFamily: 'Roboto-Medium',
-    fontSize: 11,
-    color: colors.gray,
-    letterSpacing: 0.6,
-    marginLeft: 5,
+  footer: {
+    marginBottom: 80,
   },
 });

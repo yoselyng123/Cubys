@@ -45,9 +45,9 @@ const typeDefs = gql`
   }
 
   input SignUpInput {
+    name: String!
     email: String!
     password: String!
-    name: String!
     profilePic: String
     carrera: String!
     carnet: String!
@@ -75,11 +75,12 @@ const typeDefs = gql`
   }
   type User {
     id: ID!
-    name: String!
     email: String!
+    name: String!
     profilePic: String
     carnet: String
     carrera: String
+    birthDate: String
   }
   type Companion {
     name: String!
