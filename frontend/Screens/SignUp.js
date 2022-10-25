@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   Alert,
   ScrollView,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -43,6 +44,7 @@ const SIGN_UP_MUTATION = gql`
       user {
         id
         name
+        email
         carrera
         carnet
       }
@@ -80,13 +82,36 @@ const SignUp = ({ navigation }) => {
   });
 
   const handleSignUp = () => {
-    // AQUI SE MANEJA EL INPUT DEL USUARIO
-    if (password === confirmPassword) {
-      signUp({
-        variables: { carrera, email, password, carnet, name },
-      });
+    // Validate secure password
+    let validationsPassword =
+      validations.eightCharacters &&
+      validations.numeric &&
+      validations.specialChar &&
+      validations.upperAndLower;
+
+    if (
+      email !== '' &&
+      name !== '' &&
+      carnet !== '' &&
+      carrera !== '' &&
+      password !== '' &&
+      confirmPassword !== ''
+    ) {
+      if (!email.includes('@')) {
+        Alert.alert('Correo inválido.');
+      } else if (carnet.length < 11 || carnet.length > 11) {
+        Alert.alert('Carnet inválido.');
+      } else if (!validationsPassword) {
+        Alert.alert('La contraseña no cumple con los requisitos.');
+      } else if (password !== confirmPassword) {
+        Alert.alert('Las contraseñas no coinciden.');
+      } else {
+        signUp({
+          variables: { carrera, email, password, carnet, name },
+        });
+      }
     } else {
-      Alert.alert('Passwords do not match.');
+      Alert.alert('Los campos no pueden quedar vacios.');
     }
   };
 
@@ -103,10 +128,6 @@ const SignUp = ({ navigation }) => {
       specialChar,
     });
   }, [password]);
-
-  const handleInputPassword = (newInput) => {
-    setPassword(newInput);
-  };
 
   const validateUpperAndLower = (password) => {
     const oneUpperCase = new RegExp('^(?=.*[A-Z])');
@@ -145,7 +166,10 @@ const SignUp = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
       <Header
         style={styles.header}
         title='Sign Up'
@@ -189,7 +213,7 @@ const SignUp = ({ navigation }) => {
             placeholder='Enter your password'
             isPassword={true}
             text={password}
-            onChangeText={(newText) => handleInputPassword(newText)}
+            onChangeText={(newText) => setPassword(newText)}
           />
           <Input
             style={styles.input}
@@ -198,6 +222,7 @@ const SignUp = ({ navigation }) => {
             isPassword={true}
             text={confirmPassword}
             onChangeText={(newText) => setConfirmPassword(newText)}
+            onSubmit={handleSignUp}
           />
         </View>
         <View style={styles.validations}>
@@ -290,7 +315,7 @@ const SignUp = ({ navigation }) => {
         </View>
       </ScrollView>
       <StatusBar style='dark' />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -303,7 +328,6 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingTop: 40,
-    paddingBottom: 40,
     paddingHorizontal: 15,
   },
   btnSignIn: {

@@ -34,6 +34,7 @@ const AvailableCubicles = ({ navigation }) => {
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [floor, setFloor] = useState('Primero');
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     let month = new Date().toString().split(' ')[1];
@@ -51,46 +52,24 @@ const AvailableCubicles = ({ navigation }) => {
       }
     }
 
+    let endTimeNumber = parseInt(hour) + 2;
     setStartTime(`${hour}:${min}${timeZone}`);
-    setEndTime(`${hour + 2}:${min}${timeZone}`);
+    setEndTime(`${endTimeNumber}:${min}${timeZone}`);
     setDate(`${day} ${month} ${year}`);
   }, []);
+
+  useEffect(() => {
+    setError(false);
+  }, [startTime, endTime]);
 
   if (errorCubicles) return Alert.alert(`Error! ${errorCubicles.message}`);
 
   const inputValidation = () => {
-    // Check if AM or PM
-    let bothPM =
-      startTime.split(':')[1].substring(2, 4) === 'pm' &&
-      endTime.split(':')[1].substring(2, 4) === 'pm';
-    let bothAM =
-      startTime.split(':')[1].substring(2, 4) === 'am' &&
-      endTime.split(':')[1].substring(2, 4) === 'am';
-    let AM_PM =
-      startTime.split(':')[1].substring(2, 4) === 'am' &&
-      endTime.split(':')[1].substring(2, 4) === 'pm';
-
-    // if (bothAM && bothPM) {
-    //   if (startTime.split(':')[0] > endTime.split(':')[0]) {
-    //     Alert.alert(
-    //       'Error. La hora de salida debe ser mayor a la hora de entrada.'
-    //     );
-    //     return false;
-    //   }
-    // } else {
-    //   if (startTime.split(':')[0] > endTime.split(':')[0]) {
-    //     Alert.alert(
-    //       'Error. La hora de salida debe ser mayor a la hora de entrada.'
-    //     );
-    //     return false;
-    //   }
-    // }
-    let outOfWork = outOfWorkingHoursValidation();
-
-    return outOfWork;
+    return outOfWorkingHoursValidation() && twoHoursMaxValidation();
   };
 
   const outOfWorkingHoursValidation = () => {
+    // Validate reservation is in working hours
     let lessThan7AM =
       (startTime.split(':')[1].substring(2, 4) === 'am' &&
         startTime.split(':')[0] < 7) ||
@@ -108,12 +87,55 @@ const AvailableCubicles = ({ navigation }) => {
       (startTime.split(':')[1].substring(2, 4) === 'pm' &&
         startTime.split(':')[0] >= 5 &&
         startTime.split(':')[1].substring(0, 2) > 0);
+    if (
+      !(
+        (startTime.split(':')[0] === '12' || endTime.split(':')[0] === '12') &&
+        (startTime.split(':')[1].substring(2, 4) === 'pm' ||
+          endTime.split(':')[1].substring(2, 4) === 'pm')
+      )
+    ) {
+      if (lessThan7AM || greaterThan5PM || equalTo5PMButMoreMinutes) {
+        Alert.alert('Error. La biblioteca abre de 7:00am a 5:00pm');
+        setError(true);
+        return false;
+      }
+    }
 
-    if (lessThan7AM || greaterThan5PM || equalTo5PMButMoreMinutes) {
-      Alert.alert(
-        'Error. La biblioteca abre a las 7:00am y cierra a las 5:00pm'
-      );
-      return false;
+    return true;
+  };
+
+  const twoHoursMaxValidation = () => {
+    // Validate Reservation time is less or equal to 2 hours
+    let bothAM =
+      startTime.split(':')[1].substring(2, 4) === 'am' &&
+      endTime.split(':')[1].substring(2, 4) === 'am';
+    let bothPM =
+      startTime.split(':')[1].substring(2, 4) === 'pm' &&
+      endTime.split(':')[1].substring(2, 4) === 'pm';
+
+    if (startTime.split(':')[0] === '12') {
+      let quantity = endTime.split(':')[0];
+      if (quantity > 2) {
+        Alert.alert('Error. El tiempo maximo de reserva son 2 horas.');
+        setError(true);
+        return false;
+      }
+    } else if (endTime.split(':')[0] === '12') {
+      let quantity = startTime.split(':')[0];
+
+      if (quantity > 2) {
+        Alert.alert('Error. El tiempo maximo de reserva son 2 horas.');
+        setError(true);
+        return false;
+      }
+    } else {
+      let quantity = endTime.split(':')[0] - startTime.split(':')[0];
+
+      if (quantity > 2 && (bothAM || bothPM)) {
+        Alert.alert('Error. El tiempo maximo de reserva son 2 horas.');
+        setError(true);
+        return false;
+      }
     }
 
     return true;
@@ -139,6 +161,7 @@ const AvailableCubicles = ({ navigation }) => {
               label='Hora de Entrada'
               content={startTime}
               setContent={setStartTime}
+              error={error}
             />
           </View>
           <View>
@@ -151,6 +174,7 @@ const AvailableCubicles = ({ navigation }) => {
               label='Hora de Salida'
               content={endTime}
               setContent={setEndTime}
+              error={error}
             />
           </View>
         </View>

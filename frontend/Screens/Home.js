@@ -79,7 +79,6 @@ const Home = ({ navigation }) => {
     refetch: refetchCubicles,
   } = useQuery(GET_CUBICLES, {
     onCompleted: (data) => {
-      console.log('REFETCHING CUBICLES');
       let counter = 0;
       data.getCubicles.map((cubicle) => {
         if (cubicle.availability) {

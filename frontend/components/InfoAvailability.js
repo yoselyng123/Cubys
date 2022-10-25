@@ -10,7 +10,7 @@ import colors from '../assets/colors';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import RNPickerSelect from 'react-native-picker-select';
 
-const InfoAvailability = ({ label, content, setContent }) => {
+const InfoAvailability = ({ label, content, setContent, error }) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const momentDate = new Date();
 
@@ -28,8 +28,6 @@ const InfoAvailability = ({ label, content, setContent }) => {
     'Nov',
     'Dic',
   ];
-
-  console.log();
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -74,7 +72,12 @@ const InfoAvailability = ({ label, content, setContent }) => {
           <View style={styles.infoContentWrapper}>
             <TextInput
               value={content}
-              style={styles.infoContent}
+              style={[
+                styles.infoContent,
+                label !== 'Fecha' && error
+                  ? { color: '#E27188' }
+                  : { color: '#000' },
+              ]}
               onPressIn={showDatePicker}
               caretHidden={true}
             />
@@ -115,7 +118,7 @@ const InfoAvailability = ({ label, content, setContent }) => {
       )}
 
       <DateTimePickerModal
-        isVisible={isDatePickerVisible}
+        isVisible={label === 'Fecha' ? false : isDatePickerVisible}
         mode={label === 'Fecha' ? 'date' : 'time'}
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}

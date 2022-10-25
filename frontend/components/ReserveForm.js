@@ -1,7 +1,31 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import colors from '../assets/colors';
 
-const ReserveForm = ({ number, companion, setCompanion }) => {
+const ReserveForm = ({
+  number,
+  companion,
+  setCompanionsList,
+  companionsList,
+}) => {
+  const handleChangeCompanionInfo = (type, value) => {
+    if (type === 'Name') {
+      let newList = [...companionsList];
+      companion.name = value;
+      newList[number - 1] = companion;
+      setCompanionsList(newList);
+    } else if (type === 'Carnet') {
+      let newList = [...companionsList];
+      companion.carnet = value;
+      newList[number - 1] = companion;
+      setCompanionsList(newList);
+    } else {
+      let newList = [...companionsList];
+      companion.carrera = value;
+      newList[number - 1] = companion;
+      setCompanionsList(newList);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Acompañante #{number}</Text>
@@ -9,31 +33,19 @@ const ReserveForm = ({ number, companion, setCompanion }) => {
         <TextInput
           placeholder='Nombre y Apellido'
           value={companion.name}
-          onChangeText={(value) =>
-            setCompanion((previousState) => {
-              return { ...previousState, name: value };
-            })
-          }
+          onChangeText={(value) => handleChangeCompanionInfo('Name', value)}
           style={styles.input}
         />
         <TextInput
           placeholder='Carnet'
           value={companion.carnet}
-          onChangeText={(value) =>
-            setCompanion((previousState) => {
-              return { ...previousState, carnet: value };
-            })
-          }
+          onChangeText={(value) => handleChangeCompanionInfo('Carnet', value)}
           style={styles.input}
         />
         <TextInput
           placeholder='Carrera'
           value={companion.carrera}
-          onChangeText={(value) =>
-            setCompanion((previousState) => {
-              return { ...previousState, carrera: value };
-            })
-          }
+          onChangeText={(value) => handleChangeCompanionInfo('Carrera', value)}
           style={styles.input}
         />
       </View>

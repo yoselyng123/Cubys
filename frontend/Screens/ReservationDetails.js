@@ -1,5 +1,5 @@
 import { gql, useMutation } from '@apollo/client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Alert,
   ScrollView,
@@ -7,9 +7,12 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Keyboard,
+  KeyboardAvoidingView,
 } from 'react-native';
 /* Assets */
 import colors from '../assets/colors';
+import { Feather } from '@expo/vector-icons';
 /* Components */
 import Header from '../components/Header';
 import ReserveForm from '../components/ReserveForm';
@@ -57,21 +60,23 @@ const GET_RESERVATIONS = gql`
 
 const ReservationDetails = ({ route, navigation }) => {
   const { cubicleInfo, resInfo } = route.params;
-  const [companion1, setCompanion1] = useState({
-    name: '',
-    carrera: '',
-    carnet: '',
-  });
-  const [companion2, setCompanion2] = useState({
-    name: '',
-    carrera: '',
-    carnet: '',
-  });
-  const [companion3, setCompanion3] = useState({
-    name: '',
-    carrera: '',
-    carnet: '',
-  });
+  const [companionsList, setCompanionsList] = useState([
+    {
+      name: '',
+      carrera: '',
+      carnet: '',
+    },
+    {
+      name: '',
+      carrera: '',
+      carnet: '',
+    },
+    {
+      name: '',
+      carrera: '',
+      carnet: '',
+    },
+  ]);
 
   const [createReservation, { loading: loadingReservation }] = useMutation(
     CREATE_RESERVATION,
@@ -94,15 +99,47 @@ const ReservationDetails = ({ route, navigation }) => {
     let endTime = resInfo.endTime;
     let cubicleID = cubicleInfo.id;
     let date = resInfo.date;
-    let companions = [companion1, companion2, companion3];
-
-    createReservation({
-      variables: { startTime, endTime, cubicleID, date, companions },
+    let companions = companionsList;
+    var passedValidation = companions.map((companion) => {
+      if (
+        companion.name === '' ||
+        companion.carnet === '' ||
+        companion.carrera === ''
+      ) {
+        return false;
+      } else {
+        return true;
+      }
     });
+
+    const isTrue = (currentValue) => currentValue === true;
+    if (passedValidation.every(isTrue)) {
+      createReservation({
+        variables: { startTime, endTime, cubicleID, date, companions },
+      });
+    }
+  };
+
+  const handleAddCompanion = () => {
+    if (companionsList.length < 5) {
+      let copyListCompanions = [...companionsList];
+      copyListCompanions.push({
+        name: '',
+        carrera: '',
+        carnet: '',
+      });
+
+      setCompanionsList(copyListCompanions);
+    } else {
+      Alert.alert('Ha alcanzado la capacidad máxima de personas por cubiculo.');
+    }
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
       <Header
         style={styles.header}
         title='Reservation Details'
@@ -144,36 +181,38 @@ const ReservationDetails = ({ route, navigation }) => {
             </View>
           </View>
 
-          <ReserveForm
-            number={1}
-            companion={companion1}
-            setCompanion={setCompanion1}
-          />
-          <ReserveForm
-            number={2}
-            companion={companion2}
-            setCompanion={setCompanion2}
-          />
-          <ReserveForm
-            number={3}
-            companion={companion3}
-            setCompanion={setCompanion3}
-          />
+          {companionsList.map((companion, index) => {
+            return (
+              <ReserveForm
+                companion={companion}
+                key={index}
+                number={index + 1}
+                setCompanionsList={setCompanionsList}
+                companionsList={companionsList}
+              />
+            );
+          })}
+          <TouchableOpacity activeOpacity={0.7} onPress={handleAddCompanion}>
+            <View style={styles.addCompanionBtn}>
+              <Feather name='plus-circle' size={20} color={colors.purple} />
+              <Text style={styles.addCompanionText}>Agregar acompañante</Text>
+            </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.footer}>
           <Text style={styles.description}>
-            This is the final step, after you press the Reserve button, the
-            reservation will be completed
+            Este es el paso final, luego de presionar el botón de Reservar, se
+            habrá realizado exitosamente la reserva.
           </Text>
           <TouchableOpacity activeOpacity={0.7} onPress={handleSubmitForm}>
             <View style={styles.reserveBtn}>
-              <Text style={styles.reserveBtnText}>Reserve</Text>
+              <Text style={styles.reserveBtnText}>Reservar</Text>
             </View>
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -239,6 +278,7 @@ const styles = StyleSheet.create({
   footer: {
     flex: 1,
     justifyContent: 'flex-end',
+    marginBottom: 10,
   },
   reserveBtn: {
     backgroundColor: colors.purple,
@@ -260,5 +300,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  addCompanionBtn: {
+    marginBottom: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  addCompanionText: {
+    fontFamily: 'Roboto-Italic',
+    fontSize: 13,
+    letterSpacing: 0.6,
+    lineHeight: 17.58,
+    color: colors.purple,
+    marginLeft: 5,
   },
 });

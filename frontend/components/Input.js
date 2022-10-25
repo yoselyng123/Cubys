@@ -19,6 +19,9 @@ const Input = ({
   text,
   onChangeText,
   disabled,
+  onSubmit,
+  blurOnSubmit,
+  ref,
 }) => {
   const [passwordVisible, setPasswordVisible] = React.useState(true);
 
@@ -40,6 +43,9 @@ const Input = ({
           value={text}
           placeholder={placeholder}
           secureTextEntry={passwordVisible}
+          onSubmitEditing={onSubmit}
+          blurOnSubmit={blurOnSubmit}
+          ref={ref}
         />
       ) : (
         <TextInput
@@ -51,6 +57,9 @@ const Input = ({
           placeholder={placeholder}
           editable={!disabled}
           selectTextOnFocus={!disabled}
+          onSubmitEditing={onSubmit}
+          blurOnSubmit={blurOnSubmit}
+          ref={ref}
         />
       )}
 

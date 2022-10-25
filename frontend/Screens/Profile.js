@@ -28,8 +28,6 @@ const Profile = ({ navigation }) => {
     setUser(null);
   };
 
-  console.log(user.email);
-
   if (user) {
     return (
       <View style={styles.container}>

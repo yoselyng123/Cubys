@@ -5,6 +5,9 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { useState, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -60,7 +63,10 @@ const SignIn = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
       <Header
         style={styles.header}
         title='Sign In'
@@ -68,56 +74,59 @@ const SignIn = ({ navigation }) => {
         navigation={navigation}
       />
 
-      <View style={styles.content}>
-        <View style={styles.inputContainer}>
-          <Input
-            style={styles.input}
-            title='Email Address'
-            placeholder='Enter your email'
-            text={email}
-            onChangeText={(newText) => setEmail(newText.toLowerCase())}
-          />
-          <Input
-            style={styles.input}
-            title='Password'
-            placeholder='Enter your password'
-            isPassword={true}
-            isSignInPassword={true}
-            text={password}
-            onChangeText={(newText) => setPassword(newText)}
-          />
-        </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.content}>
+          <View style={styles.inputContainer}>
+            <Input
+              style={styles.input}
+              title='Email Address'
+              placeholder='Enter your email'
+              text={email}
+              onChangeText={(newText) => setEmail(newText.toLowerCase())}
+            />
+            <Input
+              style={styles.input}
+              title='Password'
+              placeholder='Enter your password'
+              isPassword={true}
+              isSignInPassword={true}
+              text={password}
+              onChangeText={(newText) => setPassword(newText)}
+              onSubmit={handleSignIn}
+            />
+          </View>
 
-        <View style={styles.footer}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => {
-              handleSignIn();
-            }}
-          >
-            <View style={styles.btnSignIn}>
-              {loading ? (
-                <ActivityIndicator size='small' color='#FFF' />
-              ) : (
-                <Text style={styles.textSignIn}>Sign In</Text>
-              )}
-            </View>
-          </TouchableOpacity>
-          <View style={styles.noAccount}>
-            <Text style={styles.textNoAction}>No account yet?</Text>
+          <View style={styles.footer}>
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => {
-                navigation.navigate('SignUp');
+                handleSignIn();
               }}
             >
-              <Text style={styles.textAction}>Sign Up</Text>
+              <View style={styles.btnSignIn}>
+                {loading ? (
+                  <ActivityIndicator size='small' color='#FFF' />
+                ) : (
+                  <Text style={styles.textSignIn}>Sign In</Text>
+                )}
+              </View>
             </TouchableOpacity>
+            <View style={styles.noAccount}>
+              <Text style={styles.textNoAction}>No account yet?</Text>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => {
+                  navigation.navigate('SignUp');
+                }}
+              >
+                <Text style={styles.textAction}>Sign Up</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
       <StatusBar style='dark' />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -130,7 +139,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingTop: 44,
-    paddingBottom: 64,
+    paddingBottom: 30,
     paddingHorizontal: 15,
     flex: 1,
     justifyContent: 'space-between',

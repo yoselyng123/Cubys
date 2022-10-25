@@ -34,14 +34,14 @@ const Welcome = ({ navigation }) => {
             <Text style={styles.textSignIn}>Iniciar Sesión</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7}>
+        {/* <TouchableOpacity activeOpacity={0.7}>
           <View style={styles.btnSignInGoogle}>
             <AntDesign name='google' size={24} color='white' />
             <Text style={styles.textSignInGoogle}>
               Iniciar sesión con Google
             </Text>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <View style={styles.noAccount}>
           <Text style={styles.textNoAction}>No tienes cuenta?</Text>
           <TouchableOpacity
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   textSignIn: {
     fontFamily: 'Roboto-Medium',
