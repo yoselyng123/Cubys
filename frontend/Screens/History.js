@@ -32,13 +32,7 @@ const History = ({ navigation }) => {
           style={styles.scrollview}
         >
           <View style={styles.scrollContainer}>
-            <Reservation />
-            <Reservation />
-            <Reservation />
-            <Reservation />
-            <Reservation />
-            <Reservation />
-            <Reservation />
+            <Text>Reservation goes here</Text>
           </View>
         </ScrollView>
       </View>

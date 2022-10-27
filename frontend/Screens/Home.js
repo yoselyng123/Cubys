@@ -40,7 +40,6 @@ const DELETE_RESERVATION_MUTATION = gql`
 `;
 
 const Home = ({ navigation }) => {
-  const { user } = useContext(userContext);
   const [pressedCancel, setPressedCancel] = useState(false);
   const [reservedNumber, setReservedNumber] = useState(0);
   const [availableCubicles, setAvailableCubicles] = useState(0);

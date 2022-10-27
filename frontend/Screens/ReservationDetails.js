@@ -71,11 +71,6 @@ const ReservationDetails = ({ route, navigation }) => {
       carrera: '',
       carnet: '',
     },
-    {
-      name: '',
-      carrera: '',
-      carnet: '',
-    },
   ]);
 
   const [createReservation, { loading: loadingReservation }] = useMutation(
@@ -117,6 +112,8 @@ const ReservationDetails = ({ route, navigation }) => {
       createReservation({
         variables: { startTime, endTime, cubicleID, date, companions },
       });
+    } else {
+      Alert.alert('Error. Los campos no pueden quedar vacios');
     }
   };
 

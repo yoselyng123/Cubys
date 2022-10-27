@@ -49,7 +49,7 @@ const Profile = ({ navigation }) => {
             <Input
               style={styles.input}
               title='Email Address'
-              placeholder='Enter your email'
+              placeholder='Ingrese el correo'
               isPassword={false}
               text={user.email}
               isSignInPassword={false}
@@ -58,13 +58,13 @@ const Profile = ({ navigation }) => {
             <Input
               style={styles.input}
               title='Password'
-              placeholder='Enter your password'
+              placeholder='Ingrese la nueva contraseña'
               isPassword={true}
             />
             <Input
               style={styles.input}
               title='Carnet'
-              placeholder='Enter your password'
+              placeholder='Ingrese su carnet UNIMET'
               isPassword={false}
               text={user.carnet}
             />

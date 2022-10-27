@@ -35,6 +35,7 @@ const typeDefs = gql`
   type Mutation {
     signUp(input: SignUpInput!): AuthUser
     signIn(input: SignInInput!): AuthUser
+    updateUser(id: ID!, password: String!, birthDate: String): AuthUser!
     createReservation(input: CreateReservationInput!): Reservation!
     updateReservation(
       startTime: String!
@@ -78,8 +79,8 @@ const typeDefs = gql`
     email: String!
     name: String!
     profilePic: String
-    carnet: String
-    carrera: String
+    carnet: String!
+    carrera: String!
     birthDate: String
   }
   type Companion {
@@ -225,6 +226,11 @@ const resolvers = {
         return true;
       } else {
         return false;
+      }
+    },
+    updateUser: async (_, { id, password, birthDate }, { db, user }) => {
+      if (!user) {
+        throw new Error('Authentication Error. Please sign in');
       }
     },
   },
