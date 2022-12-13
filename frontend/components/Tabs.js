@@ -19,15 +19,15 @@ const Tabs = () => {
       screenOptions={({ route }) => ({
         tabBarStyle: {
           backgroundColor: '#fff',
-          height: 90,
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
+          height: 100,
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
           shadowColor: 'rgba(0, 0, 0, 0.5)',
           elevation: 15,
           shadowOffset: { width: 0, height: -2 },
         },
         tabBarItemStyle: {
-          marginBottom: 20,
+          marginBottom: 0,
         },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;

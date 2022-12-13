@@ -1,96 +1,117 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useState } from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+} from 'react-native';
+import { useContext, useEffect, useState } from 'react';
 /* Assets */
 import colors from '../assets/colors';
+import { userContext } from '../context/userContext';
 /* Components */
 import Header from '../components/Header';
-import Reservation from '../components/Reservation';
-/* Apollo Server */
-import { useQuery, useMutation, gql } from '@apollo/client';
-
-const GET_RESERVATIONS = gql`
-  query getMyReservations {
-    getMyReservations {
-      id
-      cubicleID
-      createdBy
-      startTime
-      endTime
-      date
-    }
-  }
-`;
-
-const DELETE_RESERVATION_MUTATION = gql`
-  mutation deleteReservation($id: ID!) {
-    deleteReservation(id: $id)
-  }
-`;
+import SectionDivider from '../components/SectionDivider';
 
 const ReservedCubicles = ({ navigation }) => {
-  const [pressedCancel, setPressedCancel] = useState(false);
-  const [deleteReservation, { loading: loadingReservation }] = useMutation(
-    DELETE_RESERVATION_MUTATION,
-    {
-      onCompleted: () => {
-        setPressedCancel(false);
-        Alert.alert('Se ha cancelado la reservación');
-      },
-      onError: () => {
-        Alert.alert(
-          'No se pudo cancelar la reservación. Por favor intente de nuevo'
-        );
-      },
-      refetchQueries: [{ query: GET_RESERVATIONS }],
-    }
-  );
+  const [cubicleInfo, setCubicleInfo] = useState({});
 
-  const {
-    loading: loadingReservations,
-    error: errorReservations,
-    data: dataReservations,
-  } = useQuery(GET_RESERVATIONS, {
-    onCompleted: (data) => {},
-  });
+  const { myReservations, cubiclesList } = useContext(userContext);
+
+  const handleFloorShowcase = (floor) => {
+    if (floor === '1') {
+      return '1er Piso';
+    } else if (floor === '2') {
+      return '2do Piso';
+    } else if (floor === '3') {
+      return '3er Piso';
+    } else {
+      return null;
+    }
+  };
 
   return (
     <View style={styles.container}>
       <Header
         style={styles.header}
-        title='Reserved Cubicles'
+        title='Reservaciones'
         navigateAvailable={true}
         navigation={navigation}
       />
       <View style={styles.contentWrapper}>
         <View style={styles.descriptionContainer}>
           <Text style={styles.description}>
-            Here you can check your current reservations
+            Aqui puedes ver tu reservación actual
           </Text>
-          <View
-            style={{
-              borderBottomColor: colors.light,
-              borderBottomWidth: 2,
-            }}
-          />
+          <SectionDivider />
         </View>
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={styles.scrollview}
         >
           <View style={styles.scrollContainer}>
-            {loadingReservations ? (
-              <Text>Loading...</Text>
-            ) : dataReservations.getMyReservations &&
-              dataReservations.getMyReservations.length > 0 ? (
-              dataReservations.getMyReservations.map((reservation, index) => {
+            {myReservations.length > 0 ? (
+              myReservations.map((reservation, index) => {
                 return (
-                  <Reservation
-                    key={index}
-                    info={reservation}
-                    id={reservation.cubicleID}
-                    deleteReservation={deleteReservation}
-                    pressedCancel={pressedCancel}
-                  />
+                  <View key={index} style={styles.infoResContainer}>
+                    <View style={styles.cubicleInfoWrapper}>
+                      {cubiclesList.map((cubicle, indexC) => {
+                        if (cubicle.id === reservation.cubicleID) {
+                          return (
+                            <View
+                              key={indexC}
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <Text style={styles.title}>
+                                Cubículo #{cubicle.cubicleNumber}
+                              </Text>
+                              <Text style={styles.floorText}>
+                                {handleFloorShowcase(cubicle.floor)}
+                              </Text>
+                            </View>
+                          );
+                        }
+                      })}
+                      <Text style={styles.content}>4 sillas y mesa</Text>
+                      <Text style={[styles.content, { marginBottom: 20 }]}>
+                        1 pizarra
+                      </Text>
+                    </View>
+                    <SectionDivider marginBottom={20} />
+                    <View style={styles.resInfoWrapper}>
+                      <Text style={styles.title}>Hora de Inicio</Text>
+                      <Text style={[styles.content, { marginBottom: 30 }]}>
+                        {reservation.date}, {reservation.startTime}
+                      </Text>
+                      <Text style={styles.title}>Hora de Fin</Text>
+                      <Text style={[styles.content, { marginBottom: 20 }]}>
+                        {reservation.date}, {reservation.endTime}
+                      </Text>
+                    </View>
+                    <SectionDivider marginBottom={20} />
+                    <View style={styles.companionsWrapper}>
+                      <Text style={styles.title}>Responsable</Text>
+                      <Text style={[styles.content, { marginBottom: 30 }]}>
+                        Javier Jerez - Ingenieria en Sistemas
+                      </Text>
+                      <Text style={styles.title}>Acompañantes</Text>
+                      {reservation.companions.map((companion, index1) => {
+                        return (
+                          <Text
+                            style={[styles.content, { marginBottom: 2 }]}
+                            key={index1}
+                          >
+                            {companion.name} - {companion.carrera}
+                          </Text>
+                        );
+                      })}
+                    </View>
+                  </View>
                 );
               })
             ) : (
@@ -129,5 +150,45 @@ const styles = StyleSheet.create({
     letterSpacing: 0.6,
     color: colors.gray,
     marginBottom: 20,
+  },
+  title: {
+    fontFamily: 'Roboto-Bold',
+    fontSize: 16,
+    lineHeight: 18.75,
+    letterSpacing: 0.6,
+    color: colors.dark,
+    marginBottom: 10,
+  },
+  content: {
+    fontFamily: 'Roboto-Medium',
+    fontSize: 13,
+    lineHeight: 20,
+    letterSpacing: 0.6,
+    color: colors.gray,
+  },
+  reserveBtn: {
+    backgroundColor: colors.purple,
+    paddingVertical: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+  },
+  reserveBtnText: {
+    fontFamily: 'Roboto-Medium',
+    fontSize: 15,
+    letterSpacing: 0.6,
+    lineHeight: 17.58,
+    color: '#fff',
+    marginBottom: 4,
+  },
+  companionsWrapper: {
+    marginBottom: '15%',
+  },
+  floorText: {
+    fontFamily: 'Roboto-Medium',
+    fontSize: 16,
+    lineHeight: 18.75,
+    letterSpacing: 0.6,
+    color: colors.gray,
   },
 });

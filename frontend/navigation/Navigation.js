@@ -17,7 +17,7 @@ import SignUp from '../Screens/SignUp';
 import Tabs from '../components/Tabs';
 import ReservedCubicles from '../Screens/ReservedCubicles';
 import History from '../Screens/History';
-import QrCode from '../Screens/QrCode';
+import AccessCubicle from '../Screens/AccessCubicle';
 import ReservationDetails from '../Screens/ReservationDetails';
 import AvailableCubicles from '../Screens/AvailableCubicles';
 import SplashScreen from '../Screens/SplashScreen';
@@ -51,7 +51,7 @@ function RootNavigator() {
         <Stack.Screen name='ReservedCubicles' component={ReservedCubicles} />
         <Stack.Screen name='AvailableCubicles' component={AvailableCubicles} />
         <Stack.Screen name='History' component={History} />
-        <Stack.Screen name='QRCode' component={QrCode} />
+        <Stack.Screen name='CubicleAccess' component={AccessCubicle} />
         <Stack.Screen
           name='ReservationDetails'
           component={ReservationDetails}

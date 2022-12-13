@@ -1,14 +1,22 @@
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
-import React, { useContext, useState, useEffect } from 'react';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+} from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
 /* Assets */
 import colors from '../assets/colors';
+import { userContext } from '../context/userContext';
 /* Components */
 import Header from '../components/Header';
 import Reservation from '../components/Reservation';
 import CardsList from '../components/CardsList';
-import { userContext } from '../context/userContext';
 /* APOLLO SERVER */
 import { useQuery, useMutation, gql } from '@apollo/client';
+import SectionDivider from '../components/SectionDivider';
 
 const GET_RESERVATIONS = gql`
   query getMyReservations {
@@ -19,6 +27,11 @@ const GET_RESERVATIONS = gql`
       startTime
       endTime
       date
+      companions {
+        name
+        carrera
+        carnet
+      }
     }
   }
 `;
@@ -26,9 +39,27 @@ const GET_RESERVATIONS = gql`
 const GET_CUBICLES = gql`
   query getCubicles {
     getCubicles {
+      id
       sala
       cubicleNumber
-      availability
+      floor
+    }
+  }
+`;
+
+const GET_ALL_RESERVATIONS = gql`
+  query getAllReservations {
+    getAllReservations {
+      id
+      startTime
+      endTime
+      date
+      cubicleID
+      companions {
+        name
+        carrera
+        carnet
+      }
     }
   }
 `;
@@ -44,54 +75,78 @@ const Home = ({ navigation }) => {
   const [reservedNumber, setReservedNumber] = useState(0);
   const [availableCubicles, setAvailableCubicles] = useState(0);
 
-  const [deleteReservation, { loading: loadingReservation }] = useMutation(
-    DELETE_RESERVATION_MUTATION,
-    {
-      onCompleted: () => {
-        setPressedCancel(false);
-        Alert.alert('Se ha cancelado la reservación');
-        refetchCubicles();
-      },
-      onError: () => {
-        Alert.alert(
-          'No se pudo cancelar la reservación. Por favor intente de nuevo'
-        );
-      },
-      refetchQueries: [{ query: GET_RESERVATIONS, GET_CUBICLES }],
-    }
-  );
+  const { setMyReservations, myReservations, setCubiclesList } =
+    useContext(userContext);
+
+  const [deleteReservation] = useMutation(DELETE_RESERVATION_MUTATION, {
+    onCompleted: () => {
+      setPressedCancel(false);
+      setMyReservations([]);
+      Alert.alert('Se ha cancelado la reservación');
+      refetchReservations();
+      //refetchAllReservations();
+    },
+    onError: () => {
+      Alert.alert(
+        'No se pudo cancelar la reservación. Por favor intente de nuevo'
+      );
+    },
+  });
 
   const {
     loading: loadingReservations,
     error: errorReservations,
     data: dataReservations,
+    refetch: refetchReservations,
   } = useQuery(GET_RESERVATIONS, {
     onCompleted: (data) => {
       setReservedNumber(data.getMyReservations.length);
     },
   });
+  // const {
+  //   loading: loadingAllReservations,
+  //   error: errorAllReservations,
+  //   data: dataAllReservations,
+  //   refetch: refetchAllReservations,
+  // } = useQuery(GET_ALL_RESERVATIONS);
 
   const {
     loading: loadingCubicles,
     error: errorCubicles,
     data: dataCubicles,
-    refetch: refetchCubicles,
   } = useQuery(GET_CUBICLES, {
-    onCompleted: (data) => {
-      let counter = 0;
-      data.getCubicles.map((cubicle) => {
-        if (cubicle.availability) {
-          counter += 1;
-        }
-      });
-      setAvailableCubicles(counter);
+    onCompleted: () => {
+      setAvailableCubicles(6);
     },
   });
+
+  useEffect(() => {
+    if (dataCubicles) {
+      const copyOfCubicles = [];
+      for (let i = 0; i < dataCubicles.getCubicles.length; i++) {
+        copyOfCubicles[i] = {
+          ...dataCubicles.getCubicles[i],
+          availability: true,
+        };
+      }
+      setCubiclesList(copyOfCubicles);
+    }
+  }, [dataCubicles]);
 
   if (errorCubicles) return Alert.alert(`Error! ${errorCubicles.message}`);
 
   if (errorReservations)
     return Alert.alert(`Error! ${errorReservations.message}`);
+
+  useEffect(() => {
+    refetchReservations();
+  }, []);
+
+  useEffect(() => {
+    if (dataReservations) {
+      setMyReservations(dataReservations.getMyReservations);
+    }
+  }, [dataReservations]);
 
   return (
     <View style={styles.container}>
@@ -109,23 +164,19 @@ const Home = ({ navigation }) => {
           {/* Cards */}
           <CardsList
             navigation={navigation}
-            reservedNumber={reservedNumber}
+            reservedNumber={myReservations.length}
             loadingReservations={loadingReservations}
             availableCubicles={availableCubicles}
             loadingCubicles={loadingCubicles}
           />
 
           {/* Separation Line */}
-          <View
-            style={{
-              borderBottomColor: colors.light,
-              borderBottomWidth: 2,
-              marginBottom: 20,
-            }}
-          />
-          <Text style={styles.reservationsTitle}>Upcoming reservations</Text>
+          <SectionDivider marginBottom={20} />
+          <Text style={styles.reservationsTitle}>Próximas Reservaciones</Text>
           {loadingReservations ? (
-            <Text>Loading...</Text>
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <ActivityIndicator size='small' color='#FFF' />
+            </View>
           ) : dataReservations.getMyReservations &&
             dataReservations.getMyReservations.length > 0 ? (
             dataReservations.getMyReservations.map((reservation, index) => {

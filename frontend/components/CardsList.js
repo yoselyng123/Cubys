@@ -1,14 +1,14 @@
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
+import { useContext } from 'react';
 import { Dimensions } from 'react-native';
 /* Assets */
 import { FontAwesome5 } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import colors from '../assets/colors';
+import { userContext } from '../context/userContext';
 /* Components */
 import Card from './Card';
-/* APOLLO SERVER */
-import { useQuery, gql } from '@apollo/client';
 
 const CardsList = ({
   navigation,
@@ -18,6 +18,8 @@ const CardsList = ({
 }) => {
   const windowWidth = Dimensions.get('window').width;
   const cardWidth = (windowWidth - 32) / 2 - 9;
+
+  const { lockStatus, myReservations } = useContext(userContext);
 
   return (
     <View style={styles.cardsWrapper}>
@@ -33,7 +35,7 @@ const CardsList = ({
           }}
         >
           <Card
-            title='Available cubicles'
+            title='Cubículos'
             subtitle={availableCubicles}
             icon={<FontAwesome5 name='check' size={38} color={colors.purple} />}
           />
@@ -52,7 +54,7 @@ const CardsList = ({
           }}
         >
           <Card
-            title='Reserved cubicles'
+            title='Reservaciones'
             reservedNumber={reservedNumber}
             icon={
               <FontAwesome5
@@ -73,14 +75,28 @@ const CardsList = ({
           style={[styles.cardItem, { width: cardWidth, marginRight: 18 }]}
           activeOpacity={0.7}
           onPress={() => {
-            navigation.navigate('QRCode');
+            navigation.navigate('CubicleAccess');
           }}
         >
           <Card
-            title='Your QR code'
-            subtitle='Code'
+            title='Botón de Acceso'
+            subtitle={lockStatus}
             icon={
-              <FontAwesome5 name='qrcode' size={38} color={colors.purple} />
+              lockStatus === 'Abierto' ? (
+                <Feather
+                  name='unlock'
+                  size={38}
+                  color={colors.purple}
+                  style={{ fontWeight: 800 }}
+                />
+              ) : (
+                <Feather
+                  name='lock'
+                  size={38}
+                  color={colors.purple}
+                  style={{ fontWeight: 800 }}
+                />
+              )
             }
           />
         </TouchableOpacity>
@@ -98,7 +114,7 @@ const CardsList = ({
           }}
         >
           <Card
-            title='History'
+            title='Historial'
             subtitle='9'
             icon={
               <MaterialIcons name='restore' size={38} color={colors.purple} />

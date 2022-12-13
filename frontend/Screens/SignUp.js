@@ -15,6 +15,7 @@ import { StatusBar } from 'expo-status-bar';
 import colors from '../assets/colors';
 import Header from '../components/Header';
 import Input from '../components/Input';
+import CarreraSelect from '../components/CarreraSelect';
 /* ICONS */
 import { Ionicons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
@@ -53,7 +54,7 @@ const SIGN_UP_MUTATION = gql`
 `;
 
 const SignUp = ({ navigation }) => {
-  const { setUser } = useContext(userContext);
+  const { setUser, setMyReservations } = useContext(userContext);
   const [carrera, setCarrera] = useState('');
   const [carnet, setCarnet] = useState('');
   const [email, setEmail] = useState('');
@@ -72,12 +73,20 @@ const SignUp = ({ navigation }) => {
       // Store Token
       AsyncStorage.setItem('token', data.signUp.token).then(() => {
         setUser(data.signUp.user);
+        setMyReservations([]);
         // Redirect to HomeScreen
         navigation.navigate('Tabs');
       });
     },
-    onError: () => {
-      Alert.alert('Invalid credentials. Please try again');
+    onError: ({networkError}) => {
+      if (networkError) {
+        Alert.alert(
+          'Sin conexión. Chequea tu conexión a internet e intenta de nuevo.'
+        );
+      } else {
+        Alert.alert('Credenciales inválidas. Intente de nuevo.');
+        console.log(error)
+      }
     },
   });
 
@@ -200,13 +209,8 @@ const SignUp = ({ navigation }) => {
             text={carnet}
             onChangeText={(newText) => setCarnet(newText)}
           />
-          <Input
-            style={styles.input}
-            title='Carrera'
-            placeholder='Ingresa la carrera que cursas'
-            text={carrera}
-            onChangeText={(newText) => setCarrera(newText)}
-          />
+
+          <CarreraSelect carrera={carrera} setCarrera={setCarrera} />
           <Input
             style={styles.input}
             title='Password'

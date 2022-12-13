@@ -12,15 +12,21 @@ const Card = ({ title, subtitle, icon, reservedNumber }) => {
         <Text style={styles.title}>{title}</Text>
         <Ionicons name='chevron-forward' size={24} color='black' />
       </View>
-      {title !== 'Reserved cubicles' ? (
-        <Text style={styles.availability}>{subtitle}</Text>
+      {title !== 'Reservaciones' ? (
+        <Text
+          style={[
+            styles.availability,
+            title === 'Botón de Acceso' && { fontSize: 25 },
+          ]}
+        >
+          {subtitle}
+        </Text>
       ) : (
         <Text style={styles.reservedNumber}>
           {reservedNumber}
           <Text style={styles.reservedAvailability}>/1</Text>
         </Text>
       )}
-
       <View style={styles.iconWrapper}>{icon ? icon : null}</View>
     </View>
   );

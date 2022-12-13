@@ -14,7 +14,6 @@ const GET_CUBICLE_BY_ID = gql`
       cubicleNumber
       floor
       sala
-      availability
       maxCapacity
       minCapacity
     }
@@ -76,7 +75,7 @@ const Reservation = ({ info, id, deleteReservation, pressedCancel }) => {
                     : styles.cancelRes
                 }
               >
-                Cancel
+                Cancelar
               </Text>
             </TouchableOpacity>
           </View>

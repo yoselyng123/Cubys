@@ -1,6 +1,7 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React from 'react';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useContext } from 'react';
 import colors from '../assets/colors';
+import { userContext } from '../context/userContext';
 
 const CubicleMomentaneo = ({
   cubicle,
@@ -8,16 +9,28 @@ const CubicleMomentaneo = ({
   resInfo,
   inputValidation,
 }) => {
+  const { myReservations } = useContext(userContext);
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
         activeOpacity={0.6}
         onPress={() => {
-          if (inputValidation()) {
-            navigation.navigate('ReservationDetails', {
-              cubicleInfo: cubicle,
-              resInfo: resInfo,
-            });
+          if (myReservations.length < 1) {
+            if (inputValidation()) {
+              if (cubicle.availability) {
+                navigation.navigate('ReservationDetails', {
+                  cubicleInfo: cubicle,
+                  resInfo: resInfo,
+                });
+              } else {
+                Alert.alert(
+                  'El cubículo se encuentra ocupado en el bloque de hora seleccionado.'
+                );
+              }
+            }
+          } else {
+            Alert.alert('Ya tiene una reservación activa.');
           }
         }}
       >
@@ -37,11 +50,13 @@ const CubicleMomentaneo = ({
             <View
               style={[
                 styles.availability,
-                cubicle.availability
-                  ? { backgroundColor: '#6ABB8B' }
-                  : { backgroundColor: '#E27188' },
+                {
+                  backgroundColor: cubicle.availability
+                    ? colors.green
+                    : colors.red,
+                },
               ]}
-            ></View>
+            />
           </View>
         </View>
       </TouchableOpacity>

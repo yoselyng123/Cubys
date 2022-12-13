@@ -36,7 +36,7 @@ const SIGN_IN_MUTATION = gql`
 `;
 
 const SignIn = ({ navigation }) => {
-  const { setUser } = useContext(userContext);
+  const { setUser, setMyReservations } = useContext(userContext);
   // State for User input
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -46,12 +46,19 @@ const SignIn = ({ navigation }) => {
       // Store Token
       AsyncStorage.setItem('token', data.signIn.token).then(() => {
         setUser(data.signIn.user);
+        setMyReservations([]);
         // Redirect to HomeScreen
         navigation.navigate('Tabs');
       });
     },
-    onError: () => {
-      Alert.alert('Invalid credentials. Please try again');
+    onError: ({ networkError }) => {
+      if (networkError) {
+        Alert.alert(
+          'No connection. Check your internet connection and try again'
+        );
+      } else {
+        Alert.alert('Invalid credentials. Please try again');
+      }
     },
   });
 
@@ -102,6 +109,7 @@ const SignIn = ({ navigation }) => {
               onPress={() => {
                 handleSignIn();
               }}
+              disabled={loading}
             >
               <View style={styles.btnSignIn}>
                 {loading ? (

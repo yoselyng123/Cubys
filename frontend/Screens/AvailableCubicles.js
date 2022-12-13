@@ -1,40 +1,230 @@
 import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 /* Assets */
 import colors from '../assets/colors';
-import CubicleMomentaneo from '../components/CubicleMomentaneo';
+import { useState, useEffect, useContext } from 'react';
+import { userContext } from '../context/userContext';
 /* Components */
 import Header from '../components/Header';
 import InfoAvailability from '../components/InfoAvailability';
+import CubicleMomentaneo from '../components/CubicleMomentaneo';
 /* APOLLO SERVER */
 import { useQuery, gql } from '@apollo/client';
-import { useState, useEffect } from 'react';
 
-const GET_CUBICLES = gql`
-  query getCubicles {
-    getCubicles {
+const GET_RESERVATIONS = gql`
+  query getAllReservations {
+    getAllReservations {
       id
-      sala
-      floor
-      cubicleNumber
-      maxCapacity
-      minCapacity
-      availability
+      startTime
+      endTime
+      date
+      cubicleID
+      companions {
+        name
+        carrera
+        carnet
+      }
+    }
+  }
+`;
+const GET_RESERVATIONS_BY_DATE = gql`
+  query getReservationsByDate($date: String!) {
+    getReservationsByDate(date: $date) {
+      id
+      startTime
+      endTime
+      date
+      cubicleID
+      companions {
+        carnet
+        carrera
+        name
+      }
     }
   }
 `;
 
 const AvailableCubicles = ({ navigation }) => {
-  const {
-    loading: loadingCubicles,
-    error: errorCubicles,
-    data: dataCubicles,
-  } = useQuery(GET_CUBICLES);
+  const { cubiclesList } = useContext(userContext);
 
+  const [filteredCubicles, setFilteredCubicles] = useState(cubiclesList);
   const [date, setDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [floor, setFloor] = useState('Primero');
+  const [floor, setFloor] = useState('1');
   const [error, setError] = useState(false);
+
+  /* Q U E R Y S */
+  // const {
+  //   loading: loadingReservations,
+  //   error: errorReservations,
+  //   data: dataReservations,
+  //   refetch: refetchReservations,
+  // } = useQuery(GET_RESERVATIONS);
+
+  const {
+    loading: loadingReservations,
+    error: errorReservations,
+    data: dataReservations,
+    refetch: refetchReservations,
+  } = useQuery(GET_RESERVATIONS_BY_DATE, {
+    variables: { date },
+    pollInterval: 10000,
+  });
+
+  /* U T I L I T I E S */
+
+  const parseMilitarHoursFormat = (hour) => {
+    var newHour = hour.split(':')[0];
+    if (hour.split(':')[1].substring(2, 4) === 'pm') {
+      if (newHour === '12') {
+        newHour = Number(newHour);
+      } else {
+        newHour = Number(newHour) + 12;
+      }
+    }
+    var minutes = hour.split(':')[1].slice(0, 2);
+
+    return newHour + minutes;
+  };
+
+  // const filterByFloor = (itemsList) => {
+  //   var copyOfItemList = [...itemsList];
+  //   const result = copyOfItemList.filter((item) => {
+  //     if (item.floor === floor) {
+  //       return item;
+  //     }
+  //   });
+  //   for (let i = 0; i < result.length; i++) {
+  //     result[i] = { ...result[i], availability: true };
+  //   }
+
+  //   return result;
+  // };
+
+  /* V A L I D A T I O N S */
+  const inputValidation = () => {
+    if (startTime === endTime) {
+      Alert.alert('La hora de entrada no puede ser igual a la hora de salida.');
+      setError(true);
+      return false;
+    }
+
+    return (
+      outOfWorkingHoursValidation() &&
+      endTimeHigherThanStartTime() &&
+      twoHoursMaxValidation()
+    );
+  };
+
+  const outOfWorkingHoursValidation = () => {
+    // Validate reservation is in working hours
+    if (
+      parseInt(parseMilitarHoursFormat(endTime)) > 1700 ||
+      parseInt(parseMilitarHoursFormat(startTime)) > 1700
+    ) {
+      setError(true);
+      Alert.alert('Error. La biblioteca abre de 7:00am a 5:00pm');
+      return false;
+    } else if (
+      parseInt(parseMilitarHoursFormat(endTime) < 700) ||
+      parseInt(parseMilitarHoursFormat(startTime)) < 700
+    ) {
+      setError(true);
+      Alert.alert('Error. La biblioteca abre de 7:00am a 5:00pm');
+      return false;
+    }
+
+    return true;
+  };
+
+  const twoHoursMaxValidation = () => {
+    let quantity = Math.abs(
+      parseInt(parseMilitarHoursFormat(endTime)) -
+        parseInt(parseMilitarHoursFormat(startTime))
+    );
+
+    if (quantity > 200) {
+      Alert.alert('El tiempo máximo de reserva son 2 horas.');
+      setError(true);
+      return false;
+    }
+    return true;
+  };
+
+  const endTimeHigherThanStartTime = () => {
+    if (parseMilitarHoursFormat(endTime) < parseMilitarHoursFormat(startTime)) {
+      setError(true);
+      Alert.alert('La hora de entrada debe ser mayor a la hora de salida.');
+      return false;
+    }
+    return true;
+  };
+
+  const checkCubiclesAvailability = () => {
+    var newCubiclesList = [...filteredCubicles];
+
+    if (!loadingReservations && date && startTime && endTime) {
+      for (let c = 0; c < newCubiclesList.length; c++) {
+        const cubicle = newCubiclesList[c];
+        for (
+          let r = 0;
+          r < dataReservations.getReservationsByDate.length;
+          r++
+        ) {
+          const reservation = dataReservations.getReservationsByDate[r];
+          if (reservation.cubicleID === cubicle.id) {
+            if (
+              (parseMilitarHoursFormat(startTime) >=
+                parseMilitarHoursFormat(reservation.startTime) &&
+                parseMilitarHoursFormat(startTime) <=
+                  parseMilitarHoursFormat(reservation.endTime)) ||
+              (parseMilitarHoursFormat(endTime) >=
+                parseMilitarHoursFormat(reservation.startTime) &&
+                parseMilitarHoursFormat(endTime) <=
+                  parseMilitarHoursFormat(reservation.endTime))
+            ) {
+              newCubiclesList[c].availability = false;
+              setFilteredCubicles(newCubiclesList);
+            } else if (
+              parseMilitarHoursFormat(startTime) <=
+                parseMilitarHoursFormat(reservation.startTime) &&
+              parseMilitarHoursFormat(startTime) <=
+                parseMilitarHoursFormat(reservation.endTime) &&
+              parseMilitarHoursFormat(endTime) >=
+                parseMilitarHoursFormat(reservation.startTime) &&
+              parseMilitarHoursFormat(endTime) <=
+                parseMilitarHoursFormat(reservation.endTime)
+            ) {
+              newCubiclesList[c].availability = false;
+              setFilteredCubicles(newCubiclesList);
+            } else if (
+              parseMilitarHoursFormat(startTime) <=
+                parseMilitarHoursFormat(reservation.startTime) &&
+              parseMilitarHoursFormat(startTime) <=
+                parseMilitarHoursFormat(reservation.endTime) &&
+              parseMilitarHoursFormat(endTime) >=
+                parseMilitarHoursFormat(reservation.startTime) &&
+              parseMilitarHoursFormat(endTime) >=
+                parseMilitarHoursFormat(reservation.endTime)
+            ) {
+              newCubiclesList[c].availability = false;
+              setFilteredCubicles(newCubiclesList);
+            } else {
+              newCubiclesList[c].availability = true;
+              setFilteredCubicles(newCubiclesList);
+            }
+          }
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (dataReservations) {
+      refetchReservations({ date });
+      checkCubiclesAvailability();
+    }
+  }, [dataReservations]);
 
   useEffect(() => {
     let month = new Date().toString().split(' ')[1];
@@ -51,95 +241,29 @@ const AvailableCubicles = ({ navigation }) => {
         hour = hour - 12;
       }
     }
-
-    let endTimeNumber = parseInt(hour) + 2;
+    if (hour === '12') {
+      let endTimeNumber = parseInt(2);
+      setEndTime(`${endTimeNumber}:${min}${timeZone}`);
+    } else {
+      let endTimeNumber = parseInt(hour) + 2;
+      setEndTime(`${endTimeNumber}:${min}${timeZone}`);
+    }
     setStartTime(`${hour}:${min}${timeZone}`);
-    setEndTime(`${endTimeNumber}:${min}${timeZone}`);
+
     setDate(`${day} ${month} ${year}`);
+
+    refetchReservations({ date });
+    checkCubiclesAvailability();
   }, []);
 
   useEffect(() => {
     setError(false);
+    checkCubiclesAvailability();
   }, [startTime, endTime]);
 
-  if (errorCubicles) return Alert.alert(`Error! ${errorCubicles.message}`);
-
-  const inputValidation = () => {
-    return outOfWorkingHoursValidation() && twoHoursMaxValidation();
-  };
-
-  const outOfWorkingHoursValidation = () => {
-    // Validate reservation is in working hours
-    let lessThan7AM =
-      (startTime.split(':')[1].substring(2, 4) === 'am' &&
-        startTime.split(':')[0] < 7) ||
-      (endTime.split(':')[1].substring(2, 4) === 'am' &&
-        endTime.split(':')[0] < 7);
-    let greaterThan5PM =
-      (endTime.split(':')[1].substring(2, 4) === 'pm' &&
-        endTime.split(':')[0] > 5) ||
-      (startTime.split(':')[1].substring(2, 4) === 'pm' &&
-        startTime.split(':')[0] > 5);
-    let equalTo5PMButMoreMinutes =
-      (endTime.split(':')[1].substring(2, 4) === 'pm' &&
-        endTime.split(':')[0] >= 5 &&
-        endTime.split(':')[1].substring(0, 2) > 0) ||
-      (startTime.split(':')[1].substring(2, 4) === 'pm' &&
-        startTime.split(':')[0] >= 5 &&
-        startTime.split(':')[1].substring(0, 2) > 0);
-    if (
-      !(
-        (startTime.split(':')[0] === '12' || endTime.split(':')[0] === '12') &&
-        (startTime.split(':')[1].substring(2, 4) === 'pm' ||
-          endTime.split(':')[1].substring(2, 4) === 'pm')
-      )
-    ) {
-      if (lessThan7AM || greaterThan5PM || equalTo5PMButMoreMinutes) {
-        Alert.alert('Error. La biblioteca abre de 7:00am a 5:00pm');
-        setError(true);
-        return false;
-      }
-    }
-
-    return true;
-  };
-
-  const twoHoursMaxValidation = () => {
-    // Validate Reservation time is less or equal to 2 hours
-    let bothAM =
-      startTime.split(':')[1].substring(2, 4) === 'am' &&
-      endTime.split(':')[1].substring(2, 4) === 'am';
-    let bothPM =
-      startTime.split(':')[1].substring(2, 4) === 'pm' &&
-      endTime.split(':')[1].substring(2, 4) === 'pm';
-
-    if (startTime.split(':')[0] === '12') {
-      let quantity = endTime.split(':')[0];
-      if (quantity > 2) {
-        Alert.alert('Error. El tiempo maximo de reserva son 2 horas.');
-        setError(true);
-        return false;
-      }
-    } else if (endTime.split(':')[0] === '12') {
-      let quantity = startTime.split(':')[0];
-
-      if (quantity > 2) {
-        Alert.alert('Error. El tiempo maximo de reserva son 2 horas.');
-        setError(true);
-        return false;
-      }
-    } else {
-      let quantity = endTime.split(':')[0] - startTime.split(':')[0];
-
-      if (quantity > 2 && (bothAM || bothPM)) {
-        Alert.alert('Error. El tiempo maximo de reserva son 2 horas.');
-        setError(true);
-        return false;
-      }
-    }
-
-    return true;
-  };
+  useEffect(() => {
+    checkCubiclesAvailability();
+  }, [floor]);
 
   return (
     <View style={styles.container}>
@@ -179,24 +303,48 @@ const AvailableCubicles = ({ navigation }) => {
           </View>
         </View>
         {/* Map goes here */}
-        {loadingCubicles ? (
+        {loadingReservations ? (
           <Text>Loading...</Text>
         ) : (
-          dataCubicles.getCubicles.map((cubicle, index) => {
-            return (
-              <CubicleMomentaneo
-                key={index}
-                cubicle={cubicle}
-                navigation={navigation}
-                resInfo={{
-                  date,
-                  startTime,
-                  endTime,
-                  floor,
-                }}
-                inputValidation={inputValidation}
-              />
-            );
+          // cubiclesList.map((cubicle, index) => {
+          //   if (cubicle.floor === floor) {
+          //     return (
+          //       <CubicleMomentaneo
+          //         key={index}
+          //         cubicle={cubicle}
+          //         navigation={navigation}
+          //         resInfo={{
+          //           date,
+          //           startTime,
+          //           endTime,
+          //           floor,
+          //         }}
+          //         inputValidation={inputValidation}
+          //       />
+          //     );
+          //   } else {
+          //     return null;
+          //   }
+          // })
+          filteredCubicles.map((cubicle, index) => {
+            if (cubicle.floor === floor) {
+              return (
+                <CubicleMomentaneo
+                  key={index}
+                  cubicle={cubicle}
+                  navigation={navigation}
+                  resInfo={{
+                    date,
+                    startTime,
+                    endTime,
+                    floor,
+                  }}
+                  inputValidation={inputValidation}
+                />
+              );
+            } else {
+              return null;
+            }
           })
         )}
       </ScrollView>

@@ -28,6 +28,10 @@ const Profile = ({ navigation }) => {
     setUser(null);
   };
 
+  const handleSaveChanges = () => {
+    console.log('TODO. SAVE CHANGED PASSWORD');
+  };
+
   if (user) {
     return (
       <View style={styles.container}>
@@ -67,25 +71,42 @@ const Profile = ({ navigation }) => {
               placeholder='Ingrese su carnet UNIMET'
               isPassword={false}
               text={user.carnet}
+              disabled={true}
             />
-            <DateInput
+            {/* <DateInput
               style={styles.input}
               title='Birth Date (Optional)'
               placeholder='Enter your birth date'
-            />
+            /> */}
           </ScrollView>
           <View style={styles.footer}>
             <Text style={styles.joinedtext}>
               Joined <Text style={styles.joineddate}>22 Jan 2022</Text>
             </Text>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => {
-                handleSignOut();
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
               }}
             >
-              <Text style={styles.logout}>Log Out</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => {
+                  handleSaveChanges();
+                }}
+              >
+                <Text style={styles.save}>Save</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => {
+                  handleSignOut();
+                }}
+              >
+                <Text style={styles.logout}>Log Out</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
@@ -149,6 +170,13 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto-Medium',
     color: colors.red,
     letterSpacing: 0.6,
+  },
+  save: {
+    fontSize: 13,
+    fontFamily: 'Roboto-Medium',
+    color: colors.purple,
+    letterSpacing: 0.6,
+    marginRight: 25,
   },
   joinedtext: {
     fontSize: 13,

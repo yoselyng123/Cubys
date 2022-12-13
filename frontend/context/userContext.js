@@ -1,41 +1,13 @@
-import { createContext, useEffect, useState } from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { createContext, useState } from 'react';
 
 export const userContext = createContext(null);
 
 export default function UserContextProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-  const [name, setName] = useState('Yoselyn');
-
-  const GET_ACTIVE_USER = gql`
-    query getActiveUser($token: String!) {
-      getActiveUser(name: $name) {
-        user {
-          name
-          email
-        }
-      }
-    }
-  `;
-
-  const GET_USERS = gql`
-    query getUsers {
-      getUsers {
-        user {
-          name
-          email
-        }
-      }
-    }
-  `;
-
-  const { loading, error, data } = useQuery(GET_USERS);
-
-  if (loading) return null;
-  if (error) console.log(error);
-
-  console.log(data);
+  const [myReservations, setMyReservations] = useState([]);
+  const [lockStatus, setLockStatus] = useState('Cerrado');
+  const [cubiclesList, setCubiclesList] = useState([]);
 
   return (
     <userContext.Provider
@@ -44,6 +16,12 @@ export default function UserContextProvider({ children }) {
         setUser,
         token,
         setToken,
+        myReservations,
+        setMyReservations,
+        lockStatus,
+        setLockStatus,
+        cubiclesList,
+        setCubiclesList,
       }}
     >
       {children}

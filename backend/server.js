@@ -30,7 +30,8 @@ const typeDefs = gql`
     getAllReservations: [Reservation!]!
     getMyReservations: [Reservation!]!
     getCubicles: [Cubicle!]!
-    getCubicleByID(id: ID!): Cubicle
+    getCubicleByID(id: ID!): Cubicle!
+    getReservationsByDate(date: String!): [Reservation!]!
   }
   type Mutation {
     signUp(input: SignUpInput!): AuthUser
@@ -95,7 +96,6 @@ const typeDefs = gql`
     minCapacity: Int!
     floor: String!
     sala: String!
-    availability: Boolean!
   }
   type Reservation {
     id: ID!
@@ -116,7 +116,7 @@ const resolvers = {
       const users = await db.collection('Users').find().toArray();
       return users;
     },
-    getAllReservations: async (_, __, { db }) => {
+    getAllReservations: async (_, __, { db, user }) => {
       if (!user) {
         throw new Error('Authentication Error. Please sign in');
       }
@@ -141,6 +141,12 @@ const resolvers = {
         throw new Error('Authentication Error. Please sign in');
       }
       return await db.collection('Cubicles').findOne({ _id: ObjectId(id) });
+    },
+    getReservationsByDate: async (_, { date }, { db, user }) => {
+      if (!user) {
+        throw new Error('Authentication Error. Please sign in');
+      }
+      return await db.collection('Reservations').find({ date: date }).toArray();
     },
   },
   Mutation: {

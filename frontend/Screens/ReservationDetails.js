@@ -1,5 +1,5 @@
 import { gql, useMutation } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import {
   Alert,
   ScrollView,
@@ -7,8 +7,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Keyboard,
   KeyboardAvoidingView,
+  ActivityIndicator,
 } from 'react-native';
 /* Assets */
 import colors from '../assets/colors';
@@ -17,6 +17,7 @@ import { Feather } from '@expo/vector-icons';
 import Header from '../components/Header';
 import ReserveForm from '../components/ReserveForm';
 import SectionDivider from '../components/SectionDivider';
+import { userContext } from '../context/userContext';
 
 const CREATE_RESERVATION = gql`
   mutation createReservation(
@@ -41,6 +42,11 @@ const CREATE_RESERVATION = gql`
       endTime
       date
       createdBy
+      companions {
+        name
+        carrera
+        carnet
+      }
     }
   }
 `;
@@ -54,11 +60,18 @@ const GET_RESERVATIONS = gql`
       startTime
       endTime
       date
+      companions {
+        name
+        carrera
+        carnet
+      }
     }
   }
 `;
 
 const ReservationDetails = ({ route, navigation }) => {
+  const { setMyReservations, myReservations } = useContext(userContext);
+
   const { cubicleInfo, resInfo } = route.params;
   const [companionsList, setCompanionsList] = useState([
     {
@@ -73,12 +86,11 @@ const ReservationDetails = ({ route, navigation }) => {
     },
   ]);
 
-  const [createReservation, { loading: loadingReservation }] = useMutation(
+  const [createReservation, { loading, data, error }] = useMutation(
     CREATE_RESERVATION,
     {
       onCompleted: () => {
         Alert.alert('Se ha creado la reservación con Exito!');
-        navigation.navigate('Home');
       },
       onError: () => {
         Alert.alert(
@@ -89,20 +101,36 @@ const ReservationDetails = ({ route, navigation }) => {
     }
   );
 
+  useEffect(() => {
+    if (data) {
+      setMyReservations(data.createReservation);
+      navigation.navigate('Home');
+    }
+  }, [data]);
+
   const handleSubmitForm = () => {
     let startTime = resInfo.startTime;
     let endTime = resInfo.endTime;
     let cubicleID = cubicleInfo.id;
     let date = resInfo.date;
     let companions = companionsList;
+    const oneSpecialChar = new RegExp('^(?=.*[-+_!@#$%^&*.,?])');
     var passedValidation = companions.map((companion) => {
       if (
         companion.name === '' ||
         companion.carnet === '' ||
         companion.carrera === ''
       ) {
+        Alert.alert('Error. Los campos no pueden quedar vacios');
         return false;
       } else {
+        if (
+          companion.carnet.length < 11 ||
+          oneSpecialChar.test(companion.carnet)
+        ) {
+          Alert.alert('Error. Carnet inválido');
+          return false;
+        }
         return true;
       }
     });
@@ -112,8 +140,6 @@ const ReservationDetails = ({ route, navigation }) => {
       createReservation({
         variables: { startTime, endTime, cubicleID, date, companions },
       });
-    } else {
-      Alert.alert('Error. Los campos no pueden quedar vacios');
     }
   };
 
@@ -148,7 +174,7 @@ const ReservationDetails = ({ route, navigation }) => {
           Please review the reservation details and make sure everything is
           correct
         </Text>
-        <SectionDivider />
+        <SectionDivider marginBottom={20} />
         <View style={styles.reservationInfoWrapper}>
           <View style={styles.topSection}>
             <Text style={styles.title}>
@@ -160,7 +186,7 @@ const ReservationDetails = ({ route, navigation }) => {
             <Text style={styles.textDesc}>4 Chairs</Text>
             <Text style={styles.textDesc}>White board</Text>
           </View>
-          <SectionDivider />
+          <SectionDivider marginBottom={20} />
           <View style={styles.dateWrapperContainer}>
             <View style={styles.dateWrapper}>
               <Text style={styles.title}>Start Time</Text>
@@ -202,9 +228,17 @@ const ReservationDetails = ({ route, navigation }) => {
             Este es el paso final, luego de presionar el botón de Reservar, se
             habrá realizado exitosamente la reserva.
           </Text>
-          <TouchableOpacity activeOpacity={0.7} onPress={handleSubmitForm}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={handleSubmitForm}
+            disabled={loading}
+          >
             <View style={styles.reserveBtn}>
-              <Text style={styles.reserveBtnText}>Reservar</Text>
+              {loading ? (
+                <ActivityIndicator size='small' color='#FFF' />
+              ) : (
+                <Text style={styles.reserveBtnText}>Reservar</Text>
+              )}
             </View>
           </TouchableOpacity>
         </View>
