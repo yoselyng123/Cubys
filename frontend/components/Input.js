@@ -38,7 +38,9 @@ const Input = ({
 
       {isPassword ? (
         <TextInput
-          style={styles.input}
+          style={
+            !disabled ? styles.input : [styles.input, { color: '#C2C2CD' }]
+          }
           onChangeText={onChangeText}
           value={text}
           placeholder={placeholder}

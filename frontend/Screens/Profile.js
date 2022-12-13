@@ -5,8 +5,9 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 /* Assets */
 import colors from '../assets/colors';
@@ -17,9 +18,93 @@ import Input from '../components/Input';
 import DateInput from '../components/DateInput';
 /* APOLLO SERVER */
 import SplashScreen from './SplashScreen';
+import { gql, useMutation } from '@apollo/client';
+
+const UPDATE_USER_MUTATION = gql`
+  mutation updateUser($id: ID!, $password: String!) {
+    updateUser(id: $id, password: $password) {
+      token
+      user {
+        id
+        email
+        carnet
+        carrera
+        name
+      }
+    }
+  }
+`;
 
 const Profile = ({ navigation }) => {
   const { user, setUser } = useContext(userContext);
+  const [validations, setValidations] = useState({
+    eightCharacters: false,
+    upperAndLower: false,
+    numeric: false,
+    specialChar: false,
+  });
+  const [password, setPassword] = useState('');
+  const [emptyPassword, setEmptyPassword] = useState(true);
+
+  const [updateUser, { loading }] = useMutation(UPDATE_USER_MUTATION, {
+    onCompleted: (data) => {
+      // Store Token
+      AsyncStorage.removeItem('token');
+      AsyncStorage.setItem('token', data.updateUser.token).then(() => {
+        setUser(data.updateUser.user);
+      });
+      Alert.alert(
+        'Modificación Exitosa!',
+        'Se ha cambiado exitosamente la contraseña'
+      );
+      setPassword('');
+    },
+    onError: ({ networkError }) => {
+      if (networkError) {
+        Alert.alert(
+          'Sin conexión. Chequea tu conexión a internet e intenta de nuevo.'
+        );
+      } else {
+        Alert.alert('Error. Intenta de nuevo.');
+      }
+    },
+  });
+
+  const validateUpperAndLower = (password) => {
+    const oneUpperCase = new RegExp('^(?=.*[A-Z])');
+    const oneLowerCase = new RegExp('^(?=.*[a-z])');
+    if (oneUpperCase.test(password) && oneLowerCase.test(password)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const validateNumeric = (password) => {
+    const oneNumeric = new RegExp('^(?=.*\\d)');
+    if (oneNumeric.test(password)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const validateEightChar = (password) => {
+    if (password.length >= 8) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const validateSpecialChar = (password) => {
+    const oneSpecialChar = new RegExp('^(?=.*[-+_!@#$%^&*.,?])');
+    if (oneSpecialChar.test(password)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   const handleSignOut = async () => {
     // Remove token from phone storage
@@ -29,8 +114,63 @@ const Profile = ({ navigation }) => {
   };
 
   const handleSaveChanges = () => {
-    console.log('TODO. SAVE CHANGED PASSWORD');
+    // Validate secure password
+    let validationsPassword =
+      validations.eightCharacters &&
+      validations.numeric &&
+      validations.specialChar &&
+      validations.upperAndLower;
+
+    if (password !== '') {
+      if (!validationsPassword) {
+        Alert.alert(
+          'Error',
+          'Verifique que la contraseña contenga: \n1. Al menos una mayúscula y una minúscula.\n2. Al menos un número.\n3. Al menos un carácter especial.\n4. Al menos 8 carácteres.'
+        );
+      } else {
+        Alert.alert(
+          'Confirmación de cambios',
+          'Esta seguro que desea cambiar su contraseńa?',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+            {
+              text: 'Confirmar',
+              onPress: () => {
+                var id = user.id;
+                updateUser({
+                  variables: { id, password },
+                });
+              },
+            },
+          ]
+        );
+      }
+    }
   };
+
+  useEffect(() => {
+    if (password === '') {
+      setEmptyPassword(true);
+    } else {
+      setEmptyPassword(false);
+    }
+
+    let eightCharacters = validateEightChar(password);
+    let upperAndLower = validateUpperAndLower(password);
+    let numeric = validateNumeric(password);
+    let specialChar = validateSpecialChar(password);
+
+    setValidations({
+      eightCharacters,
+      upperAndLower,
+      numeric,
+      specialChar,
+    });
+  }, [password]);
 
   if (user) {
     return (
@@ -64,6 +204,9 @@ const Profile = ({ navigation }) => {
               title='Password'
               placeholder='Ingrese la nueva contraseña'
               isPassword={true}
+              text={password}
+              onChangeText={(newText) => setPassword(newText)}
+              disabled={loading}
             />
             <Input
               style={styles.input}
@@ -90,14 +233,17 @@ const Profile = ({ navigation }) => {
                 justifyContent: 'space-between',
               }}
             >
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => {
-                  handleSaveChanges();
-                }}
-              >
-                <Text style={styles.save}>Save</Text>
-              </TouchableOpacity>
+              {!emptyPassword && !loading && (
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => {
+                    handleSaveChanges();
+                  }}
+                >
+                  <Text style={styles.save}>Save</Text>
+                </TouchableOpacity>
+              )}
+
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => {

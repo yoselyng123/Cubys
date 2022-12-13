@@ -1,11 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
 /* Assets */
 import Tag from './Tag';
 import colors from '../assets/colors';
 import { Ionicons } from '@expo/vector-icons';
 /* APOLLO SERVER */
-import { useQuery, useMutation, gql } from '@apollo/client';
+import { useQuery, gql } from '@apollo/client';
 
 const GET_CUBICLE_BY_ID = gql`
   query getCubiclebyID($id: ID!) {
@@ -26,10 +25,26 @@ const Reservation = ({ info, id, deleteReservation, pressedCancel }) => {
   });
 
   const handleDeleteReservation = () => {
-    const id = info.id;
-    deleteReservation({
-      variables: { id },
-    });
+    Alert.alert(
+      'Confirmación',
+      'Esta seguro que desea cancelar su reservación?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Confirmar',
+          onPress: () => {
+            const id = info.id;
+            deleteReservation({
+              variables: { id },
+            });
+          },
+        },
+      ]
+    );
   };
 
   if (loading) {

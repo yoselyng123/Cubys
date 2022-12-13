@@ -36,7 +36,7 @@ const typeDefs = gql`
   type Mutation {
     signUp(input: SignUpInput!): AuthUser
     signIn(input: SignInInput!): AuthUser
-    updateUser(id: ID!, password: String!, birthDate: String): AuthUser!
+    updateUser(id: ID!, password: String!): AuthUser!
     createReservation(input: CreateReservationInput!): Reservation!
     updateReservation(
       startTime: String!
@@ -234,10 +234,27 @@ const resolvers = {
         return false;
       }
     },
-    updateUser: async (_, { id, password, birthDate }, { db, user }) => {
+    updateUser: async (_, { id, password }, { db, user }) => {
       if (!user) {
         throw new Error('Authentication Error. Please sign in');
       }
+
+      const hashedPassword = bcrypt.hashSync(password);
+      await db
+        .collection('Users')
+        .updateOne(
+          { _id: ObjectId(id) },
+          { $set: { password: hashedPassword } }
+        );
+
+      const authUser = await db
+        .collection('Users')
+        .findOne({ _id: ObjectId(id) });
+
+      return {
+        user: authUser,
+        token: getToken(authUser),
+      };
     },
   },
   User: {
