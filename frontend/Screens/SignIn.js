@@ -136,7 +136,11 @@ const SignIn = ({ navigation }) => {
           </View>
         </View>
       </TouchableWithoutFeedback>
-      <StatusBar style='dark' />
+      {theme.white === '#FFFFFF' ? (
+        <StatusBar style='dark' />
+      ) : (
+        <StatusBar style='light' />
+      )}
     </KeyboardAvoidingView>
   );
 };

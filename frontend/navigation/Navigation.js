@@ -33,7 +33,7 @@ export default function Navigation() {
 const Stack = createNativeStackNavigator();
 
 function RootNavigator() {
-  const [appearanceTheme, setAppearanceTheme] = useState('light');
+  const [appearanceTheme, setAppearanceTheme] = useState('dark');
 
   useEffect(() => {
     let eventListener = EventRegister.addEventListener(
