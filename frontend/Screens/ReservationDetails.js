@@ -18,6 +18,7 @@ import Header from '../components/Header';
 import ReserveForm from '../components/ReserveForm';
 import SectionDivider from '../components/SectionDivider';
 import { userContext } from '../context/userContext';
+import themeContext from '../context/themeContext';
 
 const CREATE_RESERVATION = gql`
   mutation createReservation(
@@ -74,6 +75,7 @@ const GET_RESERVATIONS = gql`
 `;
 
 const ReservationDetails = ({ route, navigation }) => {
+  const theme = useContext(themeContext);
   const { setMyReservations, myReservations } = useContext(userContext);
 
   const { cubicleInfo, resInfo } = route.params;
@@ -173,7 +175,7 @@ const ReservationDetails = ({ route, navigation }) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
+      style={[styles.container, { backgroundColor: theme.background }]}
     >
       <Header
         style={styles.header}
@@ -189,7 +191,7 @@ const ReservationDetails = ({ route, navigation }) => {
         <SectionDivider marginBottom={20} />
         <View style={styles.reservationInfoWrapper}>
           <View style={styles.topSection}>
-            <Text style={styles.title}>
+            <Text style={[styles.title, { color: theme.dark }]}>
               Cubicle #{cubicleInfo.cubicleNumber}
             </Text>
             <Text style={styles.floor}>{cubicleInfo.floor}nd Floor</Text>
@@ -201,14 +203,18 @@ const ReservationDetails = ({ route, navigation }) => {
           <SectionDivider marginBottom={20} />
           <View style={styles.dateWrapperContainer}>
             <View style={styles.dateWrapper}>
-              <Text style={styles.title}>Start Time</Text>
+              <Text style={[styles.title, { color: theme.dark }]}>
+                Start Time
+              </Text>
               <Text style={styles.textDesc}>
                 {resInfo.date},{`\n`}
                 {resInfo.startTime}
               </Text>
             </View>
             <View style={styles.dateWrapper}>
-              <Text style={styles.title}>End Time</Text>
+              <Text style={[styles.title, { color: theme.dark }]}>
+                End Time
+              </Text>
               <Text style={styles.textDesc}>
                 {resInfo.date},{`\n`}
                 {resInfo.endTime}

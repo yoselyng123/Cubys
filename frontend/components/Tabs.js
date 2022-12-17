@@ -9,27 +9,33 @@ import Notifications from '../Screens/Notifications';
 import colors from '../assets/colors';
 /* Icons */
 import { Ionicons } from '@expo/vector-icons';
+/* Theme Related */
+import themeContext from '../context/themeContext';
+import { useContext } from 'react';
 
 const Tab = createBottomTabNavigator();
 
 const Tabs = () => {
+  const theme = useContext(themeContext);
   return (
     <Tab.Navigator
       initialRouteName='Home'
       screenOptions={({ route }) => ({
         tabBarStyle: {
-          backgroundColor: '#fff',
+          backgroundColor: theme.white,
           height: 100,
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
           shadowColor: 'rgba(0, 0, 0, 0.5)',
           elevation: 15,
           shadowOffset: { width: 0, height: -2 },
+          position: 'absolute',
+          borderTopWidth: 0,
         },
         tabBarItemStyle: {
           marginBottom: 0,
         },
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ focused, color }) => {
           let iconName;
           let iconWrapperColor;
 
@@ -42,8 +48,8 @@ const Tabs = () => {
           } else if (route.name === 'Notifications') {
             iconName = 'notifications';
           }
-          color = focused ? '#fff' : colors.iconGray;
-          iconWrapperColor = focused ? colors.purple : '#fff';
+          color = focused ? '#fff' : theme.iconGray;
+          iconWrapperColor = focused ? theme.purple : theme.white;
 
           // Returning Icon for Tab
           return (

@@ -5,28 +5,33 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import React from 'react';
+import { useContext } from 'react';
 /* Assets */
 import colors from '../assets/colors';
+import Notification from '../components/Notification';
+import themeContext from '../context/themeContext';
 /* Components */
 import Header from '../components/Header';
-import Notification from '../components/Notification';
 
 const Notifications = () => {
+  const theme = useContext(themeContext);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Header title='cubys' navigateAvailable={false} />
       <View style={styles.contentWrapper}>
         <View style={styles.descriptionContainer}>
           <View style={styles.texts}>
-            <Text style={styles.description}>Notifications</Text>
+            <Text style={[styles.description, { color: theme.dark }]}>
+              Notifications
+            </Text>
             <TouchableOpacity activeOpacity={0.7}>
               <Text style={styles.markread}>Mark all as read</Text>
             </TouchableOpacity>
           </View>
           <View
             style={{
-              borderBottomColor: colors.light,
+              borderBottomColor: theme.divider,
               borderBottomWidth: 2,
             }}
           />
@@ -37,11 +42,6 @@ const Notifications = () => {
         >
           <View style={styles.scrollContainer}>
             <Notification />
-            <Notification />
-            <Notification read={true} />
-            <Notification read={true} />
-            <Notification read={true} />
-            <Notification read={true} />
             <Notification read={true} />
           </View>
         </ScrollView>

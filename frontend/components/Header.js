@@ -1,12 +1,14 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 /* ASSETS */
 import colors from '../assets/colors';
 import { Entypo } from '@expo/vector-icons';
+import themeContext from '../context/themeContext';
 
 const Header = ({ title, navigateAvailable, navigation }) => {
+  const theme = useContext(themeContext);
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.white }]}>
       {navigateAvailable && (
         <TouchableOpacity
           style={styles.chevron}
@@ -15,11 +17,17 @@ const Header = ({ title, navigateAvailable, navigation }) => {
             navigation.goBack();
           }}
         >
-          <Entypo name='chevron-left' size={32} color={colors.dark} />
+          <Entypo name='chevron-left' size={32} color={theme.dark} />
         </TouchableOpacity>
       )}
 
-      <Text style={navigateAvailable ? styles.title : styles.cubys}>
+      <Text
+        style={
+          navigateAvailable
+            ? [styles.title, { color: theme.dark }]
+            : [styles.cubys, { color: theme.dark }]
+        }
+      >
         {title}
       </Text>
     </View>

@@ -5,65 +5,79 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { RadioButton } from 'react-native-paper';
 /* Assets */
 import colors from '../assets/colors';
-import { MaterialIcons } from '@expo/vector-icons';
+import { EventRegister } from 'react-native-event-listeners';
+import themeContext from '../context/themeContext';
 /* Components */
 import Header from '../components/Header';
+import SectionDivider from '../components/SectionDivider';
 
 const Settings = () => {
-  const [appearanceChecked, setAppearanceChecked] = useState('first');
+  const theme = useContext(themeContext);
+  const [appearanceTheme, setAppearanceTheme] = useState('light');
   const [notificationsChecked, setNotificationsChecked] = useState('first');
   const [languageChecked, setLanguageChecked] = useState('first');
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Header title='cubys' navigateAvailable={false} />
       <View style={styles.contentWrapper}>
         <View style={styles.descriptionContainer}>
           <View style={styles.texts}>
-            <Text style={styles.description}>Settings</Text>
+            <Text style={[styles.description, { color: theme.dark }]}>
+              Settings
+            </Text>
             <TouchableOpacity activeOpacity={0.7}>
               <Text style={styles.markread}>Reset default</Text>
             </TouchableOpacity>
           </View>
-          <View
-            style={{
-              borderBottomColor: colors.light,
-              borderBottomWidth: 2,
-            }}
-          />
+          <SectionDivider marginBottom={10} />
         </View>
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={styles.scrollview}
         >
           <View style={styles.scrollContainer}>
-            <View style={styles.settingContainer}>
+            <View>
               <View style={styles.settingItemContainer}>
-                <Text style={styles.title}>Appearance</Text>
+                <Text style={[styles.title, { color: theme.dark }]}>
+                  Appearance
+                </Text>
                 <View style={styles.itemWrapper}>
                   <View style={styles.radiobuttonItem}>
                     <RadioButton
-                      value='first'
+                      value='light'
                       status={
-                        appearanceChecked === 'first' ? 'checked' : 'unchecked'
+                        appearanceTheme === 'light' ? 'checked' : 'unchecked'
                       }
-                      onPress={() => setAppearanceChecked('first')}
-                      color={colors.purple}
-                      uncheckedColor={colors.gray}
+                      onPress={() => {
+                        setAppearanceTheme('light');
+                        EventRegister.emit('changeTheme', appearanceTheme);
+                      }}
+                      color={theme.purple}
+                      uncheckedColor={theme.dark}
                     />
                     <TouchableOpacity
                       activeOpacity={0.7}
-                      onPress={() => setAppearanceChecked('first')}
+                      onPress={() => {
+                        setAppearanceTheme('light');
+                        EventRegister.emit('changeTheme', appearanceTheme);
+                      }}
                     >
                       <Text
                         style={
-                          appearanceChecked === 'first'
-                            ? styles.radiobuttonItemTextSelected
-                            : styles.radiobuttonItemTextUnselected
+                          appearanceTheme === 'light'
+                            ? [
+                                styles.radiobuttonItemTextSelected,
+                                { color: theme.purple },
+                              ]
+                            : [
+                                styles.radiobuttonItemTextUnselected,
+                                { color: theme.gray },
+                              ]
                         }
                       >
                         Light
@@ -72,23 +86,35 @@ const Settings = () => {
                   </View>
                   <View style={styles.radiobuttonItem}>
                     <RadioButton
-                      value='second'
+                      value='dark'
                       status={
-                        appearanceChecked === 'second' ? 'checked' : 'unchecked'
+                        appearanceTheme === 'dark' ? 'checked' : 'unchecked'
                       }
-                      onPress={() => setAppearanceChecked('second')}
-                      color={colors.purple}
-                      uncheckedColor={colors.gray}
+                      onPress={() => {
+                        setAppearanceTheme('dark');
+                        EventRegister.emit('changeTheme', appearanceTheme);
+                      }}
+                      color={theme.purple}
+                      uncheckedColor={theme.gray}
                     />
                     <TouchableOpacity
                       activeOpacity={0.7}
-                      onPress={() => setAppearanceChecked('second')}
+                      onPress={() => {
+                        setAppearanceTheme('dark');
+                        EventRegister.emit('changeTheme', appearanceTheme);
+                      }}
                     >
                       <Text
                         style={
-                          appearanceChecked === 'second'
-                            ? styles.radiobuttonItemTextSelected
-                            : styles.radiobuttonItemTextUnselected
+                          appearanceTheme === 'dark'
+                            ? [
+                                styles.radiobuttonItemTextSelected,
+                                { color: theme.purple },
+                              ]
+                            : [
+                                styles.radiobuttonItemTextUnselected,
+                                { color: theme.gray },
+                              ]
                         }
                       >
                         Dark
@@ -97,17 +123,12 @@ const Settings = () => {
                   </View>
                 </View>
               </View>
-              <View
-                style={{
-                  borderBottomColor: colors.light,
-                  borderBottomWidth: 2,
-                  marginBottom: 20,
-                  marginTop: 20,
-                }}
-              />
+              <SectionDivider marginBottom={20} marginTop={20} />
 
               <View style={styles.settingItemContainer}>
-                <Text style={styles.title}>Notifications</Text>
+                <Text style={[styles.title, { color: theme.dark }]}>
+                  Notifications
+                </Text>
                 <View style={styles.itemWrapper}>
                   <View style={styles.radiobuttonItem}>
                     <RadioButton
@@ -118,8 +139,8 @@ const Settings = () => {
                           : 'unchecked'
                       }
                       onPress={() => setNotificationsChecked('first')}
-                      color={colors.purple}
-                      uncheckedColor={colors.gray}
+                      color={theme.purple}
+                      uncheckedColor={theme.gray}
                     />
                     <TouchableOpacity
                       activeOpacity={0.7}
@@ -128,8 +149,14 @@ const Settings = () => {
                       <Text
                         style={
                           notificationsChecked === 'first'
-                            ? styles.radiobuttonItemTextSelected
-                            : styles.radiobuttonItemTextUnselected
+                            ? [
+                                styles.radiobuttonItemTextSelected,
+                                { color: theme.purple },
+                              ]
+                            : [
+                                styles.radiobuttonItemTextUnselected,
+                                { color: theme.gray },
+                              ]
                         }
                       >
                         Show
@@ -145,8 +172,8 @@ const Settings = () => {
                           : 'unchecked'
                       }
                       onPress={() => setNotificationsChecked('second')}
-                      color={colors.purple}
-                      uncheckedColor={colors.gray}
+                      color={theme.purple}
+                      uncheckedColor={theme.gray}
                     />
                     <TouchableOpacity
                       activeOpacity={0.7}
@@ -155,8 +182,14 @@ const Settings = () => {
                       <Text
                         style={
                           notificationsChecked === 'second'
-                            ? styles.radiobuttonItemTextSelected
-                            : styles.radiobuttonItemTextUnselected
+                            ? [
+                                styles.radiobuttonItemTextSelected,
+                                { color: theme.purple },
+                              ]
+                            : [
+                                styles.radiobuttonItemTextUnselected,
+                                { color: theme.gray },
+                              ]
                         }
                       >
                         Hide
@@ -165,17 +198,12 @@ const Settings = () => {
                   </View>
                 </View>
               </View>
-              <View
-                style={{
-                  borderBottomColor: colors.light,
-                  borderBottomWidth: 2,
-                  marginBottom: 20,
-                  marginTop: 20,
-                }}
-              />
+              <SectionDivider marginBottom={20} marginTop={20} />
 
               <View style={styles.settingItemContainer}>
-                <Text style={styles.title}>Language</Text>
+                <Text style={[styles.title, { color: theme.dark }]}>
+                  Language
+                </Text>
                 <View style={styles.itemWrapper}>
                   <View style={styles.radiobuttonItem}>
                     <RadioButton
@@ -184,8 +212,8 @@ const Settings = () => {
                         languageChecked === 'first' ? 'checked' : 'unchecked'
                       }
                       onPress={() => setLanguageChecked('first')}
-                      color={colors.purple}
-                      uncheckedColor={colors.gray}
+                      color={theme.purple}
+                      uncheckedColor={theme.gray}
                     />
                     <TouchableOpacity
                       activeOpacity={0.7}
@@ -194,8 +222,14 @@ const Settings = () => {
                       <Text
                         style={
                           languageChecked === 'first'
-                            ? styles.radiobuttonItemTextSelected
-                            : styles.radiobuttonItemTextUnselected
+                            ? [
+                                styles.radiobuttonItemTextSelected,
+                                { color: theme.purple },
+                              ]
+                            : [
+                                styles.radiobuttonItemTextUnselected,
+                                { color: theme.gray },
+                              ]
                         }
                       >
                         English
@@ -209,8 +243,8 @@ const Settings = () => {
                         languageChecked === 'second' ? 'checked' : 'unchecked'
                       }
                       onPress={() => setLanguageChecked('second')}
-                      color={colors.purple}
-                      uncheckedColor={colors.gray}
+                      color={theme.purple}
+                      uncheckedColor={theme.gray}
                     />
                     <TouchableOpacity
                       activeOpacity={0.7}
@@ -219,8 +253,14 @@ const Settings = () => {
                       <Text
                         style={
                           languageChecked === 'second'
-                            ? styles.radiobuttonItemTextSelected
-                            : styles.radiobuttonItemTextUnselected
+                            ? [
+                                styles.radiobuttonItemTextSelected,
+                                { color: theme.purple },
+                              ]
+                            : [
+                                styles.radiobuttonItemTextUnselected,
+                                { color: theme.gray },
+                              ]
                         }
                       >
                         Español
@@ -242,7 +282,6 @@ export default Settings;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   contentWrapper: {
     flex: 1,
@@ -280,7 +319,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto-Medium',
     fontSize: 20,
     letterSpacing: 0.6,
-    color: colors.dark,
     marginBottom: 20,
   },
   title: {

@@ -6,12 +6,13 @@ import {
   View,
   ActivityIndicator,
 } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 /* Assets */
 import colors from '../assets/colors';
 import { userContext } from '../context/userContext';
 import dayjs from 'dayjs';
 import { es } from 'dayjs/locale/es';
+import themeContext from '../context/themeContext';
 /* Components */
 import Header from '../components/Header';
 import Reservation from '../components/Reservation';
@@ -76,6 +77,8 @@ const UPDATE_RESERVATION_STATUS = gql`
 `;
 
 const Home = ({ navigation }) => {
+  const theme = useContext(themeContext);
+
   const [pressedCancel, setPressedCancel] = useState(false);
   const [reservedNumber, setReservedNumber] = useState(0);
   const [availableCubicles, setAvailableCubicles] = useState(0);
@@ -239,14 +242,16 @@ const Home = ({ navigation }) => {
   }, [currentDate]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Header title='cubys' navigateAvailable={false} />
       <ScrollView
         style={styles.contentWrapper}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.scrollContainer}>
-          <Text style={styles.greetingsTitle}>Hola</Text>
+          <Text style={[styles.greetingsTitle, { color: theme.dark }]}>
+            Hola
+          </Text>
           <Text style={styles.greetingsText}>
             Reserva un cubículo cuando quieras.
           </Text>
@@ -260,7 +265,9 @@ const Home = ({ navigation }) => {
           />
           {/* Separation Line */}
           <SectionDivider marginBottom={20} />
-          <Text style={styles.reservationsTitle}>Próximas Reservaciones</Text>
+          <Text style={[styles.reservationsTitle, { color: theme.dark }]}>
+            Próximas Reservaciones
+          </Text>
           {loadingReservationsFalse ? (
             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
               <ActivityIndicator size='small' color='#FFF' />

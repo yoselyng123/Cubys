@@ -6,10 +6,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useContext } from 'react';
 /* Assets */
 import colors from '../assets/colors';
 import { Feather } from '@expo/vector-icons';
 import CarreraSelect from './CarreraSelect';
+import themeContext from '../context/themeContext';
 
 const ReserveForm = ({
   number,
@@ -17,6 +19,8 @@ const ReserveForm = ({
   setCompanionsList,
   companionsList,
 }) => {
+  const theme = useContext(themeContext);
+
   const handleDeleteCompanion = () => {
     if (companionsList.length === 2) {
       Alert.alert(
@@ -63,15 +67,23 @@ const ReserveForm = ({
       <View>
         <TextInput
           placeholder='Nombre y Apellido'
+          placeholderTextColor={theme.iconGray}
           value={companion.name}
           onChangeText={(value) => handleChangeCompanionInfo('Name', value)}
-          style={styles.input}
+          style={[
+            styles.input,
+            { color: theme.dark, borderBottomColor: theme.divider },
+          ]}
         />
         <TextInput
           placeholder='Carnet'
+          placeholderTextColor={theme.iconGray}
           value={companion.carnet}
           onChangeText={(value) => handleChangeCompanionInfo('Carnet', value)}
-          style={styles.input}
+          style={[
+            styles.input,
+            { color: theme.dark, borderBottomColor: theme.divider },
+          ]}
         />
         <CarreraSelect
           carrera={companion.carrera}

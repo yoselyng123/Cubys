@@ -23,6 +23,7 @@ import { Feather } from '@expo/vector-icons';
 import { useMutation, gql } from '@apollo/client';
 import { userContext } from '../context/userContext';
 import Validation from '../components/Validation';
+import themeContext from '../context/themeContext';
 
 const SIGN_UP_MUTATION = gql`
   mutation signUp(
@@ -54,6 +55,7 @@ const SIGN_UP_MUTATION = gql`
 `;
 
 const SignUp = ({ navigation }) => {
+  const theme = useContext(themeContext);
   const { setUser, setMyReservations } = useContext(userContext);
   const [carrera, setCarrera] = useState('');
   const [carnet, setCarnet] = useState('');
@@ -78,14 +80,14 @@ const SignUp = ({ navigation }) => {
         navigation.navigate('Tabs');
       });
     },
-    onError: ({networkError}) => {
+    onError: ({ networkError }) => {
       if (networkError) {
         Alert.alert(
           'Sin conexión. Chequea tu conexión a internet e intenta de nuevo.'
         );
       } else {
         Alert.alert('Credenciales inválidas. Intente de nuevo.');
-        console.log(error)
+        console.log(error);
       }
     },
   });
@@ -177,7 +179,7 @@ const SignUp = ({ navigation }) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
+      style={[styles.container, { backgroundColor: theme.background }]}
     >
       <Header
         style={styles.header}

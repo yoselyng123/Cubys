@@ -19,6 +19,7 @@ import DateInput from '../components/DateInput';
 /* APOLLO SERVER */
 import SplashScreen from './SplashScreen';
 import { gql, useMutation } from '@apollo/client';
+import themeContext from '../context/themeContext';
 
 const UPDATE_USER_MUTATION = gql`
   mutation updateUser($id: ID!, $password: String!) {
@@ -36,6 +37,8 @@ const UPDATE_USER_MUTATION = gql`
 `;
 
 const Profile = ({ navigation }) => {
+  const theme = useContext(themeContext);
+
   const { user, setUser } = useContext(userContext);
   const [validations, setValidations] = useState({
     eightCharacters: false,
@@ -108,9 +111,21 @@ const Profile = ({ navigation }) => {
 
   const handleSignOut = async () => {
     // Remove token from phone storage
-    await AsyncStorage.removeItem('token');
-    navigation.navigate('Welcome');
-    setUser(null);
+    Alert.alert('Confirmación', 'Esta seguro que desea cerrar su sesión?', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'Confirmar',
+        onPress: async () => {
+          await AsyncStorage.removeItem('token');
+          navigation.navigate('Welcome');
+          setUser(null);
+        },
+      },
+    ]);
   };
 
   const handleSaveChanges = () => {
@@ -174,7 +189,7 @@ const Profile = ({ navigation }) => {
 
   if (user) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: theme.background }]}>
         <Header title='cubys' navigateAvailable={false} />
 
         <View style={styles.content}>
@@ -184,7 +199,9 @@ const Profile = ({ navigation }) => {
             }}
             style={styles.profileImage}
           />
-          <Text style={styles.profileName}>{user.name}</Text>
+          <Text style={[styles.profileName, { color: theme.dark }]}>
+            {user.name}
+          </Text>
           <Text style={styles.profileJob}>{user.carrera}</Text>
           <ScrollView
             style={styles.inputContainer}
@@ -223,8 +240,11 @@ const Profile = ({ navigation }) => {
             /> */}
           </ScrollView>
           <View style={styles.footer}>
-            <Text style={styles.joinedtext}>
-              Joined <Text style={styles.joineddate}>22 Jan 2022</Text>
+            <Text style={[styles.joinedtext, { color: theme.gray }]}>
+              Joined{'  '}
+              <Text style={[styles.joineddate, { color: theme.dark }]}>
+                22 Jan 2022
+              </Text>
             </Text>
             <View
               style={{
@@ -309,7 +329,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     position: 'absolute',
-    bottom: 10,
+    bottom: 125,
   },
   logout: {
     fontSize: 13,

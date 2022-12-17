@@ -3,6 +3,7 @@ import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import colors from '../assets/colors';
 import { useState, useEffect, useContext } from 'react';
 import { userContext } from '../context/userContext';
+import themeContext from '../context/themeContext';
 import dayjs from 'dayjs';
 /* Components */
 import Header from '../components/Header';
@@ -47,6 +48,7 @@ const GET_RESERVATIONS_BY_DATE = gql`
 `;
 
 const AvailableCubicles = ({ navigation }) => {
+  const theme = useContext(themeContext);
   const { cubiclesList } = useContext(userContext);
 
   const [filteredCubicles, setFilteredCubicles] = useState(cubiclesList);
@@ -255,7 +257,7 @@ const AvailableCubicles = ({ navigation }) => {
   }, [floor]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Header
         style={styles.header}
         title='Available Cubicles'
@@ -295,26 +297,6 @@ const AvailableCubicles = ({ navigation }) => {
         {loadingReservations ? (
           <Text>Loading...</Text>
         ) : (
-          // cubiclesList.map((cubicle, index) => {
-          //   if (cubicle.floor === floor) {
-          //     return (
-          //       <CubicleMomentaneo
-          //         key={index}
-          //         cubicle={cubicle}
-          //         navigation={navigation}
-          //         resInfo={{
-          //           date,
-          //           startTime,
-          //           endTime,
-          //           floor,
-          //         }}
-          //         inputValidation={inputValidation}
-          //       />
-          //     );
-          //   } else {
-          //     return null;
-          //   }
-          // })
           filteredCubicles.map((cubicle, index) => {
             if (cubicle.floor === floor) {
               return (

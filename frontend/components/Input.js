@@ -5,11 +5,12 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 
 /* ASSETS */
 import colors from '../assets/colors';
+import themeContext from '../context/themeContext';
 
 const Input = ({
   title,
@@ -23,6 +24,8 @@ const Input = ({
   blurOnSubmit,
   ref,
 }) => {
+  const theme = useContext(themeContext);
+
   const [passwordVisible, setPasswordVisible] = React.useState(true);
 
   return (
@@ -39,11 +42,17 @@ const Input = ({
       {isPassword ? (
         <TextInput
           style={
-            !disabled ? styles.input : [styles.input, { color: '#C2C2CD' }]
+            !disabled
+              ? [
+                  styles.input,
+                  { color: theme.dark, borderBottomColor: theme.gray },
+                ]
+              : [styles.input, { color: '#C2C2CD' }]
           }
           onChangeText={onChangeText}
           value={text}
           placeholder={placeholder}
+          placeholderTextColor={theme.iconGray}
           secureTextEntry={passwordVisible}
           onSubmitEditing={onSubmit}
           blurOnSubmit={blurOnSubmit}
@@ -52,11 +61,17 @@ const Input = ({
       ) : (
         <TextInput
           style={
-            !disabled ? styles.input : [styles.input, { color: '#C2C2CD' }]
+            !disabled
+              ? [
+                  styles.input,
+                  { color: theme.dark, borderBottomColor: theme.gray },
+                ]
+              : [styles.input, { color: '#C2C2CD' }]
           }
           onChangeText={onChangeText}
           value={text}
           placeholder={placeholder}
+          placeholderTextColor={theme.iconGray}
           editable={!disabled}
           selectTextOnFocus={!disabled}
           onSubmitEditing={onSubmit}
@@ -74,7 +89,7 @@ const Input = ({
             style={styles.eyeicon}
             name={passwordVisible ? 'eye-off' : 'eye'}
             size={24}
-            color={colors.gray}
+            color={theme.gray}
           />
         </TouchableOpacity>
       )}

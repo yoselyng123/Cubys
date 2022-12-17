@@ -14,6 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 /* ASSETS */
 import { StatusBar } from 'expo-status-bar';
 import { userContext } from '../context/userContext';
+import themeContext from '../context/themeContext';
 import colors from '../assets/colors';
 import Header from '../components/Header';
 import Input from '../components/Input';
@@ -36,6 +37,8 @@ const SIGN_IN_MUTATION = gql`
 `;
 
 const SignIn = ({ navigation }) => {
+  const theme = useContext(themeContext);
+
   const { setUser, setMyReservations } = useContext(userContext);
   // State for User input
   const [email, setEmail] = useState('');
@@ -72,7 +75,7 @@ const SignIn = ({ navigation }) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
+      style={[styles.container, { backgroundColor: theme.background }]}
     >
       <Header
         style={styles.header}

@@ -1,16 +1,12 @@
 // Navigation
-import {
-  NavigationContainer,
-  DefaultTheme,
-  DarkTheme,
-} from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // React Assets
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 // Context
 import UserContextProvider from '../context/userContext';
-import ThemeContextProvider from '../context/themeContext';
+import themeContext from '../context/themeContext';
 /* Screens */
 import Welcome from '../Screens/Welcome';
 import SignIn from '../Screens/SignIn';
@@ -22,12 +18,13 @@ import AccessCubicle from '../Screens/AccessCubicle';
 import ReservationDetails from '../Screens/ReservationDetails';
 import AvailableCubicles from '../Screens/AvailableCubicles';
 import SplashScreen from '../Screens/SplashScreen';
+/* Theme Related */
+import { EventRegister } from 'react-native-event-listeners';
+import theme from '../assets/config/theme';
 
-export default function Navigation({ colorScheme }) {
+export default function Navigation() {
   return (
-    <NavigationContainer
-      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-    >
+    <NavigationContainer>
       <RootNavigator />
     </NavigationContainer>
   );
@@ -36,8 +33,26 @@ export default function Navigation({ colorScheme }) {
 const Stack = createNativeStackNavigator();
 
 function RootNavigator() {
+  const [appearanceTheme, setAppearanceTheme] = useState('light');
+
+  useEffect(() => {
+    let eventListener = EventRegister.addEventListener(
+      'changeTheme',
+      (data) => {
+        setAppearanceTheme(data);
+        console.log(data);
+      }
+    );
+
+    return () => {
+      EventRegister.removeEventListener(eventListener);
+    };
+  }, []);
+
   return (
-    <ThemeContextProvider>
+    <themeContext.Provider
+      value={appearanceTheme === 'light' ? theme.dark : theme.light}
+    >
       <UserContextProvider>
         <Stack.Navigator
           initialRouteName='SplashScreen'
@@ -62,8 +77,12 @@ function RootNavigator() {
             component={ReservationDetails}
           />
         </Stack.Navigator>
-        <StatusBar style='auto' />
+        {appearanceTheme === 'light' ? (
+          <StatusBar style='dark' />
+        ) : (
+          <StatusBar style='light' />
+        )}
       </UserContextProvider>
-    </ThemeContextProvider>
+    </themeContext.Provider>
   );
 }

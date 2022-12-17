@@ -3,8 +3,12 @@ import RNPickerSelect from 'react-native-picker-select';
 /* Assets */
 import colors from '../assets/colors';
 import { Feather } from '@expo/vector-icons';
+import themeContext from '../context/themeContext';
+import { useContext } from 'react';
 
 const CarreraSelect = ({ carrera, setCarrera, multipleUsers }) => {
+  const theme = useContext(themeContext);
+
   const listCarreras = [
     {
       label: 'Ciencias Administrativas',
@@ -39,6 +43,18 @@ const CarreraSelect = ({ carrera, setCarrera, multipleUsers }) => {
     { label: 'Ingeniería Química', value: 'Ingeniería Química', key: 15 },
   ];
 
+  const inputIOS = {
+    height: 40,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.gray,
+    fontFamily: 'Roboto-Medium',
+    fontSize: 15,
+    color: theme.dark,
+    letterSpacing: 0.6,
+    marginTop: 5,
+    paddingRight: 30, // to ensure the text is never behind the icon
+  };
+
   return (
     <View style={styles.pickerWrapper}>
       {!multipleUsers && (
@@ -48,7 +64,65 @@ const CarreraSelect = ({ carrera, setCarrera, multipleUsers }) => {
       )}
       <RNPickerSelect
         style={
-          multipleUsers ? pickerSelectStylesMultipleUsers : pickerSelectStyles
+          multipleUsers
+            ? {
+                inputIOS: {
+                  width: '100%',
+                  marginBottom: 10,
+                  height: 40,
+                  borderBottomWidth: 1,
+                  borderBottomColor: theme.divider,
+                  fontFamily: 'Roboto-Medium',
+                  fontSize: 14,
+                  color: theme.dark,
+                  letterSpacing: 0.6,
+                  paddingRight: 30, // to ensure the text is never behind the icon
+                },
+                inputAndroid: {
+                  width: '100%',
+                  marginBottom: 10,
+                  height: 40,
+                  borderBottomWidth: 1,
+                  borderBottomColor: theme.divider,
+                  fontFamily: 'Roboto-Medium',
+                  fontSize: 14,
+                  color: theme.dark,
+                  letterSpacing: 0.6,
+                  paddingRight: 30, // to ensure the text is never behind the icon
+                },
+                iconContainer: {
+                  top: 10,
+                  right: 10,
+                },
+              }
+            : {
+                inputIOS: {
+                  height: 40,
+                  borderBottomWidth: 1,
+                  borderBottomColor: colors.gray,
+                  fontFamily: 'Roboto-Medium',
+                  fontSize: 15,
+                  color: theme.dark,
+                  letterSpacing: 0.6,
+                  marginTop: 5,
+                  paddingRight: 30, // to ensure the text is never behind the icon
+                },
+                inputAndroid: {
+                  height: 40,
+                  borderBottomWidth: 1,
+                  borderBottomColor: colors.gray,
+                  fontFamily: 'Roboto-Medium',
+                  fontSize: 15,
+                  color: theme.dark,
+                  letterSpacing: 0.6,
+                  marginTop: 5,
+                  paddingRight: 30, // to ensure the text is never behind the icon
+                },
+                iconContainer: {
+                  top: 10,
+                  right: 10,
+                },
+              }
         }
         onValueChange={(value) => {
           if (multipleUsers) {
@@ -69,7 +143,7 @@ const CarreraSelect = ({ carrera, setCarrera, multipleUsers }) => {
             <Feather
               name='chevron-down'
               size={multipleUsers ? 18 : 24}
-              color={colors.gray}
+              color={theme.gray}
             />
           );
         }}
@@ -79,66 +153,6 @@ const CarreraSelect = ({ carrera, setCarrera, multipleUsers }) => {
 };
 
 export default CarreraSelect;
-
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    height: 40,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.gray,
-    fontFamily: 'Roboto-Medium',
-    fontSize: 15,
-    color: colors.dark,
-    letterSpacing: 0.6,
-    marginTop: 5,
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-  inputAndroid: {
-    height: 40,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.gray,
-    fontFamily: 'Roboto-Medium',
-    fontSize: 15,
-    color: colors.dark,
-    letterSpacing: 0.6,
-    marginTop: 5,
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-  iconContainer: {
-    top: 10,
-    right: 10,
-  },
-});
-
-const pickerSelectStylesMultipleUsers = StyleSheet.create({
-  inputIOS: {
-    width: '100%',
-    marginBottom: 10,
-    height: 40,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.light,
-    fontFamily: 'Roboto-Medium',
-    fontSize: 14,
-    color: colors.dark,
-    letterSpacing: 0.6,
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-  inputAndroid: {
-    width: '100%',
-    marginBottom: 10,
-    height: 40,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.light,
-    fontFamily: 'Roboto-Medium',
-    fontSize: 14,
-    color: colors.dark,
-    letterSpacing: 0.6,
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-  iconContainer: {
-    top: 10,
-    right: 10,
-  },
-});
 
 const styles = StyleSheet.create({
   titleContainer: {

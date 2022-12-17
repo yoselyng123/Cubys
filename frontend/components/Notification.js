@@ -1,15 +1,16 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import React, { useContext } from 'react';
 /* Assets */
-import Tag from './Tag';
 import colors from '../assets/colors';
-import { Ionicons } from '@expo/vector-icons';
+import themeContext from '../context/themeContext';
 
 const Notification = ({ read = false }) => {
+  const theme = useContext(themeContext);
+
   const tagColor = read ? colors.gray : colors.purple;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.white }]}>
       <View
         style={{
           borderColor: tagColor,
@@ -18,11 +19,14 @@ const Notification = ({ read = false }) => {
         }}
       >
         <View style={styles.infoWrapper}>
-          <Text style={styles.title}>Reminder</Text>
-          <Text style={styles.timeAgo}>5 min ago</Text>
+          <Text style={[styles.title, { color: theme.dark }]}>Reminder</Text>
+          <Text style={[styles.timeAgo, { color: theme.gray }]}>5 min ago</Text>
         </View>
         <View style={styles.descriptionContainer}>
-          <Text numberOfLines={1} style={styles.description}>
+          <Text
+            numberOfLines={1}
+            style={[styles.description, { color: theme.gray }]}
+          >
             Remember your reservation for cubicle #5 for tomorrow
           </Text>
         </View>
@@ -53,19 +57,16 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto-Medium',
     fontSize: 16,
     letterSpacing: 0.6,
-    color: colors.dark,
   },
   timeAgo: {
     fontFamily: 'Roboto-Medium',
     fontSize: 16,
     letterSpacing: 0.6,
-    color: colors.gray,
   },
   description: {
     fontFamily: 'Roboto-Medium',
     fontSize: 16,
     letterSpacing: 0.6,
-    color: colors.gray,
     marginTop: 5,
   },
 });

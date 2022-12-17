@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,8 +9,10 @@ import {
 import colors from '../assets/colors';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import RNPickerSelect from 'react-native-picker-select';
+import themeContext from '../context/themeContext';
 
 const InfoAvailability = ({ label, content, setContent, error }) => {
+  const theme = useContext(themeContext);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const momentDate = new Date();
 
@@ -69,14 +71,19 @@ const InfoAvailability = ({ label, content, setContent, error }) => {
       <Text style={styles.label}>{label}</Text>
       {label !== 'Piso' ? (
         <TouchableOpacity activeOpacity={0.7} onPress={showDatePicker}>
-          <View style={styles.infoContentWrapper}>
+          <View
+            style={[
+              styles.infoContentWrapper,
+              { backgroundColor: theme.white },
+            ]}
+          >
             <TextInput
               value={content}
               style={[
                 styles.infoContent,
                 label !== 'Fecha' && error
-                  ? { color: '#E27188' }
-                  : { color: '#000' },
+                  ? { color: theme.red }
+                  : { color: theme.dark },
               ]}
               onPressIn={showDatePicker}
               caretHidden={true}
@@ -84,7 +91,9 @@ const InfoAvailability = ({ label, content, setContent, error }) => {
           </View>
         </TouchableOpacity>
       ) : (
-        <View style={styles.infoContentWrapper}>
+        <View
+          style={[styles.infoContentWrapper, { backgroundColor: theme.white }]}
+        >
           <RNPickerSelect
             onValueChange={(value) => {
               setContent(value);
@@ -101,12 +110,14 @@ const InfoAvailability = ({ label, content, setContent, error }) => {
                 fontSize: 15,
                 letterSpacing: 0.6,
                 lineHeight: 18,
+                color: theme.dark,
               },
               inputIOS: {
                 fontFamily: 'Roboto-Medium',
                 fontSize: 15,
                 letterSpacing: 0.6,
                 lineHeight: 18,
+                color: theme.dark,
               },
             }}
             placeholder={{

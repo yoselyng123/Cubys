@@ -1,8 +1,22 @@
+import { useContext } from 'react';
 import { View, StyleSheet } from 'react-native';
 import colors from '../assets/colors';
+import themeContext from '../context/themeContext';
 
-const SectionDivider = ({ marginBottom }) => {
-  return <View style={[styles.container, { marginBottom: marginBottom }]} />;
+const SectionDivider = ({ marginBottom, marginTop }) => {
+  const theme = useContext(themeContext);
+  return (
+    <View
+      style={[
+        styles.container,
+        {
+          marginBottom: marginBottom,
+          borderBottomColor: theme.divider,
+          marginTop: marginTop,
+        },
+      ]}
+    />
+  );
 };
 
 export default SectionDivider;

@@ -1,30 +1,36 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 /* Assets */
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import colors from '../assets/colors';
+import themeContext from '../context/themeContext';
 
 const Card = ({ title, subtitle, icon, reservedNumber }) => {
+  const theme = useContext(themeContext);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.white }]}>
       <View style={styles.topWrapper}>
-        <Text style={styles.title}>{title}</Text>
-        <Ionicons name='chevron-forward' size={24} color='black' />
+        <Text style={[styles.title, { color: theme.dark }]}>{title}</Text>
+        <Ionicons name='chevron-forward' size={24} color={theme.dark} />
       </View>
       {title !== 'Reservaciones' ? (
         <Text
           style={[
             styles.availability,
+            { color: theme.dark },
             title === 'Botón de Acceso' && { fontSize: 25 },
           ]}
         >
           {subtitle}
         </Text>
       ) : (
-        <Text style={styles.reservedNumber}>
+        <Text style={[styles.reservedNumber, { color: theme.dark }]}>
           {reservedNumber}
-          <Text style={styles.reservedAvailability}>/1</Text>
+          <Text style={[styles.reservedAvailability, { color: theme.dark }]}>
+            /1
+          </Text>
         </Text>
       )}
       <View style={styles.iconWrapper}>{icon ? icon : null}</View>

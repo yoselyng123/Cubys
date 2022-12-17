@@ -2,6 +2,7 @@ import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useContext } from 'react';
 import colors from '../assets/colors';
 import { userContext } from '../context/userContext';
+import themeContext from '../context/themeContext';
 
 const CubicleMomentaneo = ({
   cubicle,
@@ -9,10 +10,12 @@ const CubicleMomentaneo = ({
   resInfo,
   inputValidation,
 }) => {
+  const theme = useContext(themeContext);
+
   const { myReservations } = useContext(userContext);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.white }]}>
       <TouchableOpacity
         activeOpacity={0.6}
         onPress={() => {
@@ -39,12 +42,12 @@ const CubicleMomentaneo = ({
         <View style={styles.contentWrapper}>
           <View style={styles.contentLeft}>
             <View style={styles.topInfoSection}>
-              <Text style={styles.cubicleText}>
+              <Text style={[styles.cubicleText, { color: theme.dark }]}>
                 Cubicle #{cubicle.cubicleNumber}
               </Text>
               <Text style={styles.floorText}>{cubicle.floor}st Floor</Text>
             </View>
-            <View style={styles.bottomInfoSection}>
+            <View>
               <Text style={styles.salaText}>{cubicle.sala}</Text>
             </View>
           </View>
@@ -91,7 +94,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '62%',
   },
-  bottomInfoSection: {},
   cubicleText: {
     fontFamily: 'Roboto-Medium',
     fontSize: 15,

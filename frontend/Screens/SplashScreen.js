@@ -3,8 +3,11 @@ import { View, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { userContext } from '../context/userContext';
+import themeContext from '../context/themeContext';
 
 const SplashScreen = () => {
+  const theme = useContext(themeContext);
+
   const navigation = useNavigation();
   const { setToken } = useContext(userContext);
 
@@ -28,7 +31,13 @@ const SplashScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center' }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: theme.background,
+      }}
+    >
       <ActivityIndicator />
     </View>
   );
