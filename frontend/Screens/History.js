@@ -1,12 +1,57 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+} from 'react-native';
+import { useEffect } from 'react';
 /* Assets */
 import colors from '../assets/colors';
 /* Components */
 import Header from '../components/Header';
 import Reservation from '../components/Reservation';
+import { gql, useMutation, useQuery } from '@apollo/client';
+
+const GET_RESERVATIONS_BY_STATUS = gql`
+  query getMyReservationsByStatus($completed: Boolean!) {
+    getReservationsByStatus(completed: $completed) {
+      id
+      createdBy
+      startTime
+      endTime
+      date
+      cubicleID
+      completed
+      companions {
+        carnet
+        carrera
+        name
+      }
+    }
+  }
+`;
 
 const History = ({ navigation }) => {
+  const {
+    loading: loadingReservationsTrue,
+    error: errorReservationsTrue,
+    data: dataReservationsTrue,
+    refetch: refetchReservationsTrue,
+  } = useQuery(GET_RESERVATIONS_BY_STATUS, {
+    variables: { completed: true },
+  });
+
+  useEffect(() => {
+    refetchReservationsTrue();
+  }, []);
+
+  useEffect(() => {
+    if (dataReservationsTrue) {
+      refetchReservationsTrue();
+    }
+  }, [dataReservationsTrue]);
+
   return (
     <View style={styles.container}>
       <Header
@@ -32,7 +77,21 @@ const History = ({ navigation }) => {
           style={styles.scrollview}
         >
           <View style={styles.scrollContainer}>
-            <Text>Reservation goes here</Text>
+            {!loadingReservationsTrue ? (
+              dataReservationsTrue.getReservationsByStatus.map(
+                (reservation, index) => {
+                  return (
+                    <Reservation
+                      key={index}
+                      info={reservation}
+                      id={reservation.cubicleID}
+                    />
+                  );
+                }
+              )
+            ) : (
+              <ActivityIndicator size='small' color='#000' />
+            )}
           </View>
         </ScrollView>
       </View>

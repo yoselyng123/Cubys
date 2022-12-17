@@ -3,6 +3,7 @@ import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import colors from '../assets/colors';
 import { useState, useEffect, useContext } from 'react';
 import { userContext } from '../context/userContext';
+import dayjs from 'dayjs';
 /* Components */
 import Header from '../components/Header';
 import InfoAvailability from '../components/InfoAvailability';
@@ -23,6 +24,7 @@ const GET_RESERVATIONS = gql`
         carrera
         carnet
       }
+      completed
     }
   }
 `;
@@ -39,6 +41,7 @@ const GET_RESERVATIONS_BY_DATE = gql`
         carrera
         name
       }
+      completed
     }
   }
 `;
@@ -47,9 +50,11 @@ const AvailableCubicles = ({ navigation }) => {
   const { cubiclesList } = useContext(userContext);
 
   const [filteredCubicles, setFilteredCubicles] = useState(cubiclesList);
-  const [date, setDate] = useState('');
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [date, setDate] = useState(dayjs().locale('es').format('DD MMM YYYY'));
+  const [startTime, setStartTime] = useState(dayjs().format('h:mma'));
+  const [endTime, setEndTime] = useState(
+    dayjs().add(2, 'hour').format('h:mma')
+  );
   const [floor, setFloor] = useState('1');
   const [error, setError] = useState(false);
 
@@ -110,9 +115,8 @@ const AvailableCubicles = ({ navigation }) => {
     }
 
     return (
-      outOfWorkingHoursValidation() &&
-      endTimeHigherThanStartTime() &&
-      twoHoursMaxValidation()
+      // outOfWorkingHoursValidation() &&
+      endTimeHigherThanStartTime() && twoHoursMaxValidation()
     );
   };
 
@@ -172,7 +176,7 @@ const AvailableCubicles = ({ navigation }) => {
           r++
         ) {
           const reservation = dataReservations.getReservationsByDate[r];
-          if (reservation.cubicleID === cubicle.id) {
+          if (reservation.cubicleID === cubicle.id && !reservation.completed) {
             if (
               (parseMilitarHoursFormat(startTime) >=
                 parseMilitarHoursFormat(reservation.startTime) &&
@@ -227,33 +231,18 @@ const AvailableCubicles = ({ navigation }) => {
   }, [dataReservations]);
 
   useEffect(() => {
-    let month = new Date().toString().split(' ')[1];
-    let day = new Date().toString().split(' ')[2];
-    let year = new Date().toString().split(' ')[3];
-    let hour = new Date().toString().split(' ')[4].split(':')[0];
-    let min = new Date().toString().split(' ')[4].split(':')[0];
-    let timeZone = '';
-    if (hour < 12) {
-      timeZone = 'am';
-    } else {
-      timeZone = 'pm';
-      if (hour > 12) {
-        hour = hour - 12;
-      }
-    }
-    if (hour === '12') {
-      let endTimeNumber = parseInt(2);
-      setEndTime(`${endTimeNumber}:${min}${timeZone}`);
-    } else {
-      let endTimeNumber = parseInt(hour) + 2;
-      setEndTime(`${endTimeNumber}:${min}${timeZone}`);
-    }
-    setStartTime(`${hour}:${min}${timeZone}`);
-
-    setDate(`${day} ${month} ${year}`);
-
+    setInterval(() => {
+      setStartTime(dayjs().format('h:mma'));
+      setEndTime(dayjs().add(2, 'hour').format('h:mma'));
+    }, 1000 * 60);
     refetchReservations({ date });
     checkCubiclesAvailability();
+    return () => {
+      clearInterval(startTime);
+      clearInterval(endTime);
+      setStartTime('');
+      setEndTime('');
+    };
   }, []);
 
   useEffect(() => {

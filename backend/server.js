@@ -32,17 +32,15 @@ const typeDefs = gql`
     getCubicles: [Cubicle!]!
     getCubicleByID(id: ID!): Cubicle!
     getReservationsByDate(date: String!): [Reservation!]!
+    getReservationsByStatus(completed: Boolean!): [Reservation!]!
+    getMyReservationsByStatus(completed: Boolean!): [Reservation!]!
   }
   type Mutation {
     signUp(input: SignUpInput!): AuthUser
     signIn(input: SignInInput!): AuthUser
     updateUser(id: ID!, password: String!): AuthUser!
     createReservation(input: CreateReservationInput!): Reservation!
-    updateReservation(
-      startTime: String!
-      endTime: String!
-      id: ID!
-    ): Reservation!
+    updateReservationStatus(id: ID!, completed: Boolean!): Reservation!
     deleteReservation(id: ID!): Boolean
   }
 
@@ -64,6 +62,7 @@ const typeDefs = gql`
     endTime: String!
     date: String!
     companions: [CreateCompanion!]!
+    completed: Boolean
   }
   input CreateCompanion {
     name: String!
@@ -105,6 +104,7 @@ const typeDefs = gql`
     createdBy: ID!
     companions: [Companion!]!
     date: String!
+    completed: Boolean!
   }
 `;
 
@@ -134,6 +134,9 @@ const resolvers = {
       return result;
     },
     getCubicles: async (_, __, { db, user }) => {
+      if (!user) {
+        throw new Error('Authentication Error. Please sign in');
+      }
       return await db.collection('Cubicles').find().toArray();
     },
     getCubicleByID: async (_, { id }, { db, user }) => {
@@ -146,7 +149,26 @@ const resolvers = {
       if (!user) {
         throw new Error('Authentication Error. Please sign in');
       }
-      return await db.collection('Reservations').find({ date: date }).toArray();
+      return await db.collection('Reservations').find({ date }).toArray();
+    },
+    getReservationsByStatus: async (_, { completed }, { db, user }) => {
+      if (!user) {
+        throw new Error('Authentication Error. Please sign in');
+      }
+      return await db
+        .collection('Reservations')
+        .find({ completed: completed })
+        .toArray();
+    },
+
+    getMyReservationsByStatus: async (_, { completed }, { db, user }) => {
+      if (!user) {
+        throw new Error('Authentication Error. Please sign in');
+      }
+      return await db
+        .collection('Reservations')
+        .find({ completed: completed, createdBy: user.id })
+        .toArray();
     },
   },
   Mutation: {
@@ -177,6 +199,28 @@ const resolvers = {
         token: getToken(user),
       };
     },
+    updateUser: async (_, { id, password }, { db, user }) => {
+      if (!user) {
+        throw new Error('Authentication Error. Please sign in');
+      }
+
+      const hashedPassword = bcrypt.hashSync(password);
+      await db
+        .collection('Users')
+        .updateOne(
+          { _id: ObjectId(id) },
+          { $set: { password: hashedPassword } }
+        );
+
+      const authUser = await db
+        .collection('Users')
+        .findOne({ _id: ObjectId(id) });
+
+      return {
+        user: authUser,
+        token: getToken(authUser),
+      };
+    },
     createReservation: async (_, { input }, { db, user }) => {
       if (!user) {
         throw new Error('Authentication Error. Please sign in');
@@ -186,24 +230,17 @@ const resolvers = {
       const insertedReservation = await db
         .collection('Reservations')
         .findOne({ _id: result.insertedId });
-      // Change availability in Cubicle from True to False
-      const availability = false;
-      await db
-        .collection('Cubicles')
-        .updateOne(
-          { _id: ObjectId(insertedReservation.cubicleID) },
-          { $set: { availability } }
-        );
+
       return insertedReservation;
     },
-    updateReservation: async (_, { id, startTime, endTime }, { db, user }) => {
+    updateReservationStatus: async (_, { id, completed }, { db, user }) => {
       if (!user) {
         throw new Error('Authentication Error. Please sign in');
       }
 
       await db
         .collection('Reservations')
-        .updateOne({ _id: ObjectId(id) }, { $set: { startTime, endTime } });
+        .updateOne({ _id: ObjectId(id) }, { $set: { completed } });
 
       return await db.collection('Reservations').findOne({ _id: ObjectId(id) });
     },
@@ -233,28 +270,6 @@ const resolvers = {
       } else {
         return false;
       }
-    },
-    updateUser: async (_, { id, password }, { db, user }) => {
-      if (!user) {
-        throw new Error('Authentication Error. Please sign in');
-      }
-
-      const hashedPassword = bcrypt.hashSync(password);
-      await db
-        .collection('Users')
-        .updateOne(
-          { _id: ObjectId(id) },
-          { $set: { password: hashedPassword } }
-        );
-
-      const authUser = await db
-        .collection('Users')
-        .findOne({ _id: ObjectId(id) });
-
-      return {
-        user: authUser,
-        token: getToken(authUser),
-      };
     },
   },
   User: {

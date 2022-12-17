@@ -10,6 +10,8 @@ import React, { useContext, useEffect, useState } from 'react';
 /* Assets */
 import colors from '../assets/colors';
 import { userContext } from '../context/userContext';
+import dayjs from 'dayjs';
+import { es } from 'dayjs/locale/es';
 /* Components */
 import Header from '../components/Header';
 import Reservation from '../components/Reservation';
@@ -17,24 +19,6 @@ import CardsList from '../components/CardsList';
 /* APOLLO SERVER */
 import { useQuery, useMutation, gql } from '@apollo/client';
 import SectionDivider from '../components/SectionDivider';
-
-const GET_RESERVATIONS = gql`
-  query getMyReservations {
-    getMyReservations {
-      id
-      cubicleID
-      createdBy
-      startTime
-      endTime
-      date
-      companions {
-        name
-        carrera
-        carnet
-      }
-    }
-  }
-`;
 
 const GET_CUBICLES = gql`
   query getCubicles {
@@ -47,14 +31,22 @@ const GET_CUBICLES = gql`
   }
 `;
 
-const GET_ALL_RESERVATIONS = gql`
-  query getAllReservations {
-    getAllReservations {
+const DELETE_RESERVATION_MUTATION = gql`
+  mutation deleteReservation($id: ID!) {
+    deleteReservation(id: $id)
+  }
+`;
+
+const GET_RESERVATIONS_BY_STATUS = gql`
+  query getMyReservationsByStatus($completed: Boolean!) {
+    getReservationsByStatus(completed: $completed) {
       id
       startTime
       endTime
       date
       cubicleID
+      completed
+      createdBy
       companions {
         name
         carrera
@@ -64,9 +56,22 @@ const GET_ALL_RESERVATIONS = gql`
   }
 `;
 
-const DELETE_RESERVATION_MUTATION = gql`
-  mutation deleteReservation($id: ID!) {
-    deleteReservation(id: $id)
+const UPDATE_RESERVATION_STATUS = gql`
+  mutation updateReservationStatus($id: ID!, $completed: Boolean!) {
+    updateReservationStatus(id: $id, completed: $completed) {
+      id
+      createdBy
+      startTime
+      endTime
+      date
+      cubicleID
+      completed
+      companions {
+        carnet
+        carrera
+        name
+      }
+    }
   }
 `;
 
@@ -74,49 +79,128 @@ const Home = ({ navigation }) => {
   const [pressedCancel, setPressedCancel] = useState(false);
   const [reservedNumber, setReservedNumber] = useState(0);
   const [availableCubicles, setAvailableCubicles] = useState(0);
+  const [historialCount, setHistorialCount] = useState(0);
+  const [currentDate, setCurrentDate] = useState(dayjs());
+  //const [currentTime, setCurrentTime] = useState(dayjs().format('hh:mma'));
 
+  // TODO TRAER TODAS LAS RESERVACIONES EN TRUE Y EN FALSE DEL USUARIO
+  // REVISAR LAS QUE ESTAN EN FALSE PARA SABER SI YA ESTAN VENCIDAS
+  // REVISAR GETMYRESERVATIONS
   const { setMyReservations, myReservations, setCubiclesList } =
     useContext(userContext);
 
-  const [deleteReservation] = useMutation(DELETE_RESERVATION_MUTATION, {
-    onCompleted: () => {
-      setPressedCancel(false);
+  const [deleteReservation, { loading: loadingDeleteReservation }] =
+    useMutation(DELETE_RESERVATION_MUTATION, {
+      onCompleted: () => {
+        setPressedCancel(false);
+        Alert.alert('Se ha cancelado la reservación');
+        //refetchAllReservations();
+      },
+      onError: () => {
+        Alert.alert(
+          'No se pudo cancelar la reservación. Por favor intente de nuevo'
+        );
+      },
+    });
+
+  useEffect(() => {
+    if (!loadingDeleteReservation) {
       setMyReservations([]);
-      Alert.alert('Se ha cancelado la reservación');
-      refetchReservations();
-      //refetchAllReservations();
-    },
-    onError: () => {
-      Alert.alert(
-        'No se pudo cancelar la reservación. Por favor intente de nuevo'
-      );
-    },
-  });
+    }
+  }, [loadingDeleteReservation]);
 
   const {
-    loading: loadingReservations,
-    error: errorReservations,
-    data: dataReservations,
-    refetch: refetchReservations,
-  } = useQuery(GET_RESERVATIONS, {
-    onCompleted: (data) => {
-      setReservedNumber(data.getMyReservations.length);
-    },
+    loading: loadingReservationsFalse,
+    error: errorReservationsFalse,
+    data: dataReservationsFalse,
+    refetch: refetchReservationsFalse,
+  } = useQuery(GET_RESERVATIONS_BY_STATUS, {
+    variables: { completed: false },
   });
-  // const {
-  //   loading: loadingAllReservations,
-  //   error: errorAllReservations,
-  //   data: dataAllReservations,
-  //   refetch: refetchAllReservations,
-  // } = useQuery(GET_ALL_RESERVATIONS);
+
+  const parseMilitarHoursFormat = (hour) => {
+    var newHour = hour.split(':')[0];
+    if (hour.split(':')[1].substring(2, 4) === 'pm') {
+      if (newHour === '12') {
+        newHour = Number(newHour);
+      } else {
+        newHour = Number(newHour) + 12;
+      }
+    }
+    var minutes = hour.split(':')[1].slice(0, 2);
+
+    return newHour + minutes;
+  };
+
+  const checkIfCompleted = () => {
+    if (myReservations.length > 0) {
+      var emptyArray = [];
+      for (let r = 0; r < myReservations.length; r++) {
+        const reservation = myReservations[r];
+        // FIXME: REVISAR NUNCA ENTRA A ENTRO AQUI
+        // Siempre cae en el caso Cambio a True, fechas diferentes
+        if (
+          reservation.date === currentDate.locale('es').format('DD MMM YYYY') &&
+          parseMilitarHoursFormat(currentDate.format('h:mma')) >
+            parseMilitarHoursFormat(reservation.endTime) &&
+          !reservation.completed
+        ) {
+          setMyReservations(emptyArray);
+          updateReservationStatus({
+            variables: { id: reservation.id, completed: true },
+          });
+        } else if (
+          reservation.date !== currentDate.locale('es').format('DD MMM YYYY') &&
+          !reservation.completed
+        ) {
+          updateReservationStatus({
+            variables: { id: reservation.id, completed: true },
+          });
+          setMyReservations(emptyArray);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (dataReservationsFalse) {
+      setMyReservations(dataReservationsFalse.getReservationsByStatus);
+      checkIfCompleted();
+    }
+  }, [dataReservationsFalse]);
+
+  const {
+    loading: loadingReservationsTrue,
+    error: errorReservationsTrue,
+    data: dataReservationsTrue,
+    refetch: refetchReservationsTrue,
+  } = useQuery(GET_RESERVATIONS_BY_STATUS, {
+    variables: { completed: true },
+  });
+
+  useEffect(() => {
+    if (dataReservationsTrue) {
+      setHistorialCount(dataReservationsTrue.getReservationsByStatus.length);
+    }
+  }, [dataReservationsTrue]);
+
+  const [updateReservationStatus, { data: dataUpdateReservationStatus }] =
+    useMutation(UPDATE_RESERVATION_STATUS);
+
+  useEffect(() => {
+    if (dataUpdateReservationStatus) {
+      setMyReservations([]);
+      refetchReservationsTrue();
+    }
+  }, [dataUpdateReservationStatus]);
 
   const {
     loading: loadingCubicles,
     error: errorCubicles,
     data: dataCubicles,
   } = useQuery(GET_CUBICLES, {
-    onCompleted: () => {
-      setAvailableCubicles(6);
+    onCompleted: (data) => {
+      setAvailableCubicles(data.getCubicles.length);
     },
   });
 
@@ -135,18 +219,24 @@ const Home = ({ navigation }) => {
 
   if (errorCubicles) return Alert.alert(`Error! ${errorCubicles.message}`);
 
-  if (errorReservations)
-    return Alert.alert(`Error! ${errorReservations.message}`);
-
   useEffect(() => {
-    refetchReservations();
+    setInterval(() => {
+      setCurrentDate(dayjs());
+    }, 1000 * 60);
+    return () => {
+      clearInterval(currentDate);
+      setCurrentDate('');
+    };
   }, []);
 
   useEffect(() => {
-    if (dataReservations) {
-      setMyReservations(dataReservations.getMyReservations);
-    }
-  }, [dataReservations]);
+    refetchReservationsFalse();
+    checkIfCompleted();
+  }, [myReservations]);
+
+  useEffect(() => {
+    checkIfCompleted();
+  }, [currentDate]);
 
   return (
     <View style={styles.container}>
@@ -160,26 +250,23 @@ const Home = ({ navigation }) => {
           <Text style={styles.greetingsText}>
             Reserva un cubículo cuando quieras.
           </Text>
-
           {/* Cards */}
           <CardsList
             navigation={navigation}
             reservedNumber={myReservations.length}
-            loadingReservations={loadingReservations}
             availableCubicles={availableCubicles}
             loadingCubicles={loadingCubicles}
+            historialCount={historialCount}
           />
-
           {/* Separation Line */}
           <SectionDivider marginBottom={20} />
           <Text style={styles.reservationsTitle}>Próximas Reservaciones</Text>
-          {loadingReservations ? (
+          {loadingReservationsFalse ? (
             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
               <ActivityIndicator size='small' color='#FFF' />
             </View>
-          ) : dataReservations.getMyReservations &&
-            dataReservations.getMyReservations.length > 0 ? (
-            dataReservations.getMyReservations.map((reservation, index) => {
+          ) : myReservations.length > 0 ? (
+            myReservations.map((reservation, index) => {
               return (
                 <Reservation
                   key={index}
@@ -191,7 +278,7 @@ const Home = ({ navigation }) => {
               );
             })
           ) : (
-            <Text style={styles.noReservationsText}>No reservations</Text>
+            <Text style={styles.noReservationsText}>No hay reservaciones</Text>
           )}
         </View>
       </ScrollView>

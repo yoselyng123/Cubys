@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import React from 'react';
+import { useState } from 'react';
 import { RadioButton } from 'react-native-paper';
 /* Assets */
 import colors from '../assets/colors';
@@ -14,10 +14,9 @@ import { MaterialIcons } from '@expo/vector-icons';
 import Header from '../components/Header';
 
 const Settings = () => {
-  const [appearanceChecked, setAppearanceChecked] = React.useState('first');
-  const [notificationsChecked, setNotificationsChecked] =
-    React.useState('first');
-  const [languageChecked, setLanguageChecked] = React.useState('first');
+  const [appearanceChecked, setAppearanceChecked] = useState('first');
+  const [notificationsChecked, setNotificationsChecked] = useState('first');
+  const [languageChecked, setLanguageChecked] = useState('first');
 
   return (
     <View style={styles.container}>
@@ -56,15 +55,20 @@ const Settings = () => {
                       color={colors.purple}
                       uncheckedColor={colors.gray}
                     />
-                    <Text
-                      style={
-                        appearanceChecked === 'first'
-                          ? styles.radiobuttonItemTextSelected
-                          : styles.radiobuttonItemTextUnselected
-                      }
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => setAppearanceChecked('first')}
                     >
-                      Light
-                    </Text>
+                      <Text
+                        style={
+                          appearanceChecked === 'first'
+                            ? styles.radiobuttonItemTextSelected
+                            : styles.radiobuttonItemTextUnselected
+                        }
+                      >
+                        Light
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                   <View style={styles.radiobuttonItem}>
                     <RadioButton
@@ -76,15 +80,20 @@ const Settings = () => {
                       color={colors.purple}
                       uncheckedColor={colors.gray}
                     />
-                    <Text
-                      style={
-                        appearanceChecked === 'second'
-                          ? styles.radiobuttonItemTextSelected
-                          : styles.radiobuttonItemTextUnselected
-                      }
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => setAppearanceChecked('second')}
                     >
-                      Dark
-                    </Text>
+                      <Text
+                        style={
+                          appearanceChecked === 'second'
+                            ? styles.radiobuttonItemTextSelected
+                            : styles.radiobuttonItemTextUnselected
+                        }
+                      >
+                        Dark
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>
@@ -112,15 +121,20 @@ const Settings = () => {
                       color={colors.purple}
                       uncheckedColor={colors.gray}
                     />
-                    <Text
-                      style={
-                        notificationsChecked === 'first'
-                          ? styles.radiobuttonItemTextSelected
-                          : styles.radiobuttonItemTextUnselected
-                      }
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => setNotificationsChecked('first')}
                     >
-                      Show
-                    </Text>
+                      <Text
+                        style={
+                          notificationsChecked === 'first'
+                            ? styles.radiobuttonItemTextSelected
+                            : styles.radiobuttonItemTextUnselected
+                        }
+                      >
+                        Show
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                   <View style={styles.radiobuttonItem}>
                     <RadioButton
@@ -134,15 +148,20 @@ const Settings = () => {
                       color={colors.purple}
                       uncheckedColor={colors.gray}
                     />
-                    <Text
-                      style={
-                        notificationsChecked === 'second'
-                          ? styles.radiobuttonItemTextSelected
-                          : styles.radiobuttonItemTextUnselected
-                      }
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => setNotificationsChecked('second')}
                     >
-                      Hide
-                    </Text>
+                      <Text
+                        style={
+                          notificationsChecked === 'second'
+                            ? styles.radiobuttonItemTextSelected
+                            : styles.radiobuttonItemTextUnselected
+                        }
+                      >
+                        Hide
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>
@@ -168,15 +187,20 @@ const Settings = () => {
                       color={colors.purple}
                       uncheckedColor={colors.gray}
                     />
-                    <Text
-                      style={
-                        languageChecked === 'first'
-                          ? styles.radiobuttonItemTextSelected
-                          : styles.radiobuttonItemTextUnselected
-                      }
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => setLanguageChecked('first')}
                     >
-                      English
-                    </Text>
+                      <Text
+                        style={
+                          languageChecked === 'first'
+                            ? styles.radiobuttonItemTextSelected
+                            : styles.radiobuttonItemTextUnselected
+                        }
+                      >
+                        English
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                   <View style={styles.radiobuttonItem}>
                     <RadioButton
@@ -188,15 +212,20 @@ const Settings = () => {
                       color={colors.purple}
                       uncheckedColor={colors.gray}
                     />
-                    <Text
-                      style={
-                        languageChecked === 'second'
-                          ? styles.radiobuttonItemTextSelected
-                          : styles.radiobuttonItemTextUnselected
-                      }
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => setLanguageChecked('second')}
                     >
-                      Español
-                    </Text>
+                      <Text
+                        style={
+                          languageChecked === 'second'
+                            ? styles.radiobuttonItemTextSelected
+                            : styles.radiobuttonItemTextUnselected
+                        }
+                      >
+                        Español
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>

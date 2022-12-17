@@ -15,11 +15,12 @@ const CardsList = ({
   reservedNumber,
   availableCubicles,
   loadingCubicles,
+  historialCount,
 }) => {
   const windowWidth = Dimensions.get('window').width;
   const cardWidth = (windowWidth - 32) / 2 - 9;
 
-  const { lockStatus, myReservations } = useContext(userContext);
+  const { lockStatus } = useContext(userContext);
 
   return (
     <View style={styles.cardsWrapper}>
@@ -115,7 +116,7 @@ const CardsList = ({
         >
           <Card
             title='Historial'
-            subtitle='9'
+            subtitle={historialCount}
             icon={
               <MaterialIcons name='restore' size={38} color={colors.purple} />
             }

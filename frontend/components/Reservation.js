@@ -47,6 +47,18 @@ const Reservation = ({ info, id, deleteReservation, pressedCancel }) => {
     );
   };
 
+  const handleFloorShowcase = (floor) => {
+    if (floor === '1') {
+      return '1er Piso';
+    } else if (floor === '2') {
+      return '2do Piso';
+    } else if (floor === '3') {
+      return '3er Piso';
+    } else {
+      return null;
+    }
+  };
+
   if (loading) {
     return <View style={styles.containerLoading}></View>;
   } else {
@@ -61,7 +73,7 @@ const Reservation = ({ info, id, deleteReservation, pressedCancel }) => {
         >
           <View style={styles.infoWrapper}>
             <View style={styles.LeftInfoWrapper}>
-              {loading ? (
+              {loading && data.getCubicleByID ? (
                 <View style={styles.LeftInfoWrapper}>
                   <Text style={styles.idCubicle}>Cubicle #</Text>
                   <Text style={styles.cubicleFloor}>Floor</Text>
@@ -72,27 +84,31 @@ const Reservation = ({ info, id, deleteReservation, pressedCancel }) => {
                     Cubicle #{data.getCubicleByID.cubicleNumber}
                   </Text>
                   <Text style={styles.cubicleFloor}>
-                    {data.getCubicleByID.floor}nd Floor
+                    {handleFloorShowcase(data.getCubicleByID.floor)}
                   </Text>
                 </View>
               )}
             </View>
-            <TouchableOpacity
-              style={styles.rightInfoWrapper}
-              activeOpacity={0.7}
-              onPress={() => handleDeleteReservation()}
-              disabled={pressedCancel}
-            >
-              <Text
-                style={
-                  pressedCancel
-                    ? [styles.cancelRes, { opacity: 0.5 }]
-                    : styles.cancelRes
-                }
+            {deleteReservation || pressedCancel ? (
+              <TouchableOpacity
+                style={styles.rightInfoWrapper}
+                activeOpacity={0.7}
+                onPress={() => handleDeleteReservation()}
+                disabled={pressedCancel}
               >
-                Cancelar
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={
+                    pressedCancel
+                      ? [styles.cancelRes, { opacity: 0.5 }]
+                      : styles.cancelRes
+                  }
+                >
+                  Cancelar
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <View style={styles.rightInfoWrapper}></View>
+            )}
           </View>
           <View style={styles.tagsWrapper}>
             <Tag name='x4' icon='person' />

@@ -26,6 +26,7 @@ const CREATE_RESERVATION = gql`
     $cubicleID: ID!
     $companions: [CreateCompanion!]!
     $date: String!
+    $completed: Boolean
   ) {
     createReservation(
       input: {
@@ -34,6 +35,7 @@ const CREATE_RESERVATION = gql`
         cubicleID: $cubicleID
         date: $date
         companions: $companions
+        completed: $completed
       }
     ) {
       id
@@ -42,10 +44,11 @@ const CREATE_RESERVATION = gql`
       endTime
       date
       createdBy
+      completed
       companions {
         name
-        carrera
         carnet
+        carrera
       }
     }
   }
@@ -65,6 +68,7 @@ const GET_RESERVATIONS = gql`
         carrera
         carnet
       }
+      completed
     }
   }
 `;
@@ -90,10 +94,11 @@ const ReservationDetails = ({ route, navigation }) => {
     CREATE_RESERVATION,
     {
       onCompleted: () => {
-        Alert.alert('Se ha creado la reservación con Exito!');
+        Alert.alert('Completado', 'Se ha creado la reservación con Exito!');
       },
       onError: () => {
         Alert.alert(
+          'Error',
           'No se pudo cancelar la reservación. Por favor intente de nuevo'
         );
       },
@@ -103,7 +108,7 @@ const ReservationDetails = ({ route, navigation }) => {
 
   useEffect(() => {
     if (data) {
-      setMyReservations(data.createReservation);
+      setMyReservations([data.createReservation]);
       navigation.navigate('Home');
     }
   }, [data]);
@@ -138,7 +143,14 @@ const ReservationDetails = ({ route, navigation }) => {
     const isTrue = (currentValue) => currentValue === true;
     if (passedValidation.every(isTrue)) {
       createReservation({
-        variables: { startTime, endTime, cubicleID, date, companions },
+        variables: {
+          startTime,
+          endTime,
+          cubicleID,
+          date,
+          companions,
+          completed: false,
+        },
       });
     }
   };

@@ -17,6 +17,7 @@ const CubicleMomentaneo = ({
         activeOpacity={0.6}
         onPress={() => {
           if (myReservations.length < 1) {
+            // TODO: VALIDAR QUE YA SE TIENE UNA RES ACTIVA
             if (inputValidation()) {
               if (cubicle.availability) {
                 navigation.navigate('ReservationDetails', {
@@ -25,12 +26,13 @@ const CubicleMomentaneo = ({
                 });
               } else {
                 Alert.alert(
+                  'Error.',
                   'El cubículo se encuentra ocupado en el bloque de hora seleccionado.'
                 );
               }
             }
           } else {
-            Alert.alert('Ya tiene una reservación activa.');
+            Alert.alert('Error. Ya tiene una reservación activa.');
           }
         }}
       >

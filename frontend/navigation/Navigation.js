@@ -10,6 +10,7 @@ import * as React from 'react';
 import { StatusBar } from 'expo-status-bar';
 // Context
 import UserContextProvider from '../context/userContext';
+import ThemeContextProvider from '../context/themeContext';
 /* Screens */
 import Welcome from '../Screens/Welcome';
 import SignIn from '../Screens/SignIn';
@@ -36,28 +37,33 @@ const Stack = createNativeStackNavigator();
 
 function RootNavigator() {
   return (
-    <UserContextProvider>
-      <Stack.Navigator
-        initialRouteName='SplashScreen'
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name='SplashScreen' component={SplashScreen} />
-        <Stack.Screen name='Welcome' component={Welcome} />
-        <Stack.Screen name='SignIn' component={SignIn} />
-        <Stack.Screen name='SignUp' component={SignUp} />
-        <Stack.Screen name='Tabs' component={Tabs} />
-        <Stack.Screen name='ReservedCubicles' component={ReservedCubicles} />
-        <Stack.Screen name='AvailableCubicles' component={AvailableCubicles} />
-        <Stack.Screen name='History' component={History} />
-        <Stack.Screen name='CubicleAccess' component={AccessCubicle} />
-        <Stack.Screen
-          name='ReservationDetails'
-          component={ReservationDetails}
-        />
-      </Stack.Navigator>
-      <StatusBar style='auto' />
-    </UserContextProvider>
+    <ThemeContextProvider>
+      <UserContextProvider>
+        <Stack.Navigator
+          initialRouteName='SplashScreen'
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name='SplashScreen' component={SplashScreen} />
+          <Stack.Screen name='Welcome' component={Welcome} />
+          <Stack.Screen name='SignIn' component={SignIn} />
+          <Stack.Screen name='SignUp' component={SignUp} />
+          <Stack.Screen name='Tabs' component={Tabs} />
+          <Stack.Screen name='ReservedCubicles' component={ReservedCubicles} />
+          <Stack.Screen
+            name='AvailableCubicles'
+            component={AvailableCubicles}
+          />
+          <Stack.Screen name='History' component={History} />
+          <Stack.Screen name='CubicleAccess' component={AccessCubicle} />
+          <Stack.Screen
+            name='ReservationDetails'
+            component={ReservationDetails}
+          />
+        </Stack.Navigator>
+        <StatusBar style='auto' />
+      </UserContextProvider>
+    </ThemeContextProvider>
   );
 }
