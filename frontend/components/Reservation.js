@@ -3,6 +3,8 @@ import { StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
 import Tag from './Tag';
 import colors from '../assets/colors';
 import { Ionicons } from '@expo/vector-icons';
+import themeContext from '../context/themeContext';
+import { useContext } from 'react';
 /* APOLLO SERVER */
 import { useQuery, gql } from '@apollo/client';
 
@@ -20,6 +22,8 @@ const GET_CUBICLE_BY_ID = gql`
 `;
 
 const Reservation = ({ info, id, deleteReservation, pressedCancel }) => {
+  const theme = useContext(themeContext);
+
   const { loading, error, data } = useQuery(GET_CUBICLE_BY_ID, {
     variables: { id },
   });
@@ -63,7 +67,7 @@ const Reservation = ({ info, id, deleteReservation, pressedCancel }) => {
     return <View style={styles.containerLoading}></View>;
   } else {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: theme.white }]}>
         <View
           style={{
             borderColor: colors.purple,
@@ -75,12 +79,14 @@ const Reservation = ({ info, id, deleteReservation, pressedCancel }) => {
             <View style={styles.LeftInfoWrapper}>
               {loading && data.getCubicleByID ? (
                 <View style={styles.LeftInfoWrapper}>
-                  <Text style={styles.idCubicle}>Cubicle #</Text>
+                  <Text style={[styles.idCubicle, { color: theme.dark }]}>
+                    Cubicle #
+                  </Text>
                   <Text style={styles.cubicleFloor}>Floor</Text>
                 </View>
               ) : (
                 <View style={styles.LeftInfoWrapper}>
-                  <Text style={styles.idCubicle}>
+                  <Text style={[styles.idCubicle, { color: theme.dark }]}>
                     Cubicle #{data.getCubicleByID.cubicleNumber}
                   </Text>
                   <Text style={styles.cubicleFloor}>
@@ -118,7 +124,7 @@ const Reservation = ({ info, id, deleteReservation, pressedCancel }) => {
         <View style={styles.bottomSection}>
           <View>
             <Text style={styles.timeTitle}>Start Time</Text>
-            <Text style={styles.time}>
+            <Text style={[styles.time, { color: theme.dark }]}>
               {info.date},{'\n'}
               {info.startTime}
             </Text>
@@ -130,7 +136,7 @@ const Reservation = ({ info, id, deleteReservation, pressedCancel }) => {
           />
           <View>
             <Text style={styles.timeTitle}>End Time</Text>
-            <Text style={styles.time}>
+            <Text style={[styles.time, { color: theme.dark }]}>
               {info.date},{'\n'}
               {info.endTime}
             </Text>

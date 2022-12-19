@@ -121,8 +121,8 @@ const Profile = ({ navigation }) => {
         text: 'Confirmar',
         onPress: async () => {
           await AsyncStorage.removeItem('token');
-          navigation.navigate('Welcome');
           setUser(null);
+          navigation.navigate('Welcome');
         },
       },
     ]);

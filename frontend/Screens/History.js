@@ -5,17 +5,18 @@ import {
   View,
   ActivityIndicator,
 } from 'react-native';
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 /* Assets */
 import colors from '../assets/colors';
+import themeContext from '../context/themeContext';
 /* Components */
 import Header from '../components/Header';
 import Reservation from '../components/Reservation';
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 
 const GET_RESERVATIONS_BY_STATUS = gql`
   query getMyReservationsByStatus($completed: Boolean!) {
-    getReservationsByStatus(completed: $completed) {
+    getMyReservationsByStatus(completed: $completed) {
       id
       createdBy
       startTime
@@ -33,6 +34,8 @@ const GET_RESERVATIONS_BY_STATUS = gql`
 `;
 
 const History = ({ navigation }) => {
+  const theme = useContext(themeContext);
+
   const {
     loading: loadingReservationsTrue,
     error: errorReservationsTrue,
@@ -53,7 +56,7 @@ const History = ({ navigation }) => {
   }, [dataReservationsTrue]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Header
         style={styles.header}
         title='History'
@@ -67,7 +70,7 @@ const History = ({ navigation }) => {
           </Text>
           <View
             style={{
-              borderBottomColor: colors.light,
+              borderBottomColor: theme.divider,
               borderBottomWidth: 2,
             }}
           />
@@ -77,8 +80,10 @@ const History = ({ navigation }) => {
           style={styles.scrollview}
         >
           <View style={styles.scrollContainer}>
-            {!loadingReservationsTrue ? (
-              dataReservationsTrue.getReservationsByStatus.map(
+            {loadingReservationsTrue ? (
+              <ActivityIndicator size='small' color={theme.dark} />
+            ) : dataReservationsTrue.getMyReservationsByStatus.length > 0 ? (
+              dataReservationsTrue.getMyReservationsByStatus.map(
                 (reservation, index) => {
                   return (
                     <Reservation
@@ -90,7 +95,9 @@ const History = ({ navigation }) => {
                 }
               )
             ) : (
-              <ActivityIndicator size='small' color='#000' />
+              <Text style={styles.noReservationsText}>
+                No hay reservaciones
+              </Text>
             )}
           </View>
         </ScrollView>
@@ -125,5 +132,13 @@ const styles = StyleSheet.create({
     letterSpacing: 0.6,
     color: colors.gray,
     marginBottom: 20,
+  },
+  noReservationsText: {
+    fontFamily: 'Roboto-Italic',
+    fontSize: 14,
+    letterSpacing: 0.6,
+    lineHeight: 26,
+    color: colors.gray,
+    marginLeft: 10,
   },
 });

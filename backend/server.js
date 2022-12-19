@@ -167,7 +167,10 @@ const resolvers = {
       }
       return await db
         .collection('Reservations')
-        .find({ completed: completed, createdBy: user.id })
+        .find({
+          completed: completed,
+          createdBy: user._id,
+        })
         .toArray();
     },
   },

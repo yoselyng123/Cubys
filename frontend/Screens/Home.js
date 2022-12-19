@@ -40,18 +40,18 @@ const DELETE_RESERVATION_MUTATION = gql`
 
 const GET_RESERVATIONS_BY_STATUS = gql`
   query getMyReservationsByStatus($completed: Boolean!) {
-    getReservationsByStatus(completed: $completed) {
+    getMyReservationsByStatus(completed: $completed) {
       id
+      createdBy
       startTime
       endTime
       date
       cubicleID
       completed
-      createdBy
       companions {
-        name
-        carrera
         carnet
+        carrera
+        name
       }
     }
   }
@@ -80,15 +80,10 @@ const Home = ({ navigation }) => {
   const theme = useContext(themeContext);
 
   const [pressedCancel, setPressedCancel] = useState(false);
-  const [reservedNumber, setReservedNumber] = useState(0);
   const [availableCubicles, setAvailableCubicles] = useState(0);
   const [historialCount, setHistorialCount] = useState(0);
   const [currentDate, setCurrentDate] = useState(dayjs());
-  //const [currentTime, setCurrentTime] = useState(dayjs().format('hh:mma'));
 
-  // TODO TRAER TODAS LAS RESERVACIONES EN TRUE Y EN FALSE DEL USUARIO
-  // REVISAR LAS QUE ESTAN EN FALSE PARA SABER SI YA ESTAN VENCIDAS
-  // REVISAR GETMYRESERVATIONS
   const { setMyReservations, myReservations, setCubiclesList } =
     useContext(userContext);
 
@@ -144,8 +139,8 @@ const Home = ({ navigation }) => {
         // Siempre cae en el caso Cambio a True, fechas diferentes
         if (
           reservation.date === currentDate.locale('es').format('DD MMM YYYY') &&
-          parseMilitarHoursFormat(currentDate.format('h:mma')) >
-            parseMilitarHoursFormat(reservation.endTime) &&
+          parseInt(parseMilitarHoursFormat(currentDate.format('h:mma'))) >
+            parseInt(parseMilitarHoursFormat(reservation.endTime)) &&
           !reservation.completed
         ) {
           setMyReservations(emptyArray);
@@ -167,7 +162,7 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     if (dataReservationsFalse) {
-      setMyReservations(dataReservationsFalse.getReservationsByStatus);
+      setMyReservations(dataReservationsFalse.getMyReservationsByStatus);
       checkIfCompleted();
     }
   }, [dataReservationsFalse]);
@@ -183,7 +178,7 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     if (dataReservationsTrue) {
-      setHistorialCount(dataReservationsTrue.getReservationsByStatus.length);
+      setHistorialCount(dataReservationsTrue.getMyReservationsByStatus.length);
     }
   }, [dataReservationsTrue]);
 
@@ -223,6 +218,8 @@ const Home = ({ navigation }) => {
   if (errorCubicles) return Alert.alert(`Error! ${errorCubicles.message}`);
 
   useEffect(() => {
+    refetchReservationsFalse();
+    refetchReservationsTrue();
     setInterval(() => {
       setCurrentDate(dayjs());
     }, 1000 * 60);

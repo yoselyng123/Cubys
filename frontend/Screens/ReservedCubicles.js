@@ -6,18 +6,20 @@ import {
   View,
   ActivityIndicator,
 } from 'react-native';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 /* Assets */
 import colors from '../assets/colors';
 import { userContext } from '../context/userContext';
+import themeContext from '../context/themeContext';
 /* Components */
 import Header from '../components/Header';
 import SectionDivider from '../components/SectionDivider';
 
 const ReservedCubicles = ({ navigation }) => {
-  const [cubicleInfo, setCubicleInfo] = useState({});
+  const theme = useContext(themeContext);
 
-  const { myReservations, cubiclesList } = useContext(userContext);
+  const { myReservations, cubiclesList, user } = useContext(userContext);
+  const [isAdmin, setIsAdmin] = useState(true);
 
   const handleFloorShowcase = (floor) => {
     if (floor === '1') {
@@ -31,8 +33,20 @@ const ReservedCubicles = ({ navigation }) => {
     }
   };
 
+  const checkForAdmin = () => {
+    if (user.rol) {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+  };
+
+  useEffect(() => {
+    checkForAdmin();
+  }, []);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Header
         style={styles.header}
         title='Reservaciones'
@@ -67,7 +81,9 @@ const ReservedCubicles = ({ navigation }) => {
                                 alignItems: 'center',
                               }}
                             >
-                              <Text style={styles.title}>
+                              <Text
+                                style={[styles.title, { color: theme.dark }]}
+                              >
                                 Cubículo #{cubicle.cubicleNumber}
                               </Text>
                               <Text style={styles.floorText}>
@@ -84,22 +100,32 @@ const ReservedCubicles = ({ navigation }) => {
                     </View>
                     <SectionDivider marginBottom={20} />
                     <View style={styles.resInfoWrapper}>
-                      <Text style={styles.title}>Hora de Inicio</Text>
+                      <Text style={[styles.title, { color: theme.dark }]}>
+                        Hora de Inicio
+                      </Text>
                       <Text style={[styles.content, { marginBottom: 30 }]}>
                         {reservation.date}, {reservation.startTime}
                       </Text>
-                      <Text style={styles.title}>Hora de Fin</Text>
+                      <Text style={[styles.title, { color: theme.dark }]}>
+                        Hora de Fin
+                      </Text>
                       <Text style={[styles.content, { marginBottom: 20 }]}>
                         {reservation.date}, {reservation.endTime}
                       </Text>
                     </View>
                     <SectionDivider marginBottom={20} />
                     <View style={styles.companionsWrapper}>
-                      <Text style={styles.title}>Responsable</Text>
-                      <Text style={[styles.content, { marginBottom: 30 }]}>
-                        Javier Jerez - Ingenieria en Sistemas
+                      <Text style={[styles.title, { color: theme.dark }]}>
+                        Responsable
                       </Text>
-                      <Text style={styles.title}>Acompañantes</Text>
+                      <Text style={[styles.content, { marginBottom: 30 }]}>
+                        {!isAdmin
+                          ? `${user.name} - ${user.carrera}`
+                          : 'ADMINISTRADOR'}
+                      </Text>
+                      <Text style={[styles.title, { color: theme.dark }]}>
+                        Acompañantes
+                      </Text>
                       {reservation.companions.map((companion, index1) => {
                         return (
                           <Text
@@ -115,7 +141,9 @@ const ReservedCubicles = ({ navigation }) => {
                 );
               })
             ) : (
-              <Text style={styles.noReservationsText}>No reservations</Text>
+              <Text style={styles.noReservationsText}>
+                No hay reservaciones
+              </Text>
             )}
           </View>
         </ScrollView>
@@ -190,5 +218,13 @@ const styles = StyleSheet.create({
     lineHeight: 18.75,
     letterSpacing: 0.6,
     color: colors.gray,
+  },
+  noReservationsText: {
+    fontFamily: 'Roboto-Italic',
+    fontSize: 14,
+    letterSpacing: 0.6,
+    lineHeight: 26,
+    color: colors.gray,
+    marginLeft: 10,
   },
 });

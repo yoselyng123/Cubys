@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // React Assets
 import { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { useColorScheme } from 'react-native';
 // Context
 import UserContextProvider from '../context/userContext';
 import themeContext from '../context/themeContext';
@@ -33,7 +34,9 @@ export default function Navigation() {
 const Stack = createNativeStackNavigator();
 
 function RootNavigator() {
-  const [appearanceTheme, setAppearanceTheme] = useState('dark');
+  const [appearanceTheme, setAppearanceTheme] = useState('light');
+
+  const scheme = useColorScheme();
 
   useEffect(() => {
     let eventListener = EventRegister.addEventListener(
@@ -51,7 +54,11 @@ function RootNavigator() {
 
   return (
     <themeContext.Provider
-      value={appearanceTheme === 'light' ? theme.dark : theme.light}
+      value={
+        appearanceTheme === 'light' || scheme === 'dark'
+          ? theme.dark
+          : theme.light
+      }
     >
       <UserContextProvider>
         <Stack.Navigator

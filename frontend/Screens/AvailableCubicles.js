@@ -111,14 +111,18 @@ const AvailableCubicles = ({ navigation }) => {
   /* V A L I D A T I O N S */
   const inputValidation = () => {
     if (startTime === endTime) {
-      Alert.alert('La hora de entrada no puede ser igual a la hora de salida.');
+      Alert.alert(
+        'Error',
+        'La hora de entrada no puede ser igual a la hora de salida.'
+      );
       setError(true);
       return false;
     }
 
     return (
-      // outOfWorkingHoursValidation() &&
-      endTimeHigherThanStartTime() && twoHoursMaxValidation()
+      outOfWorkingHoursValidation() &&
+      endTimeHigherThanStartTime() &&
+      twoHoursMaxValidation()
     );
   };
 
@@ -129,14 +133,14 @@ const AvailableCubicles = ({ navigation }) => {
       parseInt(parseMilitarHoursFormat(startTime)) > 1700
     ) {
       setError(true);
-      Alert.alert('Error. La biblioteca abre de 7:00am a 5:00pm');
+      Alert.alert('Error', 'La biblioteca abre de 7:00am a 5:00pm');
       return false;
     } else if (
       parseInt(parseMilitarHoursFormat(endTime) < 700) ||
       parseInt(parseMilitarHoursFormat(startTime)) < 700
     ) {
       setError(true);
-      Alert.alert('Error. La biblioteca abre de 7:00am a 5:00pm');
+      Alert.alert('Error', 'La biblioteca abre de 7:00am a 5:00pm');
       return false;
     }
 
@@ -150,7 +154,7 @@ const AvailableCubicles = ({ navigation }) => {
     );
 
     if (quantity > 200) {
-      Alert.alert('El tiempo máximo de reserva son 2 horas.');
+      Alert.alert('Error', 'El tiempo máximo de reserva son 2 horas.');
       setError(true);
       return false;
     }
@@ -158,9 +162,15 @@ const AvailableCubicles = ({ navigation }) => {
   };
 
   const endTimeHigherThanStartTime = () => {
-    if (parseMilitarHoursFormat(endTime) < parseMilitarHoursFormat(startTime)) {
+    if (
+      parseInt(parseMilitarHoursFormat(endTime)) <
+      parseInt(parseMilitarHoursFormat(startTime))
+    ) {
       setError(true);
-      Alert.alert('La hora de entrada debe ser mayor a la hora de salida.');
+      Alert.alert(
+        'Error',
+        'La hora de entrada debe ser mayor a la hora de salida.'
+      );
       return false;
     }
     return true;
@@ -180,38 +190,38 @@ const AvailableCubicles = ({ navigation }) => {
           const reservation = dataReservations.getReservationsByDate[r];
           if (reservation.cubicleID === cubicle.id && !reservation.completed) {
             if (
-              (parseMilitarHoursFormat(startTime) >=
-                parseMilitarHoursFormat(reservation.startTime) &&
-                parseMilitarHoursFormat(startTime) <=
-                  parseMilitarHoursFormat(reservation.endTime)) ||
-              (parseMilitarHoursFormat(endTime) >=
-                parseMilitarHoursFormat(reservation.startTime) &&
-                parseMilitarHoursFormat(endTime) <=
-                  parseMilitarHoursFormat(reservation.endTime))
+              (parseInt(parseMilitarHoursFormat(startTime)) >=
+                parseInt(parseMilitarHoursFormat(reservation.startTime)) &&
+                parseInt(parseMilitarHoursFormat(startTime)) <=
+                  parseInt(parseMilitarHoursFormat(reservation.endTime))) ||
+              (parseInt(parseMilitarHoursFormat(endTime)) >=
+                parseInt(parseMilitarHoursFormat(reservation.startTime)) &&
+                parseInt(parseMilitarHoursFormat(endTime)) <=
+                  parseInt(parseMilitarHoursFormat(reservation.endTime)))
             ) {
               newCubiclesList[c].availability = false;
               setFilteredCubicles(newCubiclesList);
             } else if (
-              parseMilitarHoursFormat(startTime) <=
-                parseMilitarHoursFormat(reservation.startTime) &&
-              parseMilitarHoursFormat(startTime) <=
-                parseMilitarHoursFormat(reservation.endTime) &&
-              parseMilitarHoursFormat(endTime) >=
-                parseMilitarHoursFormat(reservation.startTime) &&
-              parseMilitarHoursFormat(endTime) <=
-                parseMilitarHoursFormat(reservation.endTime)
+              parseInt(parseMilitarHoursFormat(startTime)) <=
+                parseInt(parseMilitarHoursFormat(reservation.startTime)) &&
+              parseInt(parseMilitarHoursFormat(startTime)) <=
+                parseInt(parseMilitarHoursFormat(reservation.endTime)) &&
+              parseInt(parseMilitarHoursFormat(endTime)) >=
+                parseInt(parseMilitarHoursFormat(reservation.startTime)) &&
+              parseInt(parseMilitarHoursFormat(endTime)) <=
+                parseInt(parseMilitarHoursFormat(reservation.endTime))
             ) {
               newCubiclesList[c].availability = false;
               setFilteredCubicles(newCubiclesList);
             } else if (
-              parseMilitarHoursFormat(startTime) <=
-                parseMilitarHoursFormat(reservation.startTime) &&
-              parseMilitarHoursFormat(startTime) <=
-                parseMilitarHoursFormat(reservation.endTime) &&
-              parseMilitarHoursFormat(endTime) >=
-                parseMilitarHoursFormat(reservation.startTime) &&
-              parseMilitarHoursFormat(endTime) >=
-                parseMilitarHoursFormat(reservation.endTime)
+              parseInt(parseMilitarHoursFormat(startTime)) <=
+                parseInt(parseMilitarHoursFormat(reservation.startTime)) &&
+              parseInt(parseMilitarHoursFormat(startTime)) <=
+                parseInt(parseMilitarHoursFormat(reservation.endTime)) &&
+              parseInt(parseMilitarHoursFormat(endTime)) >=
+                parseInt(parseMilitarHoursFormat(reservation.startTime)) &&
+              parseInt(parseMilitarHoursFormat(endTime)) >=
+                parseInt(parseMilitarHoursFormat(reservation.endTime))
             ) {
               newCubiclesList[c].availability = false;
               setFilteredCubicles(newCubiclesList);
@@ -233,6 +243,8 @@ const AvailableCubicles = ({ navigation }) => {
   }, [dataReservations]);
 
   useEffect(() => {
+    setStartTime(dayjs().format('h:mma'));
+    setEndTime(dayjs().add(2, 'hour').format('h:mma'));
     setInterval(() => {
       setStartTime(dayjs().format('h:mma'));
       setEndTime(dayjs().add(2, 'hour').format('h:mma'));
