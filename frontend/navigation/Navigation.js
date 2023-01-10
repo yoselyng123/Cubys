@@ -14,7 +14,9 @@ import SignIn from '../Screens/SignIn';
 import SignUp from '../Screens/SignUp';
 import Tabs from '../components/Tabs';
 import ReservedCubicles from '../Screens/ReservedCubicles';
+import ReservedCubiclesAdmin from '../Screens/Admin/ReservedCubiclesAdmin';
 import History from '../Screens/History';
+import HistoryAdmin from '../Screens/Admin/HistoryAdmin';
 import AccessCubicle from '../Screens/AccessCubicle';
 import ReservationDetails from '../Screens/ReservationDetails';
 import AvailableCubicles from '../Screens/AvailableCubicles';
@@ -74,10 +76,15 @@ function RootNavigator() {
           <Stack.Screen name='Tabs' component={Tabs} />
           <Stack.Screen name='ReservedCubicles' component={ReservedCubicles} />
           <Stack.Screen
+            name='ReservedCubiclesAdmin'
+            component={ReservedCubiclesAdmin}
+          />
+          <Stack.Screen
             name='AvailableCubicles'
             component={AvailableCubicles}
           />
           <Stack.Screen name='History' component={History} />
+          <Stack.Screen name='HistoryAdmin' component={HistoryAdmin} />
           <Stack.Screen name='CubicleAccess' component={AccessCubicle} />
           <Stack.Screen
             name='ReservationDetails'

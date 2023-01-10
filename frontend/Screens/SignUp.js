@@ -16,6 +16,7 @@ import colors from '../assets/colors';
 import Header from '../components/Header';
 import Input from '../components/Input';
 import CarreraSelect from '../components/CarreraSelect';
+import dayjs from 'dayjs';
 /* ICONS */
 import { Ionicons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
@@ -32,6 +33,8 @@ const SIGN_UP_MUTATION = gql`
     $name: String!
     $carrera: String!
     $carnet: String!
+    $role: String!
+    $joined: String!
   ) {
     signUp(
       input: {
@@ -40,6 +43,8 @@ const SIGN_UP_MUTATION = gql`
         name: $name
         carrera: $carrera
         carnet: $carnet
+        role: $role
+        joined: $joined
       }
     ) {
       token
@@ -49,6 +54,8 @@ const SIGN_UP_MUTATION = gql`
         email
         carrera
         carnet
+        role
+        joined
       }
     }
   }
@@ -94,6 +101,7 @@ const SignUp = ({ navigation }) => {
 
   const handleSignUp = () => {
     // Validate secure password
+
     let validationsPassword =
       validations.eightCharacters &&
       validations.numeric &&
@@ -117,8 +125,10 @@ const SignUp = ({ navigation }) => {
       } else if (password !== confirmPassword) {
         Alert.alert('Las contraseñas no coinciden.');
       } else {
+        let role = 'user';
+        let joined = dayjs().format('DD MMM YYYY');
         signUp({
-          variables: { carrera, email, password, carnet, name },
+          variables: { carrera, email, password, carnet, name, role, joined },
         });
       }
     } else {

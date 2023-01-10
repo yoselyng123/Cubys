@@ -17,7 +17,7 @@ import SectionDivider from '../components/SectionDivider';
 
 const Settings = () => {
   const theme = useContext(themeContext);
-  const [appearanceTheme, setAppearanceTheme] = useState('light');
+  const [appearanceTheme, setAppearanceTheme] = useState('dark');
   const [notificationsChecked, setNotificationsChecked] = useState('first');
   const [languageChecked, setLanguageChecked] = useState('first');
 

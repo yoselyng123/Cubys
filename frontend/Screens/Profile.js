@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 /* Assets */
 import colors from '../assets/colors';
 import { userContext } from '../context/userContext';
+import themeContext from '../context/themeContext';
 /* Components */
 import Header from '../components/Header';
 import Input from '../components/Input';
@@ -19,7 +20,6 @@ import DateInput from '../components/DateInput';
 /* APOLLO SERVER */
 import SplashScreen from './SplashScreen';
 import { gql, useMutation } from '@apollo/client';
-import themeContext from '../context/themeContext';
 
 const UPDATE_USER_MUTATION = gql`
   mutation updateUser($id: ID!, $password: String!) {
@@ -27,10 +27,12 @@ const UPDATE_USER_MUTATION = gql`
       token
       user {
         id
-        email
-        carnet
-        carrera
         name
+        email
+        carrera
+        carnet
+        role
+        joined
       }
     }
   }
@@ -243,7 +245,7 @@ const Profile = ({ navigation }) => {
             <Text style={[styles.joinedtext, { color: theme.gray }]}>
               Joined{'  '}
               <Text style={[styles.joineddate, { color: theme.dark }]}>
-                22 Jan 2022
+                {user.joined}
               </Text>
             </Text>
             <View

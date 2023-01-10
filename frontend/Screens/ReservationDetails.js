@@ -76,7 +76,7 @@ const GET_RESERVATIONS = gql`
 
 const ReservationDetails = ({ route, navigation }) => {
   const theme = useContext(themeContext);
-  const { setMyReservations, myReservations } = useContext(userContext);
+  const { setMyReservations, user } = useContext(userContext);
 
   const { cubicleInfo, resInfo } = route.params;
   const [companionsList, setCompanionsList] = useState([
@@ -128,14 +128,14 @@ const ReservationDetails = ({ route, navigation }) => {
         companion.carnet === '' ||
         companion.carrera === ''
       ) {
-        Alert.alert('Error. Los campos no pueden quedar vacios');
+        Alert.alert('Error', 'Los campos no pueden quedar vacios');
         return false;
       } else {
         if (
           companion.carnet.length < 11 ||
           oneSpecialChar.test(companion.carnet)
         ) {
-          Alert.alert('Error. Carnet inválido');
+          Alert.alert('Error', 'Carnet inválido');
           return false;
         }
         return true;
@@ -157,8 +157,21 @@ const ReservationDetails = ({ route, navigation }) => {
     }
   };
 
+  const validationMaxCompanions = () => {
+    if (user.role === 'admin') {
+      if (companionsList.length < 6) {
+        return true;
+      }
+    } else {
+      if (companionsList.length < 5) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const handleAddCompanion = () => {
-    if (companionsList.length < 5) {
+    if (validationMaxCompanions()) {
       let copyListCompanions = [...companionsList];
       copyListCompanions.push({
         name: '',
@@ -168,7 +181,10 @@ const ReservationDetails = ({ route, navigation }) => {
 
       setCompanionsList(copyListCompanions);
     } else {
-      Alert.alert('Ha alcanzado la capacidad máxima de personas por cubiculo.');
+      Alert.alert(
+        'Error',
+        'Ha alcanzado la capacidad máxima de personas por cubiculo.'
+      );
     }
   };
 

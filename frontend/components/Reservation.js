@@ -64,7 +64,11 @@ const Reservation = ({ info, id, deleteReservation, pressedCancel }) => {
   };
 
   if (loading) {
-    return <View style={styles.containerLoading}></View>;
+    return (
+      <View
+        style={[styles.containerLoading, { backgroundColor: theme.loading }]}
+      ></View>
+    );
   } else {
     return (
       <View style={[styles.container, { backgroundColor: theme.white }]}>

@@ -51,6 +51,8 @@ const typeDefs = gql`
     profilePic: String
     carrera: String!
     carnet: String!
+    role: String!
+    joined: String!
   }
   input SignInInput {
     email: String!
@@ -82,6 +84,8 @@ const typeDefs = gql`
     carnet: String!
     carrera: String!
     birthDate: String
+    role: String!
+    joined: String!
   }
   type Companion {
     name: String!

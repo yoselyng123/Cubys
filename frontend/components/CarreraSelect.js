@@ -41,6 +41,11 @@ const CarreraSelect = ({ carrera, setCarrera, multipleUsers }) => {
     { label: 'Ingeniería Eléctrica', value: 'Ingeniería Eléctrica', key: 13 },
     { label: 'Ingeniería Mecánica', value: 'Ingeniería Mecánica', key: 14 },
     { label: 'Ingeniería Química', value: 'Ingeniería Química', key: 15 },
+    {
+      label: 'Personal de Biblioteca',
+      value: 'Personal de Biblioteca',
+      key: 16,
+    },
   ];
 
   const inputIOS = {

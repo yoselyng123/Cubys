@@ -28,9 +28,11 @@ const SIGN_IN_MUTATION = gql`
       user {
         id
         name
-        carnet
-        carrera
         email
+        carrera
+        carnet
+        role
+        joined
       }
     }
   }
@@ -57,10 +59,11 @@ const SignIn = ({ navigation }) => {
     onError: ({ networkError }) => {
       if (networkError) {
         Alert.alert(
+          'Error',
           'No connection. Check your internet connection and try again'
         );
       } else {
-        Alert.alert('Invalid credentials. Please try again');
+        Alert.alert('Error', 'Invalid credentials. Please try again');
       }
     },
   });

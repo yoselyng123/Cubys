@@ -4,14 +4,17 @@ import React, { useContext } from 'react';
 import colors from '../assets/colors';
 import { Feather } from '@expo/vector-icons';
 import { userContext } from '../context/userContext';
+import themeContext from '../context/themeContext';
 /* Components */
 import Header from '../components/Header';
+import SectionDivider from '../components/SectionDivider';
 
-const AccessCubicle = ({ navigation, route }) => {
+const AccessCubicle = ({ navigation }) => {
+  const theme = useContext(themeContext);
   const { setLockStatus, lockStatus } = useContext(userContext);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: theme.background }}>
       <Header
         style={styles.header}
         title='Botón de Acceso'
@@ -22,13 +25,7 @@ const AccessCubicle = ({ navigation, route }) => {
         <Text style={styles.description}>
           Use este botón para acceder al cubículo que reservó.
         </Text>
-        <View
-          style={{
-            borderBottomColor: colors.light,
-            borderBottomWidth: 2,
-            marginBottom: 18,
-          }}
-        />
+        <SectionDivider />
         <View style={styles.btnWrapper}>
           <TouchableOpacity
             activeOpacity={0.7}

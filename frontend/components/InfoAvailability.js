@@ -133,8 +133,6 @@ const InfoAvailability = ({ label, content, setContent, error }) => {
         mode={label === 'Fecha' ? 'date' : 'time'}
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
-        maximumDate={new Date(`${momentDate.getFullYear()}-12-31`)}
-        minimumDate={new Date(`${momentDate.getFullYear()}-01-31`)}
       />
     </View>
   );

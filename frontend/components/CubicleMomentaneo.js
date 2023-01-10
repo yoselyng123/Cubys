@@ -12,30 +12,44 @@ const CubicleMomentaneo = ({
 }) => {
   const theme = useContext(themeContext);
 
-  const { myReservations } = useContext(userContext);
+  const { myReservations, user } = useContext(userContext);
+
+  const checkIfHasAnActiveReservation = () => {
+    if (myReservations.length < 1) {
+      return false;
+    } else {
+      Alert.alert('Error', 'Ya tiene una reservación activa.');
+      return true;
+    }
+  };
+
+  const handleForwardNavigation = () => {
+    if (inputValidation()) {
+      if (cubicle.availability) {
+        navigation.navigate('ReservationDetails', {
+          cubicleInfo: cubicle,
+          resInfo: resInfo,
+        });
+      } else {
+        Alert.alert(
+          'Error.',
+          'El cubículo se encuentra ocupado en el bloque de hora seleccionado.'
+        );
+      }
+    }
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.white }]}>
       <TouchableOpacity
         activeOpacity={0.6}
         onPress={() => {
-          if (myReservations.length < 1) {
-            // TODO: VALIDAR QUE YA SE TIENE UNA RES ACTIVA
-            if (inputValidation()) {
-              if (cubicle.availability) {
-                navigation.navigate('ReservationDetails', {
-                  cubicleInfo: cubicle,
-                  resInfo: resInfo,
-                });
-              } else {
-                Alert.alert(
-                  'Error.',
-                  'El cubículo se encuentra ocupado en el bloque de hora seleccionado.'
-                );
-              }
-            }
+          if (user.role === 'admin') {
+            handleForwardNavigation();
           } else {
-            Alert.alert('Error. Ya tiene una reservación activa.');
+            if (!checkIfHasAnActiveReservation()) {
+              handleForwardNavigation();
+            }
           }
         }}
       >

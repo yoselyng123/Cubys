@@ -10,6 +10,7 @@ const theme = {
     background: '#F6F6F6',
     white: '#FFFFFF',
     divider: '#EBEBEB',
+    loading: '#CACACA',
   },
   dark: {
     purple: '#5064F6',
@@ -22,6 +23,7 @@ const theme = {
     background: '#17171A',
     white: '#222228',
     divider: '#222228',
+    loading: '#222228',
   },
 };
 

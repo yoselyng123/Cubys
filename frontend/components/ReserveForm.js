@@ -24,6 +24,7 @@ const ReserveForm = ({
   const handleDeleteCompanion = () => {
     if (companionsList.length === 2) {
       Alert.alert(
+        'Error',
         'Se requiere un minimo de 3 personas para reservar un cubículo.'
       );
     } else {
@@ -56,7 +57,10 @@ const ReserveForm = ({
   return (
     <View style={styles.container}>
       <View style={styles.topInfo}>
-        <Text style={styles.title}>Acompañante #{number}</Text>
+        <View>
+          <Text style={styles.title}>Acompañante #{number}</Text>
+          {number - 1 === 0 && <Text style={styles.subtitle}>Responsable</Text>}
+        </View>
         <TouchableOpacity activeOpacity={0.7} onPress={handleDeleteCompanion}>
           <View style={styles.addCompanionBtn}>
             <Feather name='x' size={20} color={colors.red} />
@@ -107,6 +111,14 @@ const styles = StyleSheet.create({
     letterSpacing: 0.6,
     fontSize: 13,
     color: colors.gray,
+  },
+  subtitle: {
+    marginTop: 10,
+    fontFamily: 'Roboto-Italic',
+    letterSpacing: 0.6,
+    fontSize: 13,
+    color: '#525252',
+    marginBottom: 5,
   },
   input: {
     width: '100%',

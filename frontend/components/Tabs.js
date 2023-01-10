@@ -5,8 +5,6 @@ import Profile from '../Screens/Profile';
 import Settings from '../Screens/Settings';
 import Home from '../Screens/Home';
 import Notifications from '../Screens/Notifications';
-/* Assets */
-import colors from '../assets/colors';
 /* Icons */
 import { Ionicons } from '@expo/vector-icons';
 /* Theme Related */
@@ -69,7 +67,7 @@ const Tabs = () => {
     >
       <Tab.Screen name='Home' component={Home} />
       <Tab.Screen name='Profile' component={Profile} />
-      <Tab.Screen name='Notifications' component={Notifications} />
+      {/* <Tab.Screen name='Notifications' component={Notifications} /> */}
       <Tab.Screen name='Settings' component={Settings} />
     </Tab.Navigator>
   );

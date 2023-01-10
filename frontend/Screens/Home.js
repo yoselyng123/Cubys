@@ -11,7 +11,6 @@ import { useContext, useEffect, useState } from 'react';
 import colors from '../assets/colors';
 import { userContext } from '../context/userContext';
 import dayjs from 'dayjs';
-import { es } from 'dayjs/locale/es';
 import themeContext from '../context/themeContext';
 /* Components */
 import Header from '../components/Header';
@@ -76,6 +75,25 @@ const UPDATE_RESERVATION_STATUS = gql`
   }
 `;
 
+const GET_ALL_RESERVATIONS_BY_STATUS = gql`
+  query getReservationsByStatus($completed: Boolean!) {
+    getReservationsByStatus(completed: $completed) {
+      id
+      createdBy
+      startTime
+      endTime
+      date
+      cubicleID
+      completed
+      companions {
+        carnet
+        carrera
+        name
+      }
+    }
+  }
+`;
+
 const Home = ({ navigation }) => {
   const theme = useContext(themeContext);
 
@@ -83,8 +101,9 @@ const Home = ({ navigation }) => {
   const [availableCubicles, setAvailableCubicles] = useState(0);
   const [historialCount, setHistorialCount] = useState(0);
   const [currentDate, setCurrentDate] = useState(dayjs());
+  const [reservedNumber, setReservedNumber] = useState(0);
 
-  const { setMyReservations, myReservations, setCubiclesList } =
+  const { setMyReservations, myReservations, setCubiclesList, user } =
     useContext(userContext);
 
   const [deleteReservation, { loading: loadingDeleteReservation }] =
@@ -103,7 +122,9 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     if (!loadingDeleteReservation) {
-      setMyReservations([]);
+      // TODO:
+      // setMyReservations([]);
+      // PUEDO HACER REFETCH O SIMPLEMENTE HACERLE POP DEL ARRAY
     }
   }, [loadingDeleteReservation]);
 
@@ -115,6 +136,34 @@ const Home = ({ navigation }) => {
   } = useQuery(GET_RESERVATIONS_BY_STATUS, {
     variables: { completed: false },
   });
+
+  const {
+    loading: loadingReservationsTrueAdmin,
+    error: errorReservationsTrueAdmin,
+    data: dataReservationsTrueAdmin,
+    refetch: refetchReservationsTrueAdmin,
+  } = useQuery(GET_ALL_RESERVATIONS_BY_STATUS, {
+    variables: { completed: true },
+  });
+
+  const {
+    loading: loadingReservationsFalseAdmin,
+    error: errorReservationsFalseAdmin,
+    data: dataReservationsFalseAdmin,
+    refetch: refetchReservationsFalseAdmin,
+  } = useQuery(GET_ALL_RESERVATIONS_BY_STATUS, {
+    variables: { completed: false },
+  });
+
+  useEffect(() => {
+    if (dataReservationsTrueAdmin) {
+      if (user.role === 'admin') {
+        setHistorialCount(
+          dataReservationsTrueAdmin.getReservationsByStatus.length
+        );
+      }
+    }
+  }, [dataReservationsTrueAdmin]);
 
   const parseMilitarHoursFormat = (hour) => {
     var newHour = hour.split(':')[0];
@@ -131,30 +180,60 @@ const Home = ({ navigation }) => {
   };
 
   const checkIfCompleted = () => {
-    if (myReservations.length > 0) {
-      var emptyArray = [];
-      for (let r = 0; r < myReservations.length; r++) {
-        const reservation = myReservations[r];
-        // FIXME: REVISAR NUNCA ENTRA A ENTRO AQUI
-        // Siempre cae en el caso Cambio a True, fechas diferentes
-        if (
-          reservation.date === currentDate.locale('es').format('DD MMM YYYY') &&
-          parseInt(parseMilitarHoursFormat(currentDate.format('h:mma'))) >
-            parseInt(parseMilitarHoursFormat(reservation.endTime)) &&
-          !reservation.completed
+    // TODO: Reconsider if maybe it's better to checkCompleted of ALL reservations
+    if (user.role === 'admin') {
+      if (!loadingReservationsFalseAdmin) {
+        for (
+          let r = 0;
+          r < dataReservationsFalseAdmin.getReservationsByStatus.length;
+          r++
         ) {
-          setMyReservations(emptyArray);
-          updateReservationStatus({
-            variables: { id: reservation.id, completed: true },
-          });
-        } else if (
-          reservation.date !== currentDate.locale('es').format('DD MMM YYYY') &&
-          !reservation.completed
-        ) {
-          updateReservationStatus({
-            variables: { id: reservation.id, completed: true },
-          });
-          setMyReservations(emptyArray);
+          const reservation =
+            dataReservationsFalseAdmin.getReservationsByStatus[r];
+          if (
+            reservation.date ===
+              currentDate.locale('es').format('DD MMM YYYY') &&
+            parseInt(parseMilitarHoursFormat(currentDate.format('h:mma'))) >
+              parseInt(parseMilitarHoursFormat(reservation.endTime)) &&
+            !reservation.completed
+          ) {
+            updateReservationStatus({
+              variables: { id: reservation.id, completed: true },
+            });
+          } else if (
+            reservation.date !==
+              currentDate.locale('es').format('DD MMM YYYY') &&
+            !reservation.completed
+          ) {
+            updateReservationStatus({
+              variables: { id: reservation.id, completed: true },
+            });
+          }
+        }
+      }
+    } else {
+      if (myReservations.length > 0) {
+        for (let r = 0; r < myReservations.length; r++) {
+          const reservation = myReservations[r];
+          if (
+            reservation.date ===
+              currentDate.locale('es').format('DD MMM YYYY') &&
+            parseInt(parseMilitarHoursFormat(currentDate.format('h:mma'))) >
+              parseInt(parseMilitarHoursFormat(reservation.endTime)) &&
+            !reservation.completed
+          ) {
+            updateReservationStatus({
+              variables: { id: reservation.id, completed: true },
+            });
+          } else if (
+            reservation.date !==
+              currentDate.locale('es').format('DD MMM YYYY') &&
+            !reservation.completed
+          ) {
+            updateReservationStatus({
+              variables: { id: reservation.id, completed: true },
+            });
+          }
         }
       }
     }
@@ -177,8 +256,12 @@ const Home = ({ navigation }) => {
   });
 
   useEffect(() => {
-    if (dataReservationsTrue) {
-      setHistorialCount(dataReservationsTrue.getMyReservationsByStatus.length);
+    if (user.role !== 'admin') {
+      if (dataReservationsTrue) {
+        setHistorialCount(
+          dataReservationsTrue.getMyReservationsByStatus.length
+        );
+      }
     }
   }, [dataReservationsTrue]);
 
@@ -187,8 +270,12 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     if (dataUpdateReservationStatus) {
-      setMyReservations([]);
+      // setMyReservations([]);
       refetchReservationsTrue();
+      if (user.role === 'admin') {
+        refetchReservationsFalse();
+        refetchReservationsFalseAdmin();
+      }
     }
   }, [dataUpdateReservationStatus]);
 
@@ -196,14 +283,11 @@ const Home = ({ navigation }) => {
     loading: loadingCubicles,
     error: errorCubicles,
     data: dataCubicles,
-  } = useQuery(GET_CUBICLES, {
-    onCompleted: (data) => {
-      setAvailableCubicles(data.getCubicles.length);
-    },
-  });
+  } = useQuery(GET_CUBICLES);
 
   useEffect(() => {
     if (dataCubicles) {
+      setAvailableCubicles(dataCubicles.getCubicles.length);
       const copyOfCubicles = [];
       for (let i = 0; i < dataCubicles.getCubicles.length; i++) {
         copyOfCubicles[i] = {
@@ -220,6 +304,8 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     refetchReservationsFalse();
     refetchReservationsTrue();
+    refetchReservationsFalseAdmin();
+
     setInterval(() => {
       setCurrentDate(dayjs());
     }, 1000 * 60);
@@ -231,6 +317,9 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     refetchReservationsFalse();
+    if (user.role === 'admin') {
+      refetchReservationsTrueAdmin();
+    }
     checkIfCompleted();
   }, [myReservations]);
 
@@ -238,56 +327,74 @@ const Home = ({ navigation }) => {
     checkIfCompleted();
   }, [currentDate]);
 
-  return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <Header title='cubys' navigateAvailable={false} />
-      <ScrollView
-        style={styles.contentWrapper}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.scrollContainer}>
-          <Text style={[styles.greetingsTitle, { color: theme.dark }]}>
-            Hola
-          </Text>
-          <Text style={styles.greetingsText}>
-            Reserva un cubículo cuando quieras.
-          </Text>
-          {/* Cards */}
-          <CardsList
-            navigation={navigation}
-            reservedNumber={myReservations.length}
-            availableCubicles={availableCubicles}
-            loadingCubicles={loadingCubicles}
-            historialCount={historialCount}
-          />
-          {/* Separation Line */}
-          <SectionDivider marginBottom={20} />
-          <Text style={[styles.reservationsTitle, { color: theme.dark }]}>
-            Próximas Reservaciones
-          </Text>
-          {loadingReservationsFalse ? (
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-              <ActivityIndicator size='small' color='#FFF' />
-            </View>
-          ) : myReservations.length > 0 ? (
-            myReservations.map((reservation, index) => {
-              return (
-                <Reservation
-                  key={index}
-                  info={reservation}
-                  id={reservation.cubicleID}
-                  deleteReservation={deleteReservation}
-                  pressedCancel={pressedCancel}
-                />
-              );
-            })
-          ) : (
-            <Text style={styles.noReservationsText}>No hay reservaciones</Text>
-          )}
-        </View>
-      </ScrollView>
-    </View>
-  );
+  useEffect(() => {
+    if (dataReservationsFalseAdmin) {
+      setReservedNumber(
+        dataReservationsFalseAdmin.getReservationsByStatus.length
+      );
+    }
+  }, [dataReservationsFalseAdmin]);
+
+  if (user) {
+    return (
+      <View style={[styles.container, { backgroundColor: theme.background }]}>
+        <Header title='cubys' navigateAvailable={false} />
+        <ScrollView
+          style={styles.contentWrapper}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.scrollContainer}>
+            <Text style={[styles.greetingsTitle, { color: theme.dark }]}>
+              Hola
+            </Text>
+            <Text style={styles.greetingsText}>
+              Reserva un cubículo cuando quieras.
+            </Text>
+            {/* Cards */}
+
+            <CardsList
+              navigation={navigation}
+              reservedNumber={
+                user.role !== 'admin' ? myReservations.length : reservedNumber
+              }
+              availableCubicles={availableCubicles}
+              loadingCubicles={loadingCubicles}
+              historialCount={historialCount}
+            />
+
+            {/* Separation Line */}
+            <SectionDivider marginBottom={20} />
+            <Text style={[styles.reservationsTitle, { color: theme.dark }]}>
+              Próximas Reservaciones
+            </Text>
+            {loadingReservationsFalse ? (
+              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <ActivityIndicator size='small' color={theme.dark} />
+              </View>
+            ) : myReservations.length > 0 ? (
+              myReservations.map((reservation, index) => {
+                return (
+                  <Reservation
+                    key={index}
+                    info={reservation}
+                    id={reservation.cubicleID}
+                    deleteReservation={deleteReservation}
+                    pressedCancel={pressedCancel}
+                  />
+                );
+              })
+            ) : (
+              <Text style={styles.noReservationsText}>
+                No hay reservaciones
+              </Text>
+            )}
+          </View>
+        </ScrollView>
+      </View>
+    );
+  } else {
+    return null;
+  }
 };
 
 export default Home;
@@ -301,6 +408,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 16,
     marginTop: 28,
+    paddingBottom: 90,
   },
   greetingsTitle: {
     fontFamily: 'Roboto-Medium',

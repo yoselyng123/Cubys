@@ -2,12 +2,13 @@ import { StyleSheet, Text, View } from 'react-native';
 import React, { useContext } from 'react';
 /* Assets */
 import { Ionicons } from '@expo/vector-icons';
-import { FontAwesome5 } from '@expo/vector-icons';
 import colors from '../assets/colors';
 import themeContext from '../context/themeContext';
+import { userContext } from '../context/userContext';
 
-const Card = ({ title, subtitle, icon, reservedNumber }) => {
+const Card = ({ title, subtitle, icon, reservedNumber, availableCubicles }) => {
   const theme = useContext(themeContext);
+  const { user } = useContext(userContext);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.white }]}>
@@ -29,7 +30,7 @@ const Card = ({ title, subtitle, icon, reservedNumber }) => {
         <Text style={[styles.reservedNumber, { color: theme.dark }]}>
           {reservedNumber}
           <Text style={[styles.reservedAvailability, { color: theme.dark }]}>
-            /1
+            {user.role === 'admin' ? `/${availableCubicles}` : '/1'}
           </Text>
         </Text>
       )}

@@ -1,4 +1,11 @@
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+} from 'react-native';
 /* Assets */
 import colors from '../assets/colors';
 import { useState, useEffect, useContext } from 'react';
@@ -12,23 +19,6 @@ import CubicleMomentaneo from '../components/CubicleMomentaneo';
 /* APOLLO SERVER */
 import { useQuery, gql } from '@apollo/client';
 
-const GET_RESERVATIONS = gql`
-  query getAllReservations {
-    getAllReservations {
-      id
-      startTime
-      endTime
-      date
-      cubicleID
-      companions {
-        name
-        carrera
-        carnet
-      }
-      completed
-    }
-  }
-`;
 const GET_RESERVATIONS_BY_DATE = gql`
   query getReservationsByDate($date: String!) {
     getReservationsByDate(date: $date) {
@@ -120,9 +110,8 @@ const AvailableCubicles = ({ navigation }) => {
     }
 
     return (
-      outOfWorkingHoursValidation() &&
-      endTimeHigherThanStartTime() &&
-      twoHoursMaxValidation()
+      // outOfWorkingHoursValidation() &&
+      endTimeHigherThanStartTime() && twoHoursMaxValidation()
     );
   };
 
@@ -307,7 +296,9 @@ const AvailableCubicles = ({ navigation }) => {
         </View>
         {/* Map goes here */}
         {loadingReservations ? (
-          <Text>Loading...</Text>
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            <ActivityIndicator size='small' color={theme.dark} />
+          </View>
         ) : (
           filteredCubicles.map((cubicle, index) => {
             if (cubicle.floor === floor) {
