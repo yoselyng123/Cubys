@@ -34,6 +34,7 @@ const typeDefs = gql`
     getReservationsByDate(date: String!): [Reservation!]!
     getReservationsByStatus(completed: Boolean!): [Reservation!]!
     getMyReservationsByStatus(completed: Boolean!): [Reservation!]!
+    getReservationByID(id: ID!): Reservation!
   }
   type Mutation {
     signUp(input: SignUpInput!): AuthUser
@@ -83,7 +84,6 @@ const typeDefs = gql`
     profilePic: String
     carnet: String!
     carrera: String!
-    birthDate: String
     role: String!
     joined: String!
   }
@@ -148,6 +148,12 @@ const resolvers = {
         throw new Error('Authentication Error. Please sign in');
       }
       return await db.collection('Cubicles').findOne({ _id: ObjectId(id) });
+    },
+    getReservationByID: async (_, { id }, { db, user }) => {
+      if (!user) {
+        throw new Error('Authentication Error. Please sign in');
+      }
+      return await db.collection('Reservations').findOne({ _id: ObjectId(id) });
     },
     getReservationsByDate: async (_, { date }, { db, user }) => {
       if (!user) {

@@ -21,7 +21,14 @@ const GET_CUBICLE_BY_ID = gql`
   }
 `;
 
-const Reservation = ({ info, id, deleteReservation, pressedCancel }) => {
+const Reservation = ({
+  info,
+  id,
+  deleteReservation,
+  pressedCancel,
+  setPressedDeletedIndex,
+  index,
+}) => {
   const theme = useContext(themeContext);
 
   const { loading, error, data } = useQuery(GET_CUBICLE_BY_ID, {
@@ -45,6 +52,7 @@ const Reservation = ({ info, id, deleteReservation, pressedCancel }) => {
             deleteReservation({
               variables: { id },
             });
+            setPressedDeletedIndex(index);
           },
         },
       ]

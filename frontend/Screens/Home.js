@@ -5,6 +5,7 @@ import {
   Text,
   View,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import { useContext, useEffect, useState } from 'react';
 /* Assets */
@@ -102,6 +103,7 @@ const Home = ({ navigation }) => {
   const [historialCount, setHistorialCount] = useState(0);
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [reservedNumber, setReservedNumber] = useState(0);
+  const [pressedDeletedIndex, setPressedDeletedIndex] = useState(null);
 
   const { setMyReservations, myReservations, setCubiclesList, user } =
     useContext(userContext);
@@ -109,8 +111,11 @@ const Home = ({ navigation }) => {
   const [deleteReservation, { loading: loadingDeleteReservation }] =
     useMutation(DELETE_RESERVATION_MUTATION, {
       onCompleted: () => {
+        const myReservationsCopy = [...myReservations];
         setPressedCancel(false);
         Alert.alert('Se ha cancelado la reservación');
+        myReservationsCopy.pop(pressedDeletedIndex);
+        setMyReservations(myReservationsCopy);
         //refetchAllReservations();
       },
       onError: () => {
@@ -119,14 +124,6 @@ const Home = ({ navigation }) => {
         );
       },
     });
-
-  useEffect(() => {
-    if (!loadingDeleteReservation) {
-      // TODO:
-      // setMyReservations([]);
-      // PUEDO HACER REFETCH O SIMPLEMENTE HACERLE POP DEL ARRAY
-    }
-  }, [loadingDeleteReservation]);
 
   const {
     loading: loadingReservationsFalse,
@@ -304,7 +301,9 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     refetchReservationsFalse();
     refetchReservationsTrue();
-    refetchReservationsFalseAdmin();
+    if (user.role === 'admin') {
+      refetchReservationsFalseAdmin();
+    }
 
     setInterval(() => {
       setCurrentDate(dayjs());
@@ -319,6 +318,7 @@ const Home = ({ navigation }) => {
     refetchReservationsFalse();
     if (user.role === 'admin') {
       refetchReservationsTrueAdmin();
+      refetchReservationsFalseAdmin();
     }
     checkIfCompleted();
   }, [myReservations]);
@@ -332,6 +332,7 @@ const Home = ({ navigation }) => {
       setReservedNumber(
         dataReservationsFalseAdmin.getReservationsByStatus.length
       );
+      checkIfCompleted();
     }
   }, [dataReservationsFalseAdmin]);
 
@@ -374,13 +375,24 @@ const Home = ({ navigation }) => {
             ) : myReservations.length > 0 ? (
               myReservations.map((reservation, index) => {
                 return (
-                  <Reservation
+                  <TouchableOpacity
+                    activeOpacity={0.7}
                     key={index}
-                    info={reservation}
-                    id={reservation.cubicleID}
-                    deleteReservation={deleteReservation}
-                    pressedCancel={pressedCancel}
-                  />
+                    onPress={() =>
+                      navigation.navigate('ReservationDetailsAdmin', {
+                        reservation,
+                      })
+                    }
+                  >
+                    <Reservation
+                      info={reservation}
+                      id={reservation.cubicleID}
+                      deleteReservation={deleteReservation}
+                      pressedCancel={pressedCancel}
+                      setPressedDeletedIndex={setPressedDeletedIndex}
+                      index={index}
+                    />
+                  </TouchableOpacity>
                 );
               })
             ) : (

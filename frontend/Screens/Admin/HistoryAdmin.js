@@ -4,6 +4,7 @@ import {
   Text,
   View,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import { useContext } from 'react';
 /* Assets */
@@ -72,11 +73,20 @@ const HistoryAdmin = ({ navigation }) => {
               dataReservations.getReservationsByStatus.map(
                 (reservation, index) => {
                   return (
-                    <Reservation
+                    <TouchableOpacity
+                      activeOpacity={0.7}
                       key={index}
-                      info={reservation}
-                      id={reservation.cubicleID}
-                    />
+                      onPress={() =>
+                        navigation.navigate('ReservationDetailsAdmin', {
+                          reservation,
+                        })
+                      }
+                    >
+                      <Reservation
+                        info={reservation}
+                        id={reservation.cubicleID}
+                      />
+                    </TouchableOpacity>
                   );
                 }
               )

@@ -170,11 +170,21 @@ const ReservedCubicles = ({ navigation }) => {
               dataReservations.getReservationsByStatus.map(
                 (reservation, index) => {
                   return (
-                    <Reservation
+                    <TouchableOpacity
+                      activeOpacity={0.7}
                       key={index}
-                      info={reservation}
-                      id={reservation.cubicleID}
-                    />
+                      onPress={() =>
+                        navigation.navigate('ReservationDetailsAdmin', {
+                          reservation,
+                        })
+                      }
+                    >
+                      <Reservation
+                        key={index}
+                        info={reservation}
+                        id={reservation.cubicleID}
+                      />
+                    </TouchableOpacity>
                   );
                 }
               )

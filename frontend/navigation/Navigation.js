@@ -21,6 +21,7 @@ import AccessCubicle from '../Screens/AccessCubicle';
 import ReservationDetails from '../Screens/ReservationDetails';
 import AvailableCubicles from '../Screens/AvailableCubicles';
 import SplashScreen from '../Screens/SplashScreen';
+import ReservationDetailsAdmin from '../Screens/Admin/ReservationDetailsAdmin';
 /* Theme Related */
 import { EventRegister } from 'react-native-event-listeners';
 import theme from '../assets/config/theme';
@@ -89,6 +90,10 @@ function RootNavigator() {
           <Stack.Screen
             name='ReservationDetails'
             component={ReservationDetails}
+          />
+          <Stack.Screen
+            name='ReservationDetailsAdmin'
+            component={ReservationDetailsAdmin}
           />
         </Stack.Navigator>
         {appearanceTheme === 'light' ? (
