@@ -28,10 +28,10 @@ const Settings = () => {
         <View style={styles.descriptionContainer}>
           <View style={styles.texts}>
             <Text style={[styles.description, { color: theme.dark }]}>
-              Settings
+              Configuración
             </Text>
             <TouchableOpacity activeOpacity={0.7}>
-              <Text style={styles.markread}>Reset default</Text>
+              <Text style={styles.markread}>Restablecer</Text>
             </TouchableOpacity>
           </View>
           <SectionDivider marginBottom={10} />
@@ -43,9 +43,7 @@ const Settings = () => {
           <View style={styles.scrollContainer}>
             <View>
               <View style={styles.settingItemContainer}>
-                <Text style={[styles.title, { color: theme.dark }]}>
-                  Appearance
-                </Text>
+                <Text style={[styles.title, { color: theme.dark }]}>Tema</Text>
                 <View style={styles.itemWrapper}>
                   <View style={styles.radiobuttonItem}>
                     <RadioButton
@@ -80,7 +78,7 @@ const Settings = () => {
                               ]
                         }
                       >
-                        Light
+                        Claro
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -117,7 +115,7 @@ const Settings = () => {
                               ]
                         }
                       >
-                        Dark
+                        Oscuro
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -127,7 +125,7 @@ const Settings = () => {
 
               <View style={styles.settingItemContainer}>
                 <Text style={[styles.title, { color: theme.dark }]}>
-                  Notifications
+                  Notificaciones
                 </Text>
                 <View style={styles.itemWrapper}>
                   <View style={styles.radiobuttonItem}>
@@ -159,7 +157,7 @@ const Settings = () => {
                               ]
                         }
                       >
-                        Show
+                        Mostrar
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -192,7 +190,7 @@ const Settings = () => {
                               ]
                         }
                       >
-                        Hide
+                        Ocultar
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -202,7 +200,7 @@ const Settings = () => {
 
               <View style={styles.settingItemContainer}>
                 <Text style={[styles.title, { color: theme.dark }]}>
-                  Language
+                  Idioma
                 </Text>
                 <View style={styles.itemWrapper}>
                   <View style={styles.radiobuttonItem}>
@@ -232,7 +230,7 @@ const Settings = () => {
                               ]
                         }
                       >
-                        English
+                        Español
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -263,7 +261,7 @@ const Settings = () => {
                               ]
                         }
                       >
-                        Español
+                        English
                       </Text>
                     </TouchableOpacity>
                   </View>

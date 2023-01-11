@@ -59,14 +59,14 @@ const History = ({ navigation }) => {
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Header
         style={styles.header}
-        title='History'
+        title='Historial'
         navigateAvailable={true}
         navigation={navigation}
       />
       <View style={styles.contentWrapper}>
         <View style={styles.descriptionContainer}>
           <Text style={styles.description}>
-            Here you can check your past reservations
+            Aquí puedes ver tus reservaciones pasadas.
           </Text>
           <View
             style={{

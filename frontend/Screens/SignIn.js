@@ -60,10 +60,13 @@ const SignIn = ({ navigation }) => {
       if (networkError) {
         Alert.alert(
           'Error',
-          'No connection. Check your internet connection and try again'
+          'Sin Conexión. Verifique su conexión a internet e intente nuevamente'
         );
       } else {
-        Alert.alert('Error', 'Invalid credentials. Please try again');
+        Alert.alert(
+          'Error',
+          'Credenciales Inválidas. Por favor intente de nuevo'
+        );
       }
     },
   });
@@ -92,15 +95,15 @@ const SignIn = ({ navigation }) => {
           <View style={styles.inputContainer}>
             <Input
               style={styles.input}
-              title='Email Address'
-              placeholder='Enter your email'
+              title='Correo Electrónico'
+              placeholder='Ingrese su dirección de correo'
               text={email}
               onChangeText={(newText) => setEmail(newText.toLowerCase())}
             />
             <Input
               style={styles.input}
-              title='Password'
-              placeholder='Enter your password'
+              title='Contraseña'
+              placeholder='Ingrese su contraseña'
               isPassword={true}
               isSignInPassword={true}
               text={password}
@@ -121,19 +124,19 @@ const SignIn = ({ navigation }) => {
                 {loading ? (
                   <ActivityIndicator size='small' color='#FFF' />
                 ) : (
-                  <Text style={styles.textSignIn}>Sign In</Text>
+                  <Text style={styles.textSignIn}>Iniciar Sesión</Text>
                 )}
               </View>
             </TouchableOpacity>
             <View style={styles.noAccount}>
-              <Text style={styles.textNoAction}>No account yet?</Text>
+              <Text style={styles.textNoAction}>No tiene cuenta?</Text>
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => {
                   navigation.navigate('SignUp');
                 }}
               >
-                <Text style={styles.textAction}>Sign Up</Text>
+                <Text style={styles.textAction}>Crear cuenta</Text>
               </TouchableOpacity>
             </View>
           </View>

@@ -211,7 +211,7 @@ const Profile = ({ navigation }) => {
           >
             <Input
               style={styles.input}
-              title='Email Address'
+              title='Correo Electrónico'
               placeholder='Ingrese el correo'
               isPassword={false}
               text={user.email}
@@ -220,7 +220,7 @@ const Profile = ({ navigation }) => {
             />
             <Input
               style={styles.input}
-              title='Password'
+              title='Contraseña'
               placeholder='Ingrese la nueva contraseña'
               isPassword={true}
               text={password}
@@ -272,7 +272,7 @@ const Profile = ({ navigation }) => {
                   handleSignOut();
                 }}
               >
-                <Text style={styles.logout}>Log Out</Text>
+                <Text style={styles.logout}>Cerrar Sesión</Text>
               </TouchableOpacity>
             </View>
           </View>

@@ -188,6 +188,18 @@ const ReservationDetails = ({ route, navigation }) => {
     }
   };
 
+  const handleFloorShowcase = (floor) => {
+    if (floor === '1') {
+      return '1er Piso';
+    } else if (floor === '2') {
+      return '2do Piso';
+    } else if (floor === '3') {
+      return '3er Piso';
+    } else {
+      return null;
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -195,32 +207,35 @@ const ReservationDetails = ({ route, navigation }) => {
     >
       <Header
         style={styles.header}
-        title='Reservation Details'
+        title='Detalles'
         navigateAvailable={true}
         navigation={navigation}
       />
       <ScrollView style={styles.contentWrapper}>
         <Text style={styles.description}>
-          Please review the reservation details and make sure everything is
-          correct
+          Revise los detalles de la reserva y asegúrese de que todo esté
+          correcto
         </Text>
         <SectionDivider marginBottom={20} />
         <View style={styles.reservationInfoWrapper}>
           <View style={styles.topSection}>
             <Text style={[styles.title, { color: theme.dark }]}>
-              Cubicle #{cubicleInfo.cubicleNumber}
+              Cubículo #{cubicleInfo.cubicleNumber}
             </Text>
-            <Text style={styles.floor}>{cubicleInfo.floor}nd Floor</Text>
+            <Text style={styles.floor}>
+              {handleFloorShowcase(cubicleInfo.floor)}
+            </Text>
           </View>
           <View style={styles.cubicleAddOns}>
-            <Text style={styles.textDesc}>4 Chairs</Text>
-            <Text style={styles.textDesc}>White board</Text>
+            <Text style={styles.textDesc}>4 Sillas</Text>
+            <Text style={styles.textDesc}>1 Mesa</Text>
+            <Text style={styles.textDesc}>1 Pizarra</Text>
           </View>
           <SectionDivider marginBottom={20} />
           <View style={styles.dateWrapperContainer}>
             <View style={styles.dateWrapper}>
               <Text style={[styles.title, { color: theme.dark }]}>
-                Start Time
+                Hora de Entrada
               </Text>
               <Text style={styles.textDesc}>
                 {resInfo.date},{`\n`}
@@ -229,7 +244,7 @@ const ReservationDetails = ({ route, navigation }) => {
             </View>
             <View style={styles.dateWrapper}>
               <Text style={[styles.title, { color: theme.dark }]}>
-                End Time
+                Hora de Salida
               </Text>
               <Text style={styles.textDesc}>
                 {resInfo.date},{`\n`}

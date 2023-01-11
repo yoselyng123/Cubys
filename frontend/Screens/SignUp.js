@@ -117,13 +117,13 @@ const SignUp = ({ navigation }) => {
       confirmPassword !== ''
     ) {
       if (!email.includes('@')) {
-        Alert.alert('Correo inválido.');
+        Alert.alert('Error', 'Correo inválido.');
       } else if (carnet.length < 11 || carnet.length > 11) {
-        Alert.alert('Carnet inválido.');
+        Alert.alert('Error', 'Carnet inválido.');
       } else if (!validationsPassword) {
-        Alert.alert('La contraseña no cumple con los requisitos.');
+        Alert.alert('Error', 'La contraseña no cumple con los requisitos.');
       } else if (password !== confirmPassword) {
-        Alert.alert('Las contraseñas no coinciden.');
+        Alert.alert('Error', 'Las contraseñas no coinciden.');
       } else {
         let role = 'user';
         let joined = dayjs().format('DD MMM YYYY');
@@ -132,7 +132,7 @@ const SignUp = ({ navigation }) => {
         });
       }
     } else {
-      Alert.alert('Los campos no pueden quedar vacios.');
+      Alert.alert('Error', 'Los campos no pueden quedar vacios.');
     }
   };
 
@@ -193,7 +193,7 @@ const SignUp = ({ navigation }) => {
     >
       <Header
         style={styles.header}
-        title='Sign Up'
+        title='Registrarse'
         navigateAvailable={true}
         navigation={navigation}
       />
@@ -202,15 +202,15 @@ const SignUp = ({ navigation }) => {
         <View style={styles.inputContainer}>
           <Input
             style={styles.input}
-            title='Email Address'
-            placeholder='Enter your email'
+            title='Correo Electrónico'
+            placeholder='Ingrese su dirección de correo'
             text={email}
             onChangeText={(newText) => setEmail(newText.toLowerCase())}
           />
           <Input
             style={styles.input}
-            title='Name'
-            placeholder='Enter your name'
+            title='Nombre y Apellido'
+            placeholder='Ingrese su nombre y apellido'
             text={name}
             onChangeText={(newText) => setName(newText)}
           />
@@ -225,16 +225,16 @@ const SignUp = ({ navigation }) => {
           <CarreraSelect carrera={carrera} setCarrera={setCarrera} />
           <Input
             style={styles.input}
-            title='Password'
-            placeholder='Enter your password'
+            title='Contraseña'
+            placeholder='Ingrese su contraseña'
             isPassword={true}
             text={password}
             onChangeText={(newText) => setPassword(newText)}
           />
           <Input
             style={styles.input}
-            title='Confirm Password'
-            placeholder='Repeat your password'
+            title='Confirmar Contraseña'
+            placeholder='Repita la contraseña'
             isPassword={true}
             text={confirmPassword}
             onChangeText={(newText) => setConfirmPassword(newText)}
@@ -312,20 +312,20 @@ const SignUp = ({ navigation }) => {
               {loading ? (
                 <ActivityIndicator size='small' color='#FFF' />
               ) : (
-                <Text style={styles.textSignIn}>Sign Up</Text>
+                <Text style={styles.textSignIn}>Registrarse</Text>
               )}
             </View>
           </TouchableOpacity>
 
           <View style={styles.noAccount}>
-            <Text style={styles.textNoAction}>Already got an account?</Text>
+            <Text style={styles.textNoAction}>Ya tiene una cuenta?</Text>
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => {
                 navigation.navigate('SignIn');
               }}
             >
-              <Text style={styles.textAction}>Sign In</Text>
+              <Text style={styles.textAction}>Iniciar Sesión</Text>
             </TouchableOpacity>
           </View>
         </View>

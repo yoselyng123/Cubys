@@ -261,7 +261,7 @@ const AvailableCubicles = ({ navigation }) => {
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Header
         style={styles.header}
-        title='Available Cubicles'
+        title='Cubículos Disponibles'
         navigateAvailable={true}
         navigation={navigation}
       />

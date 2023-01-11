@@ -41,7 +41,7 @@ const Reservation = ({
       'Esta seguro que desea cancelar su reservación?',
       [
         {
-          text: 'Cancel',
+          text: 'Cancelar',
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
@@ -92,14 +92,14 @@ const Reservation = ({
               {loading && data.getCubicleByID ? (
                 <View style={styles.LeftInfoWrapper}>
                   <Text style={[styles.idCubicle, { color: theme.dark }]}>
-                    Cubicle #
+                    Cubículo #
                   </Text>
-                  <Text style={styles.cubicleFloor}>Floor</Text>
+                  <Text style={styles.cubicleFloor}>Piso</Text>
                 </View>
               ) : (
                 <View style={styles.LeftInfoWrapper}>
                   <Text style={[styles.idCubicle, { color: theme.dark }]}>
-                    Cubicle #{data.getCubicleByID.cubicleNumber}
+                    Cubículo #{data.getCubicleByID.cubicleNumber}
                   </Text>
                   <Text style={styles.cubicleFloor}>
                     {handleFloorShowcase(data.getCubicleByID.floor)}
@@ -135,7 +135,7 @@ const Reservation = ({
         </View>
         <View style={styles.bottomSection}>
           <View>
-            <Text style={styles.timeTitle}>Start Time</Text>
+            <Text style={styles.timeTitle}>Hora de Entrada</Text>
             <Text style={[styles.time, { color: theme.dark }]}>
               {info.date},{'\n'}
               {info.startTime}
@@ -147,7 +147,7 @@ const Reservation = ({
             color={colors.gray}
           />
           <View>
-            <Text style={styles.timeTitle}>End Time</Text>
+            <Text style={styles.timeTitle}>Hora de Sallida</Text>
             <Text style={[styles.time, { color: theme.dark }]}>
               {info.date},{'\n'}
               {info.endTime}
@@ -208,6 +208,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     letterSpacing: 0.6,
     color: colors.dark,
+    marginRight: 10,
   },
   cubicleFloor: {
     fontFamily: 'Roboto-Medium',

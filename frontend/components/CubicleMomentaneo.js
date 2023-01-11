@@ -39,6 +39,18 @@ const CubicleMomentaneo = ({
     }
   };
 
+  const handleFloorShowcase = (floor) => {
+    if (floor === '1') {
+      return '1er Piso';
+    } else if (floor === '2') {
+      return '2do Piso';
+    } else if (floor === '3') {
+      return '3er Piso';
+    } else {
+      return null;
+    }
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: theme.white }]}>
       <TouchableOpacity
@@ -57,9 +69,11 @@ const CubicleMomentaneo = ({
           <View style={styles.contentLeft}>
             <View style={styles.topInfoSection}>
               <Text style={[styles.cubicleText, { color: theme.dark }]}>
-                Cubicle #{cubicle.cubicleNumber}
+                Cubículo #{cubicle.cubicleNumber}
               </Text>
-              <Text style={styles.floorText}>{cubicle.floor}st Floor</Text>
+              <Text style={styles.floorText}>
+                {handleFloorShowcase(cubicle.floor)}
+              </Text>
             </View>
             <View>
               <Text style={styles.salaText}>{cubicle.sala}</Text>

@@ -12,6 +12,7 @@ import colors from '../assets/colors';
 import { Feather } from '@expo/vector-icons';
 import CarreraSelect from './CarreraSelect';
 import themeContext from '../context/themeContext';
+import { userContext } from '../context/userContext';
 
 const ReserveForm = ({
   number,
@@ -20,6 +21,8 @@ const ReserveForm = ({
   companionsList,
 }) => {
   const theme = useContext(themeContext);
+
+  const { user } = useContext(userContext);
 
   const handleDeleteCompanion = () => {
     if (companionsList.length === 2) {
@@ -59,7 +62,9 @@ const ReserveForm = ({
       <View style={styles.topInfo}>
         <View>
           <Text style={styles.title}>Acompañante #{number}</Text>
-          {number - 1 === 0 && <Text style={styles.subtitle}>Responsable</Text>}
+          {user.role === 'admin' && number - 1 === 0 && (
+            <Text style={styles.subtitle}>Responsable</Text>
+          )}
         </View>
         <TouchableOpacity activeOpacity={0.7} onPress={handleDeleteCompanion}>
           <View style={styles.addCompanionBtn}>

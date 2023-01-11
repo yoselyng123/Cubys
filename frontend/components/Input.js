@@ -34,7 +34,7 @@ const Input = ({
         <Text style={styles.title}>{title}</Text>
         {isSignInPassword && (
           <TouchableOpacity activeOpacity={0.7}>
-            <Text style={styles.passForgot}>Forgot Your Password?</Text>
+            <Text style={styles.passForgot}>Olvidó su contraseña?</Text>
           </TouchableOpacity>
         )}
       </View>
