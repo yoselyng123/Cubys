@@ -207,7 +207,7 @@ const ReservationDetails = ({ route, navigation }) => {
     >
       <Header
         style={styles.header}
-        title='Detalles'
+        title='Detalles Reservación'
         navigateAvailable={true}
         navigation={navigation}
       />

@@ -123,7 +123,7 @@ const Settings = () => {
               </View>
               <SectionDivider marginBottom={20} marginTop={20} />
 
-              <View style={styles.settingItemContainer}>
+              {/* <View style={styles.settingItemContainer}>
                 <Text style={[styles.title, { color: theme.dark }]}>
                   Notificaciones
                 </Text>
@@ -196,7 +196,7 @@ const Settings = () => {
                   </View>
                 </View>
               </View>
-              <SectionDivider marginBottom={20} marginTop={20} />
+              <SectionDivider marginBottom={20} marginTop={20} /> */}
 
               <View style={styles.settingItemContainer}>
                 <Text style={[styles.title, { color: theme.dark }]}>
