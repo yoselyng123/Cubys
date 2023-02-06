@@ -2,7 +2,8 @@ import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const URI = 'https://cubysbackend-production.up.railway.app/'; // http://localhost:4000/
+//const URI = 'https://cubysbackend-production.up.railway.app/'; // http://localhost:4000/
+const URI = 'https://cubys-backend.vercel.app/'; // http://localhost:4000/
 
 const httpLink = createHttpLink({
   uri: URI,
