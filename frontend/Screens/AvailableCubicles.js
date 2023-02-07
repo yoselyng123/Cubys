@@ -110,8 +110,9 @@ const AvailableCubicles = ({ navigation }) => {
     }
 
     return (
-      // outOfWorkingHoursValidation() &&
-      endTimeHigherThanStartTime() && twoHoursMaxValidation()
+      outOfWorkingHoursValidation() &&
+      endTimeHigherThanStartTime() &&
+      twoHoursMaxValidation()
     );
   };
 
