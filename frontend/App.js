@@ -6,6 +6,8 @@ import { ApolloProvider } from '@apollo/client';
 import { client } from './apollo';
 import Navigation from './navigation/Navigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+/* Alerts */
+import FlashMessage from 'react-native-flash-message';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -31,6 +33,7 @@ export default function App() {
     return (
       <ApolloProvider client={client}>
         <Navigation />
+        <FlashMessage position='top' />
       </ApolloProvider>
     );
   }

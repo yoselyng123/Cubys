@@ -5,21 +5,28 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { RadioButton } from 'react-native-paper';
 /* Assets */
 import colors from '../assets/colors';
 import { EventRegister } from 'react-native-event-listeners';
 import themeContext from '../context/themeContext';
+import { useColorScheme } from 'react-native';
 /* Components */
 import Header from '../components/Header';
 import SectionDivider from '../components/SectionDivider';
 
 const Settings = () => {
   const theme = useContext(themeContext);
-  const [appearanceTheme, setAppearanceTheme] = useState('dark');
+  const [appearanceTheme, setAppearanceTheme] = useState('light');
   const [notificationsChecked, setNotificationsChecked] = useState('first');
   const [languageChecked, setLanguageChecked] = useState('first');
+
+  const scheme = useColorScheme();
+
+  useEffect(() => {
+    setAppearanceTheme(scheme);
+  }, []);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>

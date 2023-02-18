@@ -1,17 +1,13 @@
-import {
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  ActivityIndicator,
-} from 'react-native';
+import { ScrollView, StyleSheet, View, ActivityIndicator } from 'react-native';
 /* Assets */
 import colors from '../assets/colors';
 import { useState, useEffect, useContext } from 'react';
 import { userContext } from '../context/userContext';
 import themeContext from '../context/themeContext';
 import dayjs from 'dayjs';
+import { MaterialIcons } from '@expo/vector-icons';
+import { showMessage } from 'react-native-flash-message';
+
 /* Components */
 import Header from '../components/Header';
 import InfoAvailability from '../components/InfoAvailability';
@@ -65,7 +61,6 @@ const AvailableCubicles = ({ navigation }) => {
     refetch: refetchReservations,
   } = useQuery(GET_RESERVATIONS_BY_DATE, {
     variables: { date },
-    pollInterval: 10000,
   });
 
   /* U T I L I T I E S */
@@ -101,18 +96,29 @@ const AvailableCubicles = ({ navigation }) => {
   /* V A L I D A T I O N S */
   const inputValidation = () => {
     if (startTime === endTime) {
-      Alert.alert(
-        'Error',
-        'La hora de entrada no puede ser igual a la hora de salida.'
-      );
+      showMessage({
+        message: 'Error',
+        description:
+          'La hora de entrada no puede ser igual a la hora de salida.',
+        type: 'danger',
+        duration: '2000',
+
+        icon: () => (
+          <MaterialIcons
+            name='cancel'
+            size={38}
+            color='#FF9B9D'
+            style={{ paddingRight: 20 }}
+          />
+        ),
+      });
       setError(true);
       return false;
     }
 
     return (
-      outOfWorkingHoursValidation() &&
-      endTimeHigherThanStartTime() &&
-      twoHoursMaxValidation()
+      //outOfWorkingHoursValidation() &&
+      endTimeHigherThanStartTime() && twoHoursMaxValidation()
     );
   };
 
@@ -123,14 +129,42 @@ const AvailableCubicles = ({ navigation }) => {
       parseInt(parseMilitarHoursFormat(startTime)) > 1700
     ) {
       setError(true);
-      Alert.alert('Error', 'La biblioteca abre de 7:00am a 5:00pm');
+      showMessage({
+        message: 'Error',
+        description: 'La biblioteca abre de 7:00am a 5:00pm',
+        type: 'danger',
+        duration: '2000',
+
+        icon: () => (
+          <MaterialIcons
+            name='cancel'
+            size={38}
+            color='#FF9B9D'
+            style={{ paddingRight: 20 }}
+          />
+        ),
+      });
       return false;
     } else if (
       parseInt(parseMilitarHoursFormat(endTime) < 700) ||
       parseInt(parseMilitarHoursFormat(startTime)) < 700
     ) {
       setError(true);
-      Alert.alert('Error', 'La biblioteca abre de 7:00am a 5:00pm');
+      showMessage({
+        message: 'Error',
+        description: 'La biblioteca abre de 7:00am a 5:00pm',
+        type: 'danger',
+        duration: '2000',
+
+        icon: () => (
+          <MaterialIcons
+            name='cancel'
+            size={38}
+            color='#FF9B9D'
+            style={{ paddingRight: 20 }}
+          />
+        ),
+      });
       return false;
     }
 
@@ -144,7 +178,21 @@ const AvailableCubicles = ({ navigation }) => {
     );
 
     if (quantity > 200) {
-      Alert.alert('Error', 'El tiempo máximo de reserva son 2 horas.');
+      showMessage({
+        message: 'Error',
+        description: 'El tiempo máximo de reserva son 2 horas.',
+        type: 'danger',
+        duration: '2000',
+
+        icon: () => (
+          <MaterialIcons
+            name='cancel'
+            size={38}
+            color='#FF9B9D'
+            style={{ paddingRight: 20 }}
+          />
+        ),
+      });
       setError(true);
       return false;
     }
@@ -157,10 +205,21 @@ const AvailableCubicles = ({ navigation }) => {
       parseInt(parseMilitarHoursFormat(startTime))
     ) {
       setError(true);
-      Alert.alert(
-        'Error',
-        'La hora de entrada debe ser mayor a la hora de salida.'
-      );
+      showMessage({
+        message: 'Error',
+        description: 'La hora de entrada debe ser mayor a la hora de salida.',
+        type: 'danger',
+        duration: '2000',
+
+        icon: () => (
+          <MaterialIcons
+            name='cancel'
+            size={38}
+            color='#FF9B9D'
+            style={{ paddingRight: 20 }}
+          />
+        ),
+      });
       return false;
     }
     return true;
@@ -244,8 +303,6 @@ const AvailableCubicles = ({ navigation }) => {
     return () => {
       clearInterval(startTime);
       clearInterval(endTime);
-      setStartTime('');
-      setEndTime('');
     };
   }, []);
 

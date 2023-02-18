@@ -12,7 +12,8 @@ import {
 } from 'react-native';
 /* Assets */
 import colors from '../assets/colors';
-import { Feather } from '@expo/vector-icons';
+import { Feather, AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { showMessage } from 'react-native-flash-message';
 /* Components */
 import Header from '../components/Header';
 import ReserveForm from '../components/ReserveForm';
@@ -96,13 +97,38 @@ const ReservationDetails = ({ route, navigation }) => {
     CREATE_RESERVATION,
     {
       onCompleted: () => {
-        Alert.alert('Completado', 'Se ha creado la reservación con Exito!');
+        showMessage({
+          message: 'Success',
+          description: 'Se ha creado la reservación con éxito.',
+          type: 'success',
+          duration: '2000',
+          icon: () => (
+            <AntDesign
+              name='checkcircleo'
+              size={38}
+              color='#97E3A4'
+              style={{ paddingRight: 20 }}
+            />
+          ),
+        });
       },
       onError: () => {
-        Alert.alert(
-          'Error',
-          'No se pudo cancelar la reservación. Por favor intente de nuevo'
-        );
+        showMessage({
+          message: 'Error',
+          description:
+            'No se pudo realizar la reservación. Por favor intente de nuevo.',
+          type: 'danger',
+          duration: '2000',
+
+          icon: () => (
+            <MaterialIcons
+              name='cancel'
+              size={38}
+              color='#FF9B9D'
+              style={{ paddingRight: 20 }}
+            />
+          ),
+        });
       },
       refetchQueries: [{ query: GET_RESERVATIONS }],
     }
@@ -128,14 +154,42 @@ const ReservationDetails = ({ route, navigation }) => {
         companion.carnet === '' ||
         companion.carrera === ''
       ) {
-        Alert.alert('Error', 'Los campos no pueden quedar vacios');
+        showMessage({
+          message: 'Error',
+          description: 'Los campos no pueden quedar vacios',
+          type: 'danger',
+          duration: '2000',
+
+          icon: () => (
+            <MaterialIcons
+              name='cancel'
+              size={38}
+              color='#FF9B9D'
+              style={{ paddingRight: 20 }}
+            />
+          ),
+        });
         return false;
       } else {
         if (
           companion.carnet.length < 11 ||
           oneSpecialChar.test(companion.carnet)
         ) {
-          Alert.alert('Error', 'Carnet inválido');
+          showMessage({
+            message: 'Error',
+            description: 'Carnet inválido',
+            type: 'danger',
+            duration: '2000',
+
+            icon: () => (
+              <MaterialIcons
+                name='cancel'
+                size={38}
+                color='#FF9B9D'
+                style={{ paddingRight: 20 }}
+              />
+            ),
+          });
           return false;
         }
         return true;

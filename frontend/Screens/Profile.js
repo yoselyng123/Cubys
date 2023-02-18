@@ -13,6 +13,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import colors from '../assets/colors';
 import { userContext } from '../context/userContext';
 import themeContext from '../context/themeContext';
+import { Feather, AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { showMessage } from 'react-native-flash-message';
 /* Components */
 import Header from '../components/Header';
 import Input from '../components/Input';
@@ -20,6 +22,7 @@ import DateInput from '../components/DateInput';
 /* APOLLO SERVER */
 import SplashScreen from './SplashScreen';
 import { gql, useMutation } from '@apollo/client';
+import Loading from '../components/Loading';
 
 const UPDATE_USER_MUTATION = gql`
   mutation updateUser($id: ID!, $password: String!) {
@@ -51,29 +54,69 @@ const Profile = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [emptyPassword, setEmptyPassword] = useState(true);
 
-  const [updateUser, { loading }] = useMutation(UPDATE_USER_MUTATION, {
-    onCompleted: (data) => {
-      // Store Token
-      AsyncStorage.removeItem('token');
-      AsyncStorage.setItem('token', data.updateUser.token).then(() => {
-        setUser(data.updateUser.user);
-      });
-      Alert.alert(
-        'Modificación Exitosa!',
-        'Se ha cambiado exitosamente la contraseña'
-      );
-      setPassword('');
-    },
-    onError: ({ networkError }) => {
-      if (networkError) {
-        Alert.alert(
-          'Sin conexión. Chequea tu conexión a internet e intenta de nuevo.'
-        );
-      } else {
-        Alert.alert('Error. Intenta de nuevo.');
-      }
-    },
-  });
+  const [updateUser, { loading: loadingUpdateUser }] = useMutation(
+    UPDATE_USER_MUTATION,
+    {
+      onCompleted: (data) => {
+        // Store Token
+        AsyncStorage.removeItem('token');
+        AsyncStorage.setItem('token', data.updateUser.token).then(() => {
+          setUser(data.updateUser.user);
+        });
+        showMessage({
+          message: 'Modificación Exitosa',
+          description: 'Se ha cambiado la contraseña',
+          type: 'success',
+          duration: '2000',
+          icon: () => (
+            <AntDesign
+              name='checkcircleo'
+              size={38}
+              color='#97E3A4'
+              style={{ paddingRight: 20 }}
+            />
+          ),
+        });
+        setPassword('');
+      },
+      onError: ({ networkError }) => {
+        if (networkError) {
+          showMessage({
+            message: 'Error',
+            description:
+              'Sin conexión. Chequea tu conexión a internet e intenta de nuevo.',
+            type: 'danger',
+            duration: '2000',
+
+            icon: () => (
+              <MaterialIcons
+                name='cancel'
+                size={38}
+                color='#FF9B9D'
+                style={{ paddingRight: 20 }}
+              />
+            ),
+          });
+        } else {
+          showMessage({
+            message: 'Error',
+            description: 'Intenta de nuevo.',
+            type: 'danger',
+            duration: '2000',
+
+            icon: () => (
+              <MaterialIcons
+                name='cancel'
+                size={38}
+                color='#FF9B9D'
+                style={{ paddingRight: 20 }}
+              />
+            ),
+          });
+        }
+      },
+    }
+  );
 
   const validateUpperAndLower = (password) => {
     const oneUpperCase = new RegExp('^(?=.*[A-Z])');
@@ -140,10 +183,22 @@ const Profile = ({ navigation }) => {
 
     if (password !== '') {
       if (!validationsPassword) {
-        Alert.alert(
-          'Error',
-          'Verifique que la contraseña contenga: \n1. Al menos una mayúscula y una minúscula.\n2. Al menos un número.\n3. Al menos un carácter especial.\n4. Al menos 8 carácteres.'
-        );
+        showMessage({
+          message: 'Error',
+          description:
+            'Verifique que la contraseña contenga: \n1. Al menos una mayúscula y una minúscula.\n2. Al menos un número.\n3. Al menos un carácter especial.\n4. Al menos 8 carácteres.',
+          type: 'danger',
+          duration: '6000',
+
+          icon: () => (
+            <MaterialIcons
+              name='cancel'
+              size={38}
+              color='#FF9B9D'
+              style={{ paddingRight: 20 }}
+            />
+          ),
+        });
       } else {
         Alert.alert(
           'Confirmación de cambios',
@@ -225,7 +280,7 @@ const Profile = ({ navigation }) => {
               isPassword={true}
               text={password}
               onChangeText={(newText) => setPassword(newText)}
-              disabled={loading}
+              disabled={loadingUpdateUser}
             />
             <Input
               style={styles.input}
@@ -255,7 +310,7 @@ const Profile = ({ navigation }) => {
                 justifyContent: 'space-between',
               }}
             >
-              {!emptyPassword && !loading && (
+              {!emptyPassword && !loadingUpdateUser && (
                 <TouchableOpacity
                   activeOpacity={0.7}
                   onPress={() => {
@@ -277,6 +332,7 @@ const Profile = ({ navigation }) => {
             </View>
           </View>
         </View>
+        <Loading show={loadingUpdateUser} />
       </View>
     );
   } else {

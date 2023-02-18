@@ -9,7 +9,8 @@ import {
 import { useContext } from 'react';
 /* Assets */
 import colors from '../assets/colors';
-import { Feather } from '@expo/vector-icons';
+import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { showMessage } from 'react-native-flash-message';
 import CarreraSelect from './CarreraSelect';
 import themeContext from '../context/themeContext';
 import { userContext } from '../context/userContext';
@@ -26,10 +27,21 @@ const ReserveForm = ({
 
   const handleDeleteCompanion = () => {
     if (companionsList.length === 2) {
-      Alert.alert(
-        'Error',
-        'Se requiere un minimo de 3 personas para reservar un cubículo.'
-      );
+      showMessage({
+        message: 'Error',
+        description:
+          'Se requiere un minimo de 3 personas para reservar un cubículo.',
+        type: 'danger',
+        duration: '2000',
+        icon: () => (
+          <MaterialIcons
+            name='cancel'
+            size={38}
+            color='#FF9B9D'
+            style={{ paddingRight: 20 }}
+          />
+        ),
+      });
     } else {
       let copyListCompanions = [...companionsList];
       copyListCompanions.splice(number - 1, 1);

@@ -41,6 +41,8 @@ function RootNavigator() {
 
   const scheme = useColorScheme();
 
+  console.log(scheme);
+
   useEffect(() => {
     let eventListener = EventRegister.addEventListener(
       'changeTheme',

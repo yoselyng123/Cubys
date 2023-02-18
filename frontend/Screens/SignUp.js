@@ -17,9 +17,9 @@ import Header from '../components/Header';
 import Input from '../components/Input';
 import CarreraSelect from '../components/CarreraSelect';
 import dayjs from 'dayjs';
+import { showMessage } from 'react-native-flash-message';
 /* ICONS */
-import { Ionicons } from '@expo/vector-icons';
-import { Feather } from '@expo/vector-icons';
+import { Feather, MaterialIcons, Ionicons } from '@expo/vector-icons';
 /* APOLLO SERVER */
 import { useMutation, gql } from '@apollo/client';
 import { userContext } from '../context/userContext';
@@ -117,13 +117,69 @@ const SignUp = ({ navigation }) => {
       confirmPassword !== ''
     ) {
       if (!email.includes('@')) {
-        Alert.alert('Error', 'Correo inválido.');
+        showMessage({
+          message: 'Error',
+          description: 'Correo inválido.',
+          type: 'danger',
+          duration: '2000',
+
+          icon: () => (
+            <MaterialIcons
+              name='cancel'
+              size={38}
+              color='#FF9B9D'
+              style={{ paddingRight: 20 }}
+            />
+          ),
+        });
       } else if (carnet.length < 11 || carnet.length > 11) {
-        Alert.alert('Error', 'Carnet inválido.');
+        showMessage({
+          message: 'Error',
+          description: 'Carnet inválido.',
+          type: 'danger',
+          duration: '2000',
+
+          icon: () => (
+            <MaterialIcons
+              name='cancel'
+              size={38}
+              color='#FF9B9D'
+              style={{ paddingRight: 20 }}
+            />
+          ),
+        });
       } else if (!validationsPassword) {
-        Alert.alert('Error', 'La contraseña no cumple con los requisitos.');
+        showMessage({
+          message: 'Error',
+          description: 'La contraseña no cumple con los requisitos.',
+          type: 'danger',
+          duration: '2000',
+
+          icon: () => (
+            <MaterialIcons
+              name='cancel'
+              size={38}
+              color='#FF9B9D'
+              style={{ paddingRight: 20 }}
+            />
+          ),
+        });
       } else if (password !== confirmPassword) {
-        Alert.alert('Error', 'Las contraseñas no coinciden.');
+        showMessage({
+          message: 'Error',
+          description: 'Las contraseñas no coinciden.',
+          type: 'danger',
+          duration: '2000',
+
+          icon: () => (
+            <MaterialIcons
+              name='cancel'
+              size={38}
+              color='#FF9B9D'
+              style={{ paddingRight: 20 }}
+            />
+          ),
+        });
       } else {
         let role = 'user';
         let joined = dayjs().format('DD MMM YYYY');
@@ -132,7 +188,21 @@ const SignUp = ({ navigation }) => {
         });
       }
     } else {
-      Alert.alert('Error', 'Los campos no pueden quedar vacios.');
+      showMessage({
+        message: 'Error',
+        description: 'Los campos no pueden quedar vacios.',
+        type: 'danger',
+        duration: '2000',
+
+        icon: () => (
+          <MaterialIcons
+            name='cancel'
+            size={38}
+            color='#FF9B9D'
+            style={{ paddingRight: 20 }}
+          />
+        ),
+      });
     }
   };
 
@@ -330,7 +400,11 @@ const SignUp = ({ navigation }) => {
           </View>
         </View>
       </ScrollView>
-      <StatusBar style='dark' />
+      {theme.white === '#FFFFFF' ? (
+        <StatusBar style='dark' />
+      ) : (
+        <StatusBar style='light' />
+      )}
     </KeyboardAvoidingView>
   );
 };

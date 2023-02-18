@@ -9,7 +9,6 @@ import {
 import React from 'react';
 /* ASSETS */
 import colors from '../assets/colors';
-import { AntDesign } from '@expo/vector-icons';
 
 const Welcome = ({ navigation }) => {
   return (

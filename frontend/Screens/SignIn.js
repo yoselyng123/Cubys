@@ -4,7 +4,6 @@ import {
   View,
   TouchableOpacity,
   ActivityIndicator,
-  Alert,
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
@@ -18,6 +17,8 @@ import themeContext from '../context/themeContext';
 import colors from '../assets/colors';
 import Header from '../components/Header';
 import Input from '../components/Input';
+import { MaterialIcons } from '@expo/vector-icons';
+import { showMessage } from 'react-native-flash-message';
 /* APOLLO SERVER */
 import { useMutation, gql } from '@apollo/client';
 
@@ -58,15 +59,38 @@ const SignIn = ({ navigation }) => {
     },
     onError: ({ networkError }) => {
       if (networkError) {
-        Alert.alert(
-          'Error',
-          'Sin Conexión. Verifique su conexión a internet e intente nuevamente'
-        );
+        showMessage({
+          message: 'Error',
+          description:
+            'Sin Conexión. Verifique su conexión a internet e intente nuevamente.',
+          type: 'danger',
+          duration: '2000',
+
+          icon: () => (
+            <MaterialIcons
+              name='cancel'
+              size={38}
+              color='#FF9B9D'
+              style={{ paddingRight: 20 }}
+            />
+          ),
+        });
       } else {
-        Alert.alert(
-          'Error',
-          'Credenciales Inválidas. Por favor intente de nuevo'
-        );
+        showMessage({
+          message: 'Error',
+          description: 'Credenciales Inválidas. Por favor intente de nuevo,',
+          type: 'danger',
+          duration: '2000',
+
+          icon: () => (
+            <MaterialIcons
+              name='cancel'
+              size={38}
+              color='#FF9B9D'
+              style={{ paddingRight: 20 }}
+            />
+          ),
+        });
       }
     },
   });

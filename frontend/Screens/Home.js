@@ -13,13 +13,16 @@ import colors from '../assets/colors';
 import { userContext } from '../context/userContext';
 import dayjs from 'dayjs';
 import themeContext from '../context/themeContext';
+import { showMessage } from 'react-native-flash-message';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 /* Components */
 import Header from '../components/Header';
 import Reservation from '../components/Reservation';
 import CardsList from '../components/CardsList';
+import SectionDivider from '../components/SectionDivider';
+import Loading from '../components/Loading';
 /* APOLLO SERVER */
 import { useQuery, useMutation, gql } from '@apollo/client';
-import SectionDivider from '../components/SectionDivider';
 
 const GET_CUBICLES = gql`
   query getCubicles {
@@ -113,15 +116,41 @@ const Home = ({ navigation }) => {
       onCompleted: () => {
         const myReservationsCopy = [...myReservations];
         setPressedCancel(false);
-        Alert.alert('Se ha cancelado la reservación');
+        showMessage({
+          message: 'Info',
+          description: 'Se ha cancelado la reservación con éxito.',
+          type: 'info',
+          duration: '2000',
+          icon: () => (
+            <AntDesign
+              name='checkcircleo'
+              size={38}
+              color='#AFDBF5'
+              style={{ paddingRight: 20 }}
+            />
+          ),
+        });
         myReservationsCopy.pop(pressedDeletedIndex);
         setMyReservations(myReservationsCopy);
         //refetchAllReservations();
       },
       onError: () => {
-        Alert.alert(
-          'No se pudo cancelar la reservación. Por favor intente de nuevo'
-        );
+        showMessage({
+          message: 'Error',
+          description:
+            'No se pudo cancelar la reservación. Por favor intente de nuevo.',
+          type: 'danger',
+          duration: '2000',
+
+          icon: () => (
+            <MaterialIcons
+              name='cancel'
+              size={38}
+              color='#FF9B9D'
+              style={{ paddingRight: 20 }}
+            />
+          ),
+        });
       },
     });
 
@@ -310,7 +339,6 @@ const Home = ({ navigation }) => {
     }, 1000 * 60);
     return () => {
       clearInterval(currentDate);
-      setCurrentDate('');
     };
   }, []);
 
@@ -402,6 +430,7 @@ const Home = ({ navigation }) => {
             )}
           </View>
         </ScrollView>
+        <Loading show={loadingDeleteReservation} />
       </View>
     );
   } else {
