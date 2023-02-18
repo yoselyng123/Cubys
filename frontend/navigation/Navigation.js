@@ -37,9 +37,8 @@ export default function Navigation() {
 const Stack = createNativeStackNavigator();
 
 function RootNavigator() {
-  const [appearanceTheme, setAppearanceTheme] = useState('light');
-
   const scheme = useColorScheme();
+  const [appearanceTheme, setAppearanceTheme] = useState(scheme);
 
   console.log(scheme);
 

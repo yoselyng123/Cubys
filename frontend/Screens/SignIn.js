@@ -78,7 +78,7 @@ const SignIn = ({ navigation }) => {
       } else {
         showMessage({
           message: 'Error',
-          description: 'Credenciales Inválidas. Por favor intente de nuevo,',
+          description: 'Credenciales Inválidas.',
           type: 'danger',
           duration: '2000',
 
