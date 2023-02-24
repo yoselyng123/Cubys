@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, View, ActivityIndicator } from 'react-native';
+import { ScrollView, StyleSheet, View, Text } from 'react-native';
 /* Assets */
 import colors from '../assets/colors';
 import { useState, useEffect, useContext } from 'react';
@@ -14,6 +14,7 @@ import InfoAvailability from '../components/InfoAvailability';
 import CubicleMomentaneo from '../components/CubicleMomentaneo';
 /* APOLLO SERVER */
 import { useQuery, gql } from '@apollo/client';
+import Map from '../components/Map';
 
 const GET_RESERVATIONS_BY_DATE = gql`
   query getReservationsByDate($date: String!) {
@@ -353,7 +354,7 @@ const AvailableCubicles = ({ navigation }) => {
           </View>
         </View>
         {/* Map goes here */}
-        {loadingReservations ? (
+        {/* {loadingReservations ? (
           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
             <ActivityIndicator size='small' color={theme.dark} />
           </View>
@@ -378,7 +379,16 @@ const AvailableCubicles = ({ navigation }) => {
               return null;
             }
           })
-        )}
+        )} */}
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+          }}
+        >
+          <Map />
+        </View>
       </ScrollView>
     </View>
   );
