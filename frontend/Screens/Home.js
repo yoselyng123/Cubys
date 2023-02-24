@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef, useCallback } from 'react';
 /* Assets */
 import colors from '../assets/colors';
 import { userContext } from '../context/userContext';
@@ -15,6 +15,7 @@ import dayjs from 'dayjs';
 import themeContext from '../context/themeContext';
 import { showMessage } from 'react-native-flash-message';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 /* Components */
 import Header from '../components/Header';
 import Reservation from '../components/Reservation';
@@ -100,6 +101,8 @@ const GET_ALL_RESERVATIONS_BY_STATUS = gql`
 
 const Home = ({ navigation }) => {
   const theme = useContext(themeContext);
+
+  const myInterval = useRef();
 
   const [pressedCancel, setPressedCancel] = useState(false);
   const [availableCubicles, setAvailableCubicles] = useState(0);
@@ -333,14 +336,22 @@ const Home = ({ navigation }) => {
     if (user.role === 'admin') {
       refetchReservationsFalseAdmin();
     }
-
-    setInterval(() => {
-      setCurrentDate(dayjs());
-    }, 1000 * 60);
-    return () => {
-      clearInterval(currentDate);
-    };
   }, []);
+
+  // When component Mounts and Unmounts from navigation
+  useFocusEffect(
+    useCallback(() => {
+      // Do something when the screen is focused
+      myInterval.current = setInterval(() => {
+        setCurrentDate(dayjs());
+        console.log(dayjs());
+      }, 1000 * 10);
+      return () => {
+        // Do something when the screen is blurred
+        clearInterval(myInterval.current);
+      };
+    }, [])
+  );
 
   useEffect(() => {
     refetchReservationsFalse();

@@ -1,13 +1,13 @@
 import { ScrollView, StyleSheet, View, ActivityIndicator } from 'react-native';
 /* Assets */
 import colors from '../assets/colors';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { userContext } from '../context/userContext';
 import themeContext from '../context/themeContext';
 import dayjs from 'dayjs';
 import { MaterialIcons } from '@expo/vector-icons';
 import { showMessage } from 'react-native-flash-message';
-
+import { useFocusEffect } from '@react-navigation/native';
 /* Components */
 import Header from '../components/Header';
 import InfoAvailability from '../components/InfoAvailability';
@@ -36,6 +36,8 @@ const GET_RESERVATIONS_BY_DATE = gql`
 const AvailableCubicles = ({ navigation }) => {
   const theme = useContext(themeContext);
   const { cubiclesList } = useContext(userContext);
+
+  const myInterval = useRef();
 
   const [filteredCubicles, setFilteredCubicles] = useState(cubiclesList);
   const [date, setDate] = useState(dayjs().locale('es').format('DD MMM YYYY'));
@@ -79,20 +81,6 @@ const AvailableCubicles = ({ navigation }) => {
     return newHour + minutes;
   };
 
-  // const filterByFloor = (itemsList) => {
-  //   var copyOfItemList = [...itemsList];
-  //   const result = copyOfItemList.filter((item) => {
-  //     if (item.floor === floor) {
-  //       return item;
-  //     }
-  //   });
-  //   for (let i = 0; i < result.length; i++) {
-  //     result[i] = { ...result[i], availability: true };
-  //   }
-
-  //   return result;
-  // };
-
   /* V A L I D A T I O N S */
   const inputValidation = () => {
     if (startTime === endTime) {
@@ -117,8 +105,9 @@ const AvailableCubicles = ({ navigation }) => {
     }
 
     return (
-      //outOfWorkingHoursValidation() &&
-      endTimeHigherThanStartTime() && twoHoursMaxValidation()
+      outOfWorkingHoursValidation() &&
+      endTimeHigherThanStartTime() &&
+      twoHoursMaxValidation()
     );
   };
 
@@ -294,17 +283,31 @@ const AvailableCubicles = ({ navigation }) => {
   useEffect(() => {
     setStartTime(dayjs().format('h:mma'));
     setEndTime(dayjs().add(2, 'hour').format('h:mma'));
-    setInterval(() => {
-      setStartTime(dayjs().format('h:mma'));
-      setEndTime(dayjs().add(2, 'hour').format('h:mma'));
-    }, 1000 * 60);
-    refetchReservations({ date });
-    checkCubiclesAvailability();
-    return () => {
-      clearInterval(startTime);
-      clearInterval(endTime);
-    };
+    // var intervalID = setInterval(() => {
+    //   setStartTime(dayjs().format('h:mma'));
+    //   setEndTime(dayjs().add(2, 'hour').format('h:mma'));
+    // }, 1000 * 10);
+    // refetchReservations({ date });
+    // checkCubiclesAvailability();
+    // return () => {
+    //   clearInterval(intervalID);
+    // };
   }, []);
+
+  // When component Mounts and Unmounts from navigation
+  useFocusEffect(
+    useCallback(() => {
+      // Do something when the screen is focused
+      myInterval.current = setInterval(() => {
+        setStartTime(dayjs().format('h:mma'));
+        setEndTime(dayjs().add(2, 'hour').format('h:mma'));
+      }, 1000 * 10);
+      return () => {
+        // Do something when the screen is blurred
+        clearInterval(myInterval.current);
+      };
+    }, [])
+  );
 
   useEffect(() => {
     setError(false);
