@@ -62,38 +62,22 @@ const CardsList = ({
               { marginRight: 0, backgroundColor: theme.loading },
             ]}
           />
-        ) : user.role === 'admin' ? (
+        ) : (
           <TouchableOpacity
             style={[styles.cardItem, { width: cardWidth }]}
             activeOpacity={0.7}
             onPress={() => {
-              navigation.navigate('ReservedCubiclesAdmin');
+              if (user.role === 'admin') {
+                navigation.navigate('ReservedCubiclesAdmin');
+              } else {
+                navigation.navigate('ReservedCubicles');
+              }
             }}
           >
             <Card
               title='Reservaciones'
               reservedNumber={reservedNumber}
               availableCubicles={availableCubicles}
-              icon={
-                <FontAwesome5
-                  name='calendar-check'
-                  size={38}
-                  color={colors.purple}
-                />
-              }
-            />
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            style={[styles.cardItem, { width: cardWidth }]}
-            activeOpacity={0.7}
-            onPress={() => {
-              navigation.navigate('ReservedCubicles');
-            }}
-          >
-            <Card
-              title='Reservaciones'
-              reservedNumber={reservedNumber}
               icon={
                 <FontAwesome5
                   name='calendar-check'
@@ -118,7 +102,11 @@ const CardsList = ({
             style={[styles.cardItem, { width: cardWidth, marginRight: 18 }]}
             activeOpacity={0.7}
             onPress={() => {
-              navigation.navigate('CubicleAccess');
+              if (user.role === 'admin') {
+                navigation.navigate('CubicleAccessAdmin');
+              } else {
+                navigation.navigate('CubicleAccess');
+              }
             }}
           >
             <Card

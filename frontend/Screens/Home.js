@@ -344,7 +344,6 @@ const Home = ({ navigation }) => {
       // Do something when the screen is focused
       myInterval.current = setInterval(() => {
         setCurrentDate(dayjs());
-        console.log(dayjs());
       }, 1000 * 10);
       return () => {
         // Do something when the screen is blurred
@@ -454,7 +453,6 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   scrollContainer: {
     flex: 1,

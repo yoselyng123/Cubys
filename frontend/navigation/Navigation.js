@@ -25,6 +25,7 @@ import ReservationDetailsAdmin from '../Screens/Admin/ReservationDetailsAdmin';
 /* Theme Related */
 import { EventRegister } from 'react-native-event-listeners';
 import theme from '../assets/config/theme';
+import AccessCubicleAdmin from '../Screens/Admin/AccessCubicleAdmin';
 
 export default function Navigation() {
   return (
@@ -88,6 +89,10 @@ function RootNavigator() {
           <Stack.Screen name='History' component={History} />
           <Stack.Screen name='HistoryAdmin' component={HistoryAdmin} />
           <Stack.Screen name='CubicleAccess' component={AccessCubicle} />
+          <Stack.Screen
+            name='CubicleAccessAdmin'
+            component={AccessCubicleAdmin}
+          />
           <Stack.Screen
             name='ReservationDetails'
             component={ReservationDetails}
