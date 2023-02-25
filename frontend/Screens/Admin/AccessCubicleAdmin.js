@@ -5,9 +5,11 @@ import Header from '../../components/Header';
 import CubicleAccessCard from '../../components/CubicleAccessCard';
 /* Assets */
 import themeContext from '../../context/themeContext';
+import { userContext } from '../../context/userContext';
 
 const AccessCubicleAdmin = ({ navigation }) => {
   const theme = useContext(themeContext);
+  const { cubiclesList } = useContext(userContext);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -30,7 +32,13 @@ const AccessCubicleAdmin = ({ navigation }) => {
             }}
           />
         </View>
-        <CubicleAccessCard />
+        {cubiclesList
+          .sort(function (a, b) {
+            return a.floor - b.floor;
+          })
+          .map((cubicle, index) => {
+            return <CubicleAccessCard key={index} cubicle={cubicle} />;
+          })}
       </ScrollView>
     </View>
   );

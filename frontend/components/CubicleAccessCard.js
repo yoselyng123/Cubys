@@ -1,59 +1,23 @@
+import { useContext } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useContext, useState, useEffect } from 'react';
+import CustomSwitch from './CustomSwitch';
 /* Assets */
 import themeContext from '../context/themeContext';
-import { Feather } from '@expo/vector-icons';
-import Animated, {
-  interpolateColor,
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withTiming,
-  useDerivedValue,
-} from 'react-native-reanimated';
 
-const CubicleAccessCard = () => {
+const CubicleAccessCard = ({ cubicle }) => {
   const theme = useContext(themeContext);
 
-  // value for Switch Animation
-  const switchTranslate = useSharedValue(0);
-  // state for activate Switch
-  const [active, setActive] = useState(false);
-
-  // useEffect for change the switchTranslate Value
-  useEffect(() => {
-    if (active) {
-      switchTranslate.value = 19.9;
+  const handleFloorShowcase = (floor) => {
+    if (floor === '1') {
+      return '1er Piso';
+    } else if (floor === '2') {
+      return '2do Piso';
+    } else if (floor === '3') {
+      return '3er Piso';
     } else {
-      switchTranslate.value = 0;
+      return null;
     }
-  }, [active, switchTranslate]);
-
-  //   // Circle Animation
-  const customSpringStyles = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateX: withSpring(switchTranslate.value, {
-            mass: 1,
-            damping: 15,
-            stiffness: 120,
-            overshootClamping: false,
-            restSpeedThreshold: 0.001,
-            restDisplacementThreshold: 0.001,
-          }),
-        },
-      ],
-    };
-  });
-
-  // Background Color Animation
-  //   const backgroundColorStyle = useAnimatedStyle(() => {
-  //     const backgroundColor = interpolateColor(progress.value, [0, 22]);
-  //     return {
-  //       backgroundColor,
-  //     };
-  //   });
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.white }]}>
@@ -67,36 +31,17 @@ const CubicleAccessCard = () => {
           <View style={styles.infoWrapper}>
             <View style={styles.infoWrapperTop}>
               <Text style={[styles.cubicleTitle, { color: theme.dark }]}>
-                Cubicle #5
+                Cubículo #{cubicle.cubicleNumber}
               </Text>
               <Text style={[styles.cubicleFloor, { color: theme.gray }]}>
-                2nd floor
+                {handleFloorShowcase(cubicle.floor)}
               </Text>
             </View>
             <Text style={[styles.cubicleSala, { color: theme.gray }]}>
-              Sala de Referencia
+              {cubicle.sala}
             </Text>
           </View>
-          <TouchableOpacity onPress={() => setActive(!active)}>
-            <Animated.View
-              style={[styles.switchWrapper, { backgroundColor: theme.light }]}
-            >
-              <Animated.View
-                style={[
-                  styles.iconWrapper,
-                  { backgroundColor: theme.purple },
-                  customSpringStyles,
-                ]}
-              >
-                <Feather
-                  name={active ? 'unlock' : 'lock'}
-                  size={15}
-                  color={theme.light}
-                  style={{ fontWeight: 800 }}
-                />
-              </Animated.View>
-            </Animated.View>
-          </TouchableOpacity>
+          <CustomSwitch />
         </View>
       </View>
     </View>
@@ -112,6 +57,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 12,
     paddingHorizontal: 15,
+    marginBottom: 22,
   },
   contentWrapper: {
     flex: 1,
@@ -147,18 +93,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     letterSpacing: 0.6,
     lineHeight: 19,
-  },
-  switchWrapper: {
-    borderRadius: 7,
-    width: 50,
-    height: 21,
-    flexDirection: 'row',
-  },
-  iconWrapper: {
-    borderRadius: 7,
-    flex: 0.5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 5,
   },
 });
