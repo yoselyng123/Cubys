@@ -385,12 +385,13 @@ const AvailableCubicles = ({ navigation }) => {
         )} */}
         <View
           style={{
+            marginTop: 40,
             justifyContent: 'center',
             alignItems: 'center',
             width: '100%',
           }}
         >
-          <Map />
+          <Map floor={floor} />
         </View>
       </ScrollView>
     </View>
