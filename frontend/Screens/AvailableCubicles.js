@@ -1,4 +1,10 @@
-import { ScrollView, StyleSheet, View, Text } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Text,
+  ActivityIndicator,
+} from 'react-native';
 /* Assets */
 import colors from '../assets/colors';
 import { useState, useEffect, useContext, useRef, useCallback } from 'react';
@@ -391,7 +397,23 @@ const AvailableCubicles = ({ navigation }) => {
             width: '100%',
           }}
         >
-          <Map floor={floor} />
+          {loadingReservations ? (
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <ActivityIndicator size='small' color={theme.dark} />
+            </View>
+          ) : (
+            <Map
+              floor={floor}
+              resInfo={{
+                date,
+                startTime,
+                endTime,
+                floor,
+              }}
+              inputValidation={inputValidation}
+              navigation={navigation}
+            />
+          )}
         </View>
       </ScrollView>
     </View>
