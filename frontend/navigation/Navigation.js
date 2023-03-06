@@ -41,14 +41,11 @@ function RootNavigator() {
   const scheme = useColorScheme();
   const [appearanceTheme, setAppearanceTheme] = useState(scheme);
 
-  console.log(scheme);
-
   useEffect(() => {
     let eventListener = EventRegister.addEventListener(
       'changeTheme',
       (data) => {
         setAppearanceTheme(data);
-        console.log(data);
       }
     );
 

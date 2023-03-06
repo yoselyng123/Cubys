@@ -25,7 +25,11 @@ const Settings = () => {
   const scheme = useColorScheme();
 
   useEffect(() => {
-    setAppearanceTheme(scheme);
+    if (scheme === 'light') {
+      setAppearanceTheme('dark');
+    } else if (scheme === 'dark') {
+      setAppearanceTheme('light');
+    }
   }, []);
 
   return (

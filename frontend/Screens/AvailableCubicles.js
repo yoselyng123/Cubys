@@ -4,6 +4,7 @@ import {
   View,
   Text,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 /* Assets */
 import colors from '../assets/colors';
@@ -362,33 +363,7 @@ const AvailableCubicles = ({ navigation }) => {
             />
           </View>
         </View>
-        {/* Map goes here */}
-        {/* {loadingReservations ? (
-          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-            <ActivityIndicator size='small' color={theme.dark} />
-          </View>
-        ) : (
-          filteredCubicles.map((cubicle, index) => {
-            if (cubicle.floor === floor) {
-              return (
-                <CubicleMomentaneo
-                  key={index}
-                  cubicle={cubicle}
-                  navigation={navigation}
-                  resInfo={{
-                    date,
-                    startTime,
-                    endTime,
-                    floor,
-                  }}
-                  inputValidation={inputValidation}
-                />
-              );
-            } else {
-              return null;
-            }
-          })
-        )} */}
+        {/* MAP */}
         <View
           style={{
             marginTop: 40,
@@ -415,6 +390,39 @@ const AvailableCubicles = ({ navigation }) => {
             />
           )}
         </View>
+
+        {!loadingReservations && (
+          <>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {
+                //handleSignIn();
+              }}
+            >
+              <View style={styles.btnConfirm}>
+                <Text style={styles.textConfirm}>Confirmar</Text>
+              </View>
+            </TouchableOpacity>
+            <View style={styles.leyendWrapper}>
+              <View style={styles.leyendContainer}>
+                <Text style={[styles.leyendText, { color: theme.gray }]}>
+                  Disponible
+                </Text>
+                <View
+                  style={[styles.leyendColor, { backgroundColor: theme.green }]}
+                />
+              </View>
+              <View style={styles.leyendContainer}>
+                <Text style={[styles.leyendText, { color: theme.gray }]}>
+                  Ocupado
+                </Text>
+                <View
+                  style={[styles.leyendColor, { backgroundColor: theme.red }]}
+                />
+              </View>
+            </View>
+          </>
+        )}
       </ScrollView>
     </View>
   );
@@ -447,5 +455,43 @@ const styles = StyleSheet.create({
   },
   infoLeftWrapper: {
     marginRight: '15%',
+  },
+  leyendWrapper: {
+    marginTop: '10%',
+    alignSelf: 'flex-end',
+  },
+  leyendContainer: {
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    textAlign: 'left',
+    marginBottom: 5,
+  },
+  leyendColor: {
+    height: 8,
+    width: 8,
+    borderRadius: '50%',
+  },
+  leyendText: {
+    fontSize: 11,
+    fontFamily: 'Roboto-Medium',
+    textAlign: 'left',
+    marginRight: 6,
+  },
+  btnConfirm: {
+    borderRadius: 10,
+    backgroundColor: colors.purple,
+    paddingVertical: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 15,
+  },
+  textConfirm: {
+    fontFamily: 'Roboto-Medium',
+    fontSize: 15,
+    color: '#fff',
+    letterSpacing: 0.6,
   },
 });

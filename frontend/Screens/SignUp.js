@@ -116,7 +116,7 @@ const SignUp = ({ navigation }) => {
       password !== '' &&
       confirmPassword !== ''
     ) {
-      if (!email.includes('@')) {
+      if (!email.includes('@') || !email.includes('@unimet.edu.ve')) {
         showMessage({
           message: 'Error',
           description: 'Correo inválido.',

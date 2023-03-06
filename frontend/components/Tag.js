@@ -4,18 +4,20 @@ import React from 'react';
 import colors from '../assets/colors';
 import { Ionicons } from '@expo/vector-icons';
 
-const Tag = ({ name, icon }) => {
+const Tag = ({ name, icon, fontSize, iconSize }) => {
   return (
     <View style={styles.container}>
       {icon && (
         <Ionicons
           name={icon}
-          size={10}
+          size={iconSize ? iconSize : 10}
           color={colors.iconGray}
           style={{ marginRight: 3 }}
         />
       )}
-      <Text style={styles.title}>{name}</Text>
+      <Text style={[styles.title, { fontSize: fontSize ? fontSize : 10 }]}>
+        {name}
+      </Text>
     </View>
   );
 };

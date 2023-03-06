@@ -198,6 +198,13 @@ const ReservationDetails = ({ route, navigation }) => {
 
     const isTrue = (currentValue) => currentValue === true;
     if (passedValidation.every(isTrue)) {
+      if (user.role !== 'admin') {
+        companions.unshift({
+          name: user.name,
+          carrera: user.carrera,
+          carnet: user.carnet,
+        });
+      }
       createReservation({
         variables: {
           startTime,
