@@ -22,6 +22,7 @@ import CubicleMomentaneo from '../components/CubicleMomentaneo';
 /* APOLLO SERVER */
 import { useQuery, gql } from '@apollo/client';
 import Map from '../components/Map';
+import AvailabilityLeyend from '../components/AvailabilityLeyend';
 
 const GET_RESERVATIONS_BY_DATE = gql`
   query getReservationsByDate($date: String!) {
@@ -43,7 +44,7 @@ const GET_RESERVATIONS_BY_DATE = gql`
 
 const AvailableCubicles = ({ navigation }) => {
   const theme = useContext(themeContext);
-  const { cubiclesList } = useContext(userContext);
+  const { cubiclesList, user, myReservations } = useContext(userContext);
 
   const myInterval = useRef();
 
@@ -55,14 +56,9 @@ const AvailableCubicles = ({ navigation }) => {
   );
   const [floor, setFloor] = useState('1');
   const [error, setError] = useState(false);
+  const [selectedCubicle, setSelectedCubicle] = useState({});
 
   /* Q U E R Y S */
-  // const {
-  //   loading: loadingReservations,
-  //   error: errorReservations,
-  //   data: dataReservations,
-  //   refetch: refetchReservations,
-  // } = useQuery(GET_RESERVATIONS);
 
   const {
     loading: loadingReservations,
@@ -291,15 +287,6 @@ const AvailableCubicles = ({ navigation }) => {
   useEffect(() => {
     setStartTime(dayjs().format('h:mma'));
     setEndTime(dayjs().add(2, 'hour').format('h:mma'));
-    // var intervalID = setInterval(() => {
-    //   setStartTime(dayjs().format('h:mma'));
-    //   setEndTime(dayjs().add(2, 'hour').format('h:mma'));
-    // }, 1000 * 10);
-    // refetchReservations({ date });
-    // checkCubiclesAvailability();
-    // return () => {
-    //   clearInterval(intervalID);
-    // };
   }, []);
 
   // When component Mounts and Unmounts from navigation
@@ -309,7 +296,7 @@ const AvailableCubicles = ({ navigation }) => {
       myInterval.current = setInterval(() => {
         setStartTime(dayjs().format('h:mma'));
         setEndTime(dayjs().add(2, 'hour').format('h:mma'));
-      }, 1000 * 10);
+      }, 1000 * 300);
       return () => {
         // Do something when the screen is blurred
         clearInterval(myInterval.current);
@@ -325,6 +312,62 @@ const AvailableCubicles = ({ navigation }) => {
   useEffect(() => {
     checkCubiclesAvailability();
   }, [floor]);
+
+  const checkIfHasAnActiveReservation = () => {
+    if (myReservations.length < 1) {
+      return false;
+    } else {
+      showMessage({
+        message: 'Error',
+        description: 'Ya tiene una reservación activa.',
+        type: 'danger',
+        duration: '2000',
+
+        icon: () => (
+          <MaterialIcons
+            name='cancel'
+            size={38}
+            color='#FF9B9D'
+            style={{ paddingRight: 20 }}
+          />
+        ),
+      });
+      return true;
+    }
+  };
+
+  const handleForwardNavigation = (selectedCubicle) => {
+    if (inputValidation()) {
+      if (selectedCubicle.availability) {
+        navigation.navigate('ReservationDetails', {
+          cubicleInfo: selectedCubicle,
+          resInfo: {
+            date,
+            startTime,
+            endTime,
+            floor,
+          },
+        });
+      } else {
+        showMessage({
+          message: 'Error',
+          description:
+            'El cubículo se encuentra ocupado en el bloque de hora seleccionado.',
+          type: 'danger',
+          duration: '2000',
+
+          icon: () => (
+            <MaterialIcons
+              name='cancel'
+              size={38}
+              color='#FF9B9D'
+              style={{ paddingRight: 20 }}
+            />
+          ),
+        });
+      }
+    }
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -364,14 +407,8 @@ const AvailableCubicles = ({ navigation }) => {
           </View>
         </View>
         {/* MAP */}
-        <View
-          style={{
-            marginTop: 40,
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-          }}
-        >
+
+        <View style={styles.mapContainer}>
           {loadingReservations ? (
             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
               <ActivityIndicator size='small' color={theme.dark} />
@@ -385,43 +422,31 @@ const AvailableCubicles = ({ navigation }) => {
                 endTime,
                 floor,
               }}
-              inputValidation={inputValidation}
-              navigation={navigation}
+              setSelectedCubicle={setSelectedCubicle}
             />
           )}
         </View>
 
         {!loadingReservations && (
-          <>
+          <View style={styles.footer}>
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => {
-                //handleSignIn();
+                if (user.role === 'admin') {
+                  handleForwardNavigation(selectedCubicle);
+                } else {
+                  if (!checkIfHasAnActiveReservation()) {
+                    handleForwardNavigation(selectedCubicle);
+                  }
+                }
               }}
             >
               <View style={styles.btnConfirm}>
                 <Text style={styles.textConfirm}>Confirmar</Text>
               </View>
             </TouchableOpacity>
-            <View style={styles.leyendWrapper}>
-              <View style={styles.leyendContainer}>
-                <Text style={[styles.leyendText, { color: theme.gray }]}>
-                  Disponible
-                </Text>
-                <View
-                  style={[styles.leyendColor, { backgroundColor: theme.green }]}
-                />
-              </View>
-              <View style={styles.leyendContainer}>
-                <Text style={[styles.leyendText, { color: theme.gray }]}>
-                  Ocupado
-                </Text>
-                <View
-                  style={[styles.leyendColor, { backgroundColor: theme.red }]}
-                />
-              </View>
-            </View>
-          </>
+            <AvailabilityLeyend />
+          </View>
         )}
       </ScrollView>
     </View>
@@ -451,34 +476,13 @@ const styles = StyleSheet.create({
   infoWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    flex: 1,
   },
   infoLeftWrapper: {
     marginRight: '15%',
   },
-  leyendWrapper: {
-    marginTop: '10%',
-    alignSelf: 'flex-end',
-  },
-  leyendContainer: {
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    textAlign: 'left',
-    marginBottom: 5,
-  },
-  leyendColor: {
-    height: 8,
-    width: 8,
-    borderRadius: '50%',
-  },
-  leyendText: {
-    fontSize: 11,
-    fontFamily: 'Roboto-Medium',
-    textAlign: 'left',
-    marginRight: 6,
+  footer: {
+    flex: 3,
   },
   btnConfirm: {
     borderRadius: 10,
@@ -486,12 +490,15 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   textConfirm: {
     fontFamily: 'Roboto-Medium',
     fontSize: 15,
     color: '#fff',
     letterSpacing: 0.6,
+  },
+  mapContainer: {
+    flex: 2,
   },
 });
