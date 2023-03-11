@@ -56,10 +56,9 @@ const AvailableCubicles = ({ navigation }) => {
   );
   const [floor, setFloor] = useState('1');
   const [error, setError] = useState(false);
-  const [selectedCubicle, setSelectedCubicle] = useState({});
+  const [selectedCubicle, setSelectedCubicle] = useState(null);
 
   /* Q U E R Y S */
-
   const {
     loading: loadingReservations,
     error: errorReservations,
@@ -70,7 +69,6 @@ const AvailableCubicles = ({ navigation }) => {
   });
 
   /* U T I L I T I E S */
-
   const parseMilitarHoursFormat = (hour) => {
     var newHour = hour.split(':')[0];
     if (hour.split(':')[1].substring(2, 4) === 'pm') {
@@ -85,25 +83,30 @@ const AvailableCubicles = ({ navigation }) => {
     return newHour + minutes;
   };
 
+  const errorMessage = (message) => {
+    return showMessage({
+      message: 'Error',
+      description: message,
+      type: 'danger',
+      duration: '2000',
+
+      icon: () => (
+        <MaterialIcons
+          name='cancel'
+          size={38}
+          color='#FF9B9D'
+          style={{ paddingRight: 20 }}
+        />
+      ),
+    });
+  };
+
   /* V A L I D A T I O N S */
   const inputValidation = () => {
     if (startTime === endTime) {
-      showMessage({
-        message: 'Error',
-        description:
-          'La hora de entrada no puede ser igual a la hora de salida.',
-        type: 'danger',
-        duration: '2000',
-
-        icon: () => (
-          <MaterialIcons
-            name='cancel'
-            size={38}
-            color='#FF9B9D'
-            style={{ paddingRight: 20 }}
-          />
-        ),
-      });
+      errorMessage(
+        'La hora de entrada no puede ser igual a la hora de salida.'
+      );
       setError(true);
       return false;
     }
@@ -122,42 +125,14 @@ const AvailableCubicles = ({ navigation }) => {
       parseInt(parseMilitarHoursFormat(startTime)) > 1700
     ) {
       setError(true);
-      showMessage({
-        message: 'Error',
-        description: 'La biblioteca abre de 7:00am a 5:00pm',
-        type: 'danger',
-        duration: '2000',
-
-        icon: () => (
-          <MaterialIcons
-            name='cancel'
-            size={38}
-            color='#FF9B9D'
-            style={{ paddingRight: 20 }}
-          />
-        ),
-      });
+      errorMessage('La biblioteca abre de 7:00am a 5:00pm');
       return false;
     } else if (
       parseInt(parseMilitarHoursFormat(endTime) < 700) ||
       parseInt(parseMilitarHoursFormat(startTime)) < 700
     ) {
       setError(true);
-      showMessage({
-        message: 'Error',
-        description: 'La biblioteca abre de 7:00am a 5:00pm',
-        type: 'danger',
-        duration: '2000',
-
-        icon: () => (
-          <MaterialIcons
-            name='cancel'
-            size={38}
-            color='#FF9B9D'
-            style={{ paddingRight: 20 }}
-          />
-        ),
-      });
+      errorMessage('La biblioteca abre de 7:00am a 5:00pm');
       return false;
     }
 
@@ -171,21 +146,7 @@ const AvailableCubicles = ({ navigation }) => {
     );
 
     if (quantity > 200) {
-      showMessage({
-        message: 'Error',
-        description: 'El tiempo máximo de reserva son 2 horas.',
-        type: 'danger',
-        duration: '2000',
-
-        icon: () => (
-          <MaterialIcons
-            name='cancel'
-            size={38}
-            color='#FF9B9D'
-            style={{ paddingRight: 20 }}
-          />
-        ),
-      });
+      errorMessage('El tiempo máximo de reserva son 2 horas.');
       setError(true);
       return false;
     }
@@ -198,21 +159,7 @@ const AvailableCubicles = ({ navigation }) => {
       parseInt(parseMilitarHoursFormat(startTime))
     ) {
       setError(true);
-      showMessage({
-        message: 'Error',
-        description: 'La hora de entrada debe ser mayor a la hora de salida.',
-        type: 'danger',
-        duration: '2000',
-
-        icon: () => (
-          <MaterialIcons
-            name='cancel'
-            size={38}
-            color='#FF9B9D'
-            style={{ paddingRight: 20 }}
-          />
-        ),
-      });
+      errorMessage('La hora de entrada debe ser mayor a la hora de salida.');
       return false;
     }
     return true;
@@ -304,6 +251,7 @@ const AvailableCubicles = ({ navigation }) => {
     }, [])
   );
 
+  // Check Cubicle Availability on change time
   useEffect(() => {
     setError(false);
     checkCubiclesAvailability();
@@ -317,55 +265,32 @@ const AvailableCubicles = ({ navigation }) => {
     if (myReservations.length < 1) {
       return false;
     } else {
-      showMessage({
-        message: 'Error',
-        description: 'Ya tiene una reservación activa.',
-        type: 'danger',
-        duration: '2000',
-
-        icon: () => (
-          <MaterialIcons
-            name='cancel'
-            size={38}
-            color='#FF9B9D'
-            style={{ paddingRight: 20 }}
-          />
-        ),
-      });
+      errorMessage('Ya tiene una reservación activa.');
       return true;
     }
   };
 
   const handleForwardNavigation = (selectedCubicle) => {
-    if (inputValidation()) {
-      if (selectedCubicle.availability) {
-        navigation.navigate('ReservationDetails', {
-          cubicleInfo: selectedCubicle,
-          resInfo: {
-            date,
-            startTime,
-            endTime,
-            floor,
-          },
-        });
-      } else {
-        showMessage({
-          message: 'Error',
-          description:
-            'El cubículo se encuentra ocupado en el bloque de hora seleccionado.',
-          type: 'danger',
-          duration: '2000',
-
-          icon: () => (
-            <MaterialIcons
-              name='cancel'
-              size={38}
-              color='#FF9B9D'
-              style={{ paddingRight: 20 }}
-            />
-          ),
-        });
+    if (selectedCubicle) {
+      if (inputValidation()) {
+        if (selectedCubicle.availability) {
+          navigation.navigate('ReservationDetails', {
+            cubicleInfo: selectedCubicle,
+            resInfo: {
+              date,
+              startTime,
+              endTime,
+              floor,
+            },
+          });
+        } else {
+          errorMessage(
+            'El cubículo se encuentra ocupado en el bloque de hora seleccionado.'
+          );
+        }
       }
+    } else {
+      errorMessage('Debe seleccionar un cubículo para continuar.');
     }
   };
 
@@ -392,7 +317,7 @@ const AvailableCubicles = ({ navigation }) => {
               error={error}
             />
           </View>
-          <View>
+          <View style={styles.infoRightWrapper}>
             <InfoAvailability
               label='Piso'
               content={floor}
@@ -477,12 +402,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
+    width: '100%',
+    gap: '50%',
   },
   infoLeftWrapper: {
+    flex: 1,
+  },
+  infoRightWrapper: {
+    flex: 1,
     marginRight: '15%',
   },
   footer: {
     flex: 3,
+    gap: '30%',
+    marginBottom: 40,
   },
   btnConfirm: {
     borderRadius: 10,

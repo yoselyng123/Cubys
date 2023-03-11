@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   infoWrapperTop: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    gap: 15,
     alignItems: 'center',
     paddingBottom: 4,
     width: '65%',

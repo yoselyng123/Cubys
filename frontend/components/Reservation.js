@@ -192,8 +192,8 @@ const styles = StyleSheet.create({
   LeftInfoWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    flex: 1.05,
+    gap: '1%',
+    flex: 1,
   },
   rightInfoWrapper: {
     flex: 1,

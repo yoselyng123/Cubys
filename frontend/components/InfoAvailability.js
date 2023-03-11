@@ -14,7 +14,6 @@ import themeContext from '../context/themeContext';
 const InfoAvailability = ({ label, content, setContent, error }) => {
   const theme = useContext(themeContext);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const momentDate = new Date();
 
   const monthNames = [
     'Ene',
@@ -143,6 +142,8 @@ export default InfoAvailability;
 const styles = StyleSheet.create({
   container: {
     marginBottom: 10,
+    width: '100%',
+    maxWidth: 150,
   },
   label: {
     fontFamily: 'Roboto-Medium',
@@ -154,10 +155,10 @@ const styles = StyleSheet.create({
   },
   infoContentWrapper: {
     backgroundColor: '#fff',
-    width: 120,
     paddingHorizontal: 15,
     paddingVertical: 12,
     borderRadius: 10,
+    width: '100%',
   },
   infoContent: {
     fontFamily: 'Roboto-Medium',

@@ -247,6 +247,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignSelf: 'center',
+    maxHeight: 500,
+    maxWidth: 500,
   },
   img: {
     flex: 1,
@@ -262,5 +264,7 @@ const styles = StyleSheet.create({
   },
   mesa: {
     resizeMode: 'contain',
+    maxHeight: 26,
+    maxWidth: 26,
   },
 });
