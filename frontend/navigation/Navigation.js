@@ -63,8 +63,8 @@ function RootNavigator() {
           : theme.light
       }
     >
-      <LanguageContextProvider>
-        <UserContextProvider>
+      <UserContextProvider>
+        <LanguageContextProvider>
           <Stack.Navigator
             initialRouteName='SplashScreen'
             screenOptions={{
@@ -109,8 +109,8 @@ function RootNavigator() {
           ) : (
             <StatusBar style='light' />
           )}
-        </UserContextProvider>
-      </LanguageContextProvider>
+        </LanguageContextProvider>
+      </UserContextProvider>
     </themeContext.Provider>
   );
 }
