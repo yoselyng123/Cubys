@@ -36,8 +36,12 @@ const Mesa = ({
       onPress={() => {
         let arr = cubiclesData.map((item) => {
           if (item.id === cubicle.id) {
+            if (item.isSelected) {
+              setSelectedCubicle(null);
+            } else {
+              setSelectedCubicle(cubicle);
+            }
             item.isSelected = !item.isSelected;
-            setSelectedCubicle(cubicle);
           } else {
             item.isSelected = false;
           }

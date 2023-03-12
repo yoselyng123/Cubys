@@ -10,14 +10,10 @@ import {
 /* Assets */
 import floor1 from '../assets/img/piso1.png';
 import floor2 from '../assets/img/piso2.png';
-import { LogBox } from 'react-native';
 /* Context */
 import { userContext } from '../context/userContext';
 /* Components */
 import MesaBubble from './MesaBubble';
-
-// Ignore log notification by message
-LogBox.ignoreLogs(['Warning: Each']);
 
 const Map = ({ floor, setSelectedCubicle }) => {
   const positions = {
