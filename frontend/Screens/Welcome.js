@@ -6,21 +6,22 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import { useState, useContext } from 'react';
 /* ASSETS */
 import colors from '../assets/colors';
+import { languageContext } from '../context/languageContext';
 
 const Welcome = ({ navigation }) => {
+  const { i18n } = useContext(languageContext);
+
   return (
     <View style={styles.container}>
       <SafeAreaView>
         <Text style={styles.title}>cubys</Text>
       </SafeAreaView>
       <View style={styles.welcomeContainer}>
-        <Text style={styles.subtitle}>Bienvenido</Text>
-        <Text style={styles.description}>
-          Reserva cubiculos desde{'\n'}cualquier lugar en la UNIMET.
-        </Text>
+        <Text style={styles.subtitle}>{i18n.t('welcomeTitle')}</Text>
+        <Text style={styles.description}>{i18n.t('welcomeDescription')}</Text>
       </View>
       <View style={styles.footer}>
         <TouchableOpacity
@@ -30,7 +31,7 @@ const Welcome = ({ navigation }) => {
           }}
         >
           <View style={styles.btnSignIn}>
-            <Text style={styles.textSignIn}>Iniciar Sesión</Text>
+            <Text style={styles.textSignIn}>{i18n.t('welcomeSignIn')}</Text>
           </View>
         </TouchableOpacity>
         {/* <TouchableOpacity activeOpacity={0.7}>
@@ -42,14 +43,14 @@ const Welcome = ({ navigation }) => {
           </View>
         </TouchableOpacity> */}
         <View style={styles.noAccount}>
-          <Text style={styles.textNoAction}>No tienes cuenta?</Text>
+          <Text style={styles.textNoAction}>{i18n.t('welcomeNoAccount')}</Text>
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => {
               navigation.navigate('SignUp');
             }}
           >
-            <Text style={styles.textAction}>Registrarse</Text>
+            <Text style={styles.textAction}>{i18n.t('welcomeSignUp')}</Text>
           </TouchableOpacity>
         </View>
       </View>
