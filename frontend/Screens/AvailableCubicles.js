@@ -348,6 +348,7 @@ const AvailableCubicles = ({ navigation }) => {
                 floor,
               }}
               setSelectedCubicle={setSelectedCubicle}
+              selectedCubicle={selectedCubicle}
             />
           )}
         </View>

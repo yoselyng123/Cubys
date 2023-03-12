@@ -23,6 +23,7 @@ import DateInput from '../components/DateInput';
 import SplashScreen from './SplashScreen';
 import { gql, useMutation } from '@apollo/client';
 import Loading from '../components/Loading';
+import { languageContext } from '../context/languageContext';
 
 const UPDATE_USER_MUTATION = gql`
   mutation updateUser($id: ID!, $password: String!) {
@@ -43,8 +44,9 @@ const UPDATE_USER_MUTATION = gql`
 
 const Profile = ({ navigation }) => {
   const theme = useContext(themeContext);
-
+  const { i18n } = useContext(languageContext);
   const { user, setUser } = useContext(userContext);
+
   const [validations, setValidations] = useState({
     eightCharacters: false,
     upperAndLower: false,
