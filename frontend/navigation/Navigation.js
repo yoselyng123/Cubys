@@ -7,7 +7,6 @@ import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
 // Context
 import UserContextProvider from '../context/userContext';
-import LanguageContextProvider from '../context/languageContext';
 import themeContext from '../context/themeContext';
 /* Screens */
 import Welcome from '../Screens/Welcome';
@@ -58,59 +57,54 @@ function RootNavigator() {
   return (
     <themeContext.Provider
       value={
-        appearanceTheme === 'light' && scheme === 'dark'
+        appearanceTheme === 'light' || scheme === 'dark'
           ? theme.dark
           : theme.light
       }
     >
-      <LanguageContextProvider>
-        <UserContextProvider>
-          <Stack.Navigator
-            initialRouteName='SplashScreen'
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <Stack.Screen name='SplashScreen' component={SplashScreen} />
-            <Stack.Screen name='Welcome' component={Welcome} />
-            <Stack.Screen name='SignIn' component={SignIn} />
-            <Stack.Screen name='SignUp' component={SignUp} />
-            <Stack.Screen name='Tabs' component={Tabs} />
-            <Stack.Screen
-              name='ReservedCubicles'
-              component={ReservedCubicles}
-            />
-            <Stack.Screen
-              name='ReservedCubiclesAdmin'
-              component={ReservedCubiclesAdmin}
-            />
-            <Stack.Screen
-              name='AvailableCubicles'
-              component={AvailableCubicles}
-            />
-            <Stack.Screen name='History' component={History} />
-            <Stack.Screen name='HistoryAdmin' component={HistoryAdmin} />
-            <Stack.Screen name='CubicleAccess' component={AccessCubicle} />
-            <Stack.Screen
-              name='CubicleAccessAdmin'
-              component={AccessCubicleAdmin}
-            />
-            <Stack.Screen
-              name='ReservationDetails'
-              component={ReservationDetails}
-            />
-            <Stack.Screen
-              name='ReservationDetailsAdmin'
-              component={ReservationDetailsAdmin}
-            />
-          </Stack.Navigator>
-          {appearanceTheme === 'light' ? (
-            <StatusBar style='dark' />
-          ) : (
-            <StatusBar style='light' />
-          )}
-        </UserContextProvider>
-      </LanguageContextProvider>
+      <UserContextProvider>
+        <Stack.Navigator
+          initialRouteName='SplashScreen'
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name='SplashScreen' component={SplashScreen} />
+          <Stack.Screen name='Welcome' component={Welcome} />
+          <Stack.Screen name='SignIn' component={SignIn} />
+          <Stack.Screen name='SignUp' component={SignUp} />
+          <Stack.Screen name='Tabs' component={Tabs} />
+          <Stack.Screen name='ReservedCubicles' component={ReservedCubicles} />
+          <Stack.Screen
+            name='ReservedCubiclesAdmin'
+            component={ReservedCubiclesAdmin}
+          />
+          <Stack.Screen
+            name='AvailableCubicles'
+            component={AvailableCubicles}
+          />
+          <Stack.Screen name='History' component={History} />
+          <Stack.Screen name='HistoryAdmin' component={HistoryAdmin} />
+          <Stack.Screen name='CubicleAccess' component={AccessCubicle} />
+          <Stack.Screen
+            name='CubicleAccessAdmin'
+            component={AccessCubicleAdmin}
+          />
+          <Stack.Screen
+            name='ReservationDetails'
+            component={ReservationDetails}
+          />
+          <Stack.Screen
+            name='ReservationDetailsAdmin'
+            component={ReservationDetailsAdmin}
+          />
+        </Stack.Navigator>
+        {appearanceTheme === 'light' ? (
+          <StatusBar style='dark' />
+        ) : (
+          <StatusBar style='light' />
+        )}
+      </UserContextProvider>
     </themeContext.Provider>
   );
 }

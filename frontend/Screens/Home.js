@@ -185,7 +185,7 @@ const Home = ({ navigation }) => {
   });
 
   useEffect(() => {
-    if (dataReservationsTrueAdmin && user) {
+    if (dataReservationsTrueAdmin) {
       if (user.role === 'admin') {
         setHistorialCount(
           dataReservationsTrueAdmin.getReservationsByStatus.length
@@ -209,60 +209,59 @@ const Home = ({ navigation }) => {
   };
 
   const checkIfCompleted = () => {
-    if (user) {
-      if (user.role === 'admin') {
-        if (!loadingReservationsFalseAdmin) {
-          for (
-            let r = 0;
-            r < dataReservationsFalseAdmin.getReservationsByStatus.length;
-            r++
+    // TODO: Reconsider if maybe it's better to checkCompleted of ALL reservations
+    if (user.role === 'admin') {
+      if (!loadingReservationsFalseAdmin) {
+        for (
+          let r = 0;
+          r < dataReservationsFalseAdmin.getReservationsByStatus.length;
+          r++
+        ) {
+          const reservation =
+            dataReservationsFalseAdmin.getReservationsByStatus[r];
+          if (
+            reservation.date ===
+              currentDate.locale('es').format('DD MMM YYYY') &&
+            parseInt(parseMilitarHoursFormat(currentDate.format('h:mma'))) >
+              parseInt(parseMilitarHoursFormat(reservation.endTime)) &&
+            !reservation.completed
           ) {
-            const reservation =
-              dataReservationsFalseAdmin.getReservationsByStatus[r];
-            if (
-              reservation.date ===
-                currentDate.locale('es').format('DD MMM YYYY') &&
-              parseInt(parseMilitarHoursFormat(currentDate.format('h:mma'))) >
-                parseInt(parseMilitarHoursFormat(reservation.endTime)) &&
-              !reservation.completed
-            ) {
-              updateReservationStatus({
-                variables: { id: reservation.id, completed: true },
-              });
-            } else if (
-              reservation.date !==
-                currentDate.locale('es').format('DD MMM YYYY') &&
-              !reservation.completed
-            ) {
-              updateReservationStatus({
-                variables: { id: reservation.id, completed: true },
-              });
-            }
+            updateReservationStatus({
+              variables: { id: reservation.id, completed: true },
+            });
+          } else if (
+            reservation.date !==
+              currentDate.locale('es').format('DD MMM YYYY') &&
+            !reservation.completed
+          ) {
+            updateReservationStatus({
+              variables: { id: reservation.id, completed: true },
+            });
           }
         }
-      } else {
-        if (myReservations.length > 0) {
-          for (let r = 0; r < myReservations.length; r++) {
-            const reservation = myReservations[r];
-            if (
-              reservation.date ===
-                currentDate.locale('es').format('DD MMM YYYY') &&
-              parseInt(parseMilitarHoursFormat(currentDate.format('h:mma'))) >
-                parseInt(parseMilitarHoursFormat(reservation.endTime)) &&
-              !reservation.completed
-            ) {
-              updateReservationStatus({
-                variables: { id: reservation.id, completed: true },
-              });
-            } else if (
-              reservation.date !==
-                currentDate.locale('es').format('DD MMM YYYY') &&
-              !reservation.completed
-            ) {
-              updateReservationStatus({
-                variables: { id: reservation.id, completed: true },
-              });
-            }
+      }
+    } else {
+      if (myReservations.length > 0) {
+        for (let r = 0; r < myReservations.length; r++) {
+          const reservation = myReservations[r];
+          if (
+            reservation.date ===
+              currentDate.locale('es').format('DD MMM YYYY') &&
+            parseInt(parseMilitarHoursFormat(currentDate.format('h:mma'))) >
+              parseInt(parseMilitarHoursFormat(reservation.endTime)) &&
+            !reservation.completed
+          ) {
+            updateReservationStatus({
+              variables: { id: reservation.id, completed: true },
+            });
+          } else if (
+            reservation.date !==
+              currentDate.locale('es').format('DD MMM YYYY') &&
+            !reservation.completed
+          ) {
+            updateReservationStatus({
+              variables: { id: reservation.id, completed: true },
+            });
           }
         }
       }
@@ -286,13 +285,11 @@ const Home = ({ navigation }) => {
   });
 
   useEffect(() => {
-    if (user) {
-      if (user.role !== 'admin') {
-        if (dataReservationsTrue) {
-          setHistorialCount(
-            dataReservationsTrue.getMyReservationsByStatus.length
-          );
-        }
+    if (user.role !== 'admin') {
+      if (dataReservationsTrue) {
+        setHistorialCount(
+          dataReservationsTrue.getMyReservationsByStatus.length
+        );
       }
     }
   }, [dataReservationsTrue]);
@@ -304,11 +301,9 @@ const Home = ({ navigation }) => {
     if (dataUpdateReservationStatus) {
       // setMyReservations([]);
       refetchReservationsTrue();
-      if (user) {
-        if (user.role === 'admin') {
-          refetchReservationsFalse();
-          refetchReservationsFalseAdmin();
-        }
+      if (user.role === 'admin') {
+        refetchReservationsFalse();
+        refetchReservationsFalseAdmin();
       }
     }
   }, [dataUpdateReservationStatus]);
@@ -338,10 +333,8 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     refetchReservationsFalse();
     refetchReservationsTrue();
-    if (user) {
-      if (user.role === 'admin') {
-        refetchReservationsFalseAdmin();
-      }
+    if (user.role === 'admin') {
+      refetchReservationsFalseAdmin();
     }
   }, []);
 
@@ -361,11 +354,9 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     refetchReservationsFalse();
-    if (user) {
-      if (user.role === 'admin') {
-        refetchReservationsTrueAdmin();
-        refetchReservationsFalseAdmin();
-      }
+    if (user.role === 'admin') {
+      refetchReservationsTrueAdmin();
+      refetchReservationsFalseAdmin();
     }
     checkIfCompleted();
   }, [myReservations]);

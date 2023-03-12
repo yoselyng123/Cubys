@@ -15,27 +15,22 @@ import { useColorScheme } from 'react-native';
 /* Components */
 import Header from '../components/Header';
 import SectionDivider from '../components/SectionDivider';
-import { languageContext } from '../context/languageContext';
-import { userContext } from '../context/userContext';
 
 const Settings = () => {
-  const scheme = useColorScheme();
   const theme = useContext(themeContext);
-  const [appearanceTheme, setAppearanceTheme] = useState(scheme);
+  const [appearanceTheme, setAppearanceTheme] = useState('light');
   const [notificationsChecked, setNotificationsChecked] = useState('first');
+  const [languageChecked, setLanguageChecked] = useState('first');
 
-  const { locale, setLocale, i18n } = useContext(languageContext);
-
-  console.log(locale);
+  const scheme = useColorScheme();
 
   useEffect(() => {
     if (scheme === 'light') {
-      setAppearanceTheme('light');
-    } else if (scheme === 'dark') {
       setAppearanceTheme('dark');
+    } else if (scheme === 'dark') {
+      setAppearanceTheme('light');
     }
-    console.log(scheme);
-  }, [scheme]);
+  }, []);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -44,10 +39,10 @@ const Settings = () => {
         <View style={styles.descriptionContainer}>
           <View style={styles.texts}>
             <Text style={[styles.description, { color: theme.dark }]}>
-              {i18n.t('settingTitle')}
+              Configuración
             </Text>
             <TouchableOpacity activeOpacity={0.7}>
-              <Text style={styles.markread}>{i18n.t('settingReset')}</Text>
+              <Text style={styles.markread}>Restablecer</Text>
             </TouchableOpacity>
           </View>
           <SectionDivider marginBottom={10} />
@@ -59,9 +54,7 @@ const Settings = () => {
           <View style={styles.scrollContainer}>
             <View>
               <View style={styles.settingItemContainer}>
-                <Text style={[styles.title, { color: theme.dark }]}>
-                  {i18n.t('settingSubtitle1')}
-                </Text>
+                <Text style={[styles.title, { color: theme.dark }]}>Tema</Text>
                 <View style={styles.itemWrapper}>
                   <View style={styles.radiobuttonItem}>
                     <RadioButton
@@ -96,7 +89,7 @@ const Settings = () => {
                               ]
                         }
                       >
-                        {i18n.t('settingS1ption1')}
+                        Claro
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -133,7 +126,7 @@ const Settings = () => {
                               ]
                         }
                       >
-                        {i18n.t('settingS1ption2')}
+                        Oscuro
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -218,28 +211,26 @@ const Settings = () => {
 
               <View style={styles.settingItemContainer}>
                 <Text style={[styles.title, { color: theme.dark }]}>
-                  {i18n.t('settingSubtitle2')}
+                  Idioma
                 </Text>
                 <View style={styles.itemWrapper}>
                   <View style={styles.radiobuttonItem}>
                     <RadioButton
-                      value='es'
+                      value='first'
                       status={
-                        locale === 'es' || locale === 'es-419'
-                          ? 'checked'
-                          : 'unchecked'
+                        languageChecked === 'first' ? 'checked' : 'unchecked'
                       }
-                      onPress={() => setLocale('es')}
+                      onPress={() => setLanguageChecked('first')}
                       color={theme.purple}
                       uncheckedColor={theme.gray}
                     />
                     <TouchableOpacity
                       activeOpacity={0.7}
-                      onPress={() => setLocale('es')}
+                      onPress={() => setLanguageChecked('first')}
                     >
                       <Text
                         style={
-                          locale === 'es' || locale === 'es-419'
+                          languageChecked === 'first'
                             ? [
                                 styles.radiobuttonItemTextSelected,
                                 { color: theme.purple },
@@ -250,29 +241,27 @@ const Settings = () => {
                               ]
                         }
                       >
-                        {i18n.t('settingS2ption1')}
+                        Español
                       </Text>
                     </TouchableOpacity>
                   </View>
                   <View style={styles.radiobuttonItem}>
                     <RadioButton
-                      value='en'
+                      value='second'
                       status={
-                        locale === 'en' || locale === 'en-US'
-                          ? 'checked'
-                          : 'unchecked'
+                        languageChecked === 'second' ? 'checked' : 'unchecked'
                       }
-                      onPress={() => setLocale('en')}
+                      onPress={() => setLanguageChecked('second')}
                       color={theme.purple}
                       uncheckedColor={theme.gray}
                     />
                     <TouchableOpacity
                       activeOpacity={0.7}
-                      onPress={() => setLocale('en')}
+                      onPress={() => setLanguageChecked('second')}
                     >
                       <Text
                         style={
-                          locale === 'en' || locale === 'en-US'
+                          languageChecked === 'second'
                             ? [
                                 styles.radiobuttonItemTextSelected,
                                 { color: theme.purple },
@@ -283,7 +272,7 @@ const Settings = () => {
                               ]
                         }
                       >
-                        {i18n.t('settingS2ption2')}
+                        English
                       </Text>
                     </TouchableOpacity>
                   </View>
