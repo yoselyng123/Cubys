@@ -3,8 +3,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 /* Apollo Server */
 import { ApolloProvider } from '@apollo/client';
-import { client } from './apollo';
-import Navigation from './navigation/Navigation';
+import { client } from './src/utils/apollo';
+import Navigation from './src/navigation/Navigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 /* Alerts */
 import FlashMessage from 'react-native-flash-message';
@@ -13,15 +13,15 @@ SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   let [fontsLoaded] = useFonts({
-    'Gilroy-Bold': require('./assets/fonts/Gilroy-Bold.ttf'),
-    'Gilroy-Semibold': require('./assets/fonts/Gilroy-Semibold.ttf'),
-    'Roboto-Black': require('./assets/fonts/Roboto-Black.ttf'),
-    'Roboto-Bold': require('./assets/fonts/Roboto-Bold.ttf'),
-    'Roboto-Italic': require('./assets/fonts/Roboto-Italic.ttf'),
-    'Roboto-Light': require('./assets/fonts/Roboto-Light.ttf'),
-    'Roboto-Medium': require('./assets/fonts/Roboto-Medium.ttf'),
-    'Roboto-Regular': require('./assets/fonts/Roboto-Regular.ttf'),
-    'Roboto-Thin': require('./assets/fonts/Roboto-Thin.ttf'),
+    'Gilroy-Bold': require('./src/assets/fonts/Gilroy-Bold.ttf'),
+    'Gilroy-Semibold': require('./src/assets/fonts/Gilroy-Semibold.ttf'),
+    'Roboto-Black': require('./src/assets/fonts/Roboto-Black.ttf'),
+    'Roboto-Bold': require('./src/assets/fonts/Roboto-Bold.ttf'),
+    'Roboto-Italic': require('./src/assets/fonts/Roboto-Italic.ttf'),
+    'Roboto-Light': require('./src/assets/fonts/Roboto-Light.ttf'),
+    'Roboto-Medium': require('./src/assets/fonts/Roboto-Medium.ttf'),
+    'Roboto-Regular': require('./src/assets/fonts/Roboto-Regular.ttf'),
+    'Roboto-Thin': require('./src/assets/fonts/Roboto-Thin.ttf'),
   });
 
   AsyncStorage.removeItem('token');
