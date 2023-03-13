@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 /* Assets */
-import colors from '../assets/colors';
 import { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { userContext } from '../context/userContext';
 import themeContext from '../context/themeContext';
@@ -18,29 +17,11 @@ import { useFocusEffect } from '@react-navigation/native';
 /* Components */
 import Header from '../components/Header';
 import InfoAvailability from '../components/InfoAvailability';
-import CubicleMomentaneo from '../components/CubicleMomentaneo';
-/* APOLLO SERVER */
-import { useQuery, gql } from '@apollo/client';
 import Map from '../components/Map';
 import AvailabilityLeyend from '../components/AvailabilityLeyend';
-
-const GET_RESERVATIONS_BY_DATE = gql`
-  query getReservationsByDate($date: String!) {
-    getReservationsByDate(date: $date) {
-      id
-      startTime
-      endTime
-      date
-      cubicleID
-      companions {
-        carnet
-        carrera
-        name
-      }
-      completed
-    }
-  }
-`;
+/* APOLLO SERVER */
+import { useQuery } from '@apollo/client';
+import { GET_RESERVATIONS_BY_DATE } from '../hooks/queries';
 
 const AvailableCubicles = ({ navigation }) => {
   const theme = useContext(themeContext);
@@ -367,7 +348,9 @@ const AvailableCubicles = ({ navigation }) => {
                 }
               }}
             >
-              <View style={styles.btnConfirm}>
+              <View
+                style={[styles.btnConfirm, { backgroundColor: theme.purple }]}
+              >
                 <Text style={styles.textConfirm}>Confirmar</Text>
               </View>
             </TouchableOpacity>
@@ -383,7 +366,6 @@ export default AvailableCubicles;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.background,
     flex: 1,
   },
   contentWrapper: {
@@ -396,7 +378,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 20,
     letterSpacing: 0.6,
-    color: colors.gray,
     marginBottom: 20,
   },
   infoWrapper: {
@@ -420,7 +401,6 @@ const styles = StyleSheet.create({
   },
   btnConfirm: {
     borderRadius: 10,
-    backgroundColor: colors.purple,
     paddingVertical: 15,
     alignItems: 'center',
     justifyContent: 'center',

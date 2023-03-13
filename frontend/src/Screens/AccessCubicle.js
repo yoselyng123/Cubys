@@ -1,7 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useContext } from 'react';
 /* Assets */
-import colors from '../assets/colors';
 import { Feather } from '@expo/vector-icons';
 import { userContext } from '../context/userContext';
 import themeContext from '../context/themeContext';
@@ -41,14 +40,14 @@ const AccessCubicle = ({ navigation }) => {
               <Feather
                 name='unlock'
                 size={220}
-                color={colors.purple}
+                color={theme.purple}
                 style={{ fontWeight: 800 }}
               />
             ) : (
               <Feather
                 name='lock'
                 size={220}
-                color={colors.purple}
+                color={theme.purple}
                 style={{ fontWeight: 800 }}
               />
             )}
@@ -71,7 +70,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 20,
     letterSpacing: 0.6,
-    color: colors.gray,
     marginBottom: 20,
   },
   btnWrapper: {

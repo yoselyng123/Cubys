@@ -7,31 +7,12 @@ import {
 } from 'react-native';
 import { useEffect, useContext } from 'react';
 /* Assets */
-import colors from '../assets/colors';
 import themeContext from '../context/themeContext';
 /* Components */
 import Header from '../components/Header';
 import Reservation from '../components/Reservation';
-import { gql, useQuery } from '@apollo/client';
-
-const GET_RESERVATIONS_BY_STATUS = gql`
-  query getMyReservationsByStatus($completed: Boolean!) {
-    getMyReservationsByStatus(completed: $completed) {
-      id
-      createdBy
-      startTime
-      endTime
-      date
-      cubicleID
-      completed
-      companions {
-        carnet
-        carrera
-        name
-      }
-    }
-  }
-`;
+import { useQuery } from '@apollo/client';
+import { GET_RESERVATIONS_BY_STATUS } from '../hooks/queries';
 
 const History = ({ navigation }) => {
   const theme = useContext(themeContext);
@@ -110,7 +91,6 @@ export default History;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.background,
     flex: 1,
   },
   descriptionContainer: {
@@ -130,7 +110,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 20,
     letterSpacing: 0.6,
-    color: colors.gray,
     marginBottom: 20,
   },
   noReservationsText: {
@@ -138,7 +117,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     letterSpacing: 0.6,
     lineHeight: 26,
-    color: colors.gray,
     marginLeft: 10,
   },
 });

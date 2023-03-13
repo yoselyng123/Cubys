@@ -1,4 +1,3 @@
-import { gql, useMutation } from '@apollo/client';
 import { useContext, useState, useEffect } from 'react';
 import {
   Alert,
@@ -11,69 +10,19 @@ import {
   ActivityIndicator,
 } from 'react-native';
 /* Assets */
-import colors from '../assets/colors';
 import { Feather, AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { showMessage } from 'react-native-flash-message';
 /* Components */
 import Header from '../components/Header';
 import ReserveForm from '../components/ReserveForm';
 import SectionDivider from '../components/SectionDivider';
+/* Context */
 import { userContext } from '../context/userContext';
 import themeContext from '../context/themeContext';
-
-const CREATE_RESERVATION = gql`
-  mutation createReservation(
-    $startTime: String!
-    $endTime: String!
-    $cubicleID: ID!
-    $companions: [CreateCompanion!]!
-    $date: String!
-    $completed: Boolean
-  ) {
-    createReservation(
-      input: {
-        startTime: $startTime
-        endTime: $endTime
-        cubicleID: $cubicleID
-        date: $date
-        companions: $companions
-        completed: $completed
-      }
-    ) {
-      id
-      cubicleID
-      startTime
-      endTime
-      date
-      createdBy
-      completed
-      companions {
-        name
-        carnet
-        carrera
-      }
-    }
-  }
-`;
-
-const GET_RESERVATIONS = gql`
-  query getMyReservations {
-    getMyReservations {
-      id
-      cubicleID
-      createdBy
-      startTime
-      endTime
-      date
-      companions {
-        name
-        carrera
-        carnet
-      }
-      completed
-    }
-  }
-`;
+/* Apollo */
+import { useMutation } from '@apollo/client';
+import { CREATE_RESERVATION } from '../hooks/mutations';
+import { GET_RESERVATIONS } from '../hooks/queries';
 
 const ReservationDetails = ({ route, navigation }) => {
   const theme = useContext(themeContext);
@@ -273,7 +222,7 @@ const ReservationDetails = ({ route, navigation }) => {
         navigation={navigation}
       />
       <ScrollView style={styles.contentWrapper}>
-        <Text style={styles.description}>
+        <Text style={[styles.description, { color: theme.gray }]}>
           Revise los detalles de la reserva y asegúrese de que todo esté
           correcto
         </Text>
@@ -283,14 +232,18 @@ const ReservationDetails = ({ route, navigation }) => {
             <Text style={[styles.title, { color: theme.dark }]}>
               Cubículo #{cubicleInfo.cubicleNumber}
             </Text>
-            <Text style={styles.floor}>
+            <Text style={[styles.floor, { color: theme.gray }]}>
               {handleFloorShowcase(cubicleInfo.floor)}
             </Text>
           </View>
           <View style={styles.cubicleAddOns}>
-            <Text style={styles.textDesc}>4 Sillas</Text>
-            <Text style={styles.textDesc}>1 Mesa</Text>
-            <Text style={styles.textDesc}>1 Pizarra</Text>
+            <Text style={[styles.textDesc, { color: theme.gray }]}>
+              4 Sillas
+            </Text>
+            <Text style={[styles.textDesc, { color: theme.gray }]}>1 Mesa</Text>
+            <Text style={[styles.textDesc, { color: theme.gray }]}>
+              1 Pizarra
+            </Text>
           </View>
           <SectionDivider marginBottom={20} />
           <View style={styles.dateWrapperContainer}>
@@ -298,7 +251,7 @@ const ReservationDetails = ({ route, navigation }) => {
               <Text style={[styles.title, { color: theme.dark }]}>
                 Hora de Entrada
               </Text>
-              <Text style={styles.textDesc}>
+              <Text style={[styles.textDesc, { color: theme.gray }]}>
                 {resInfo.date},{`\n`}
                 {resInfo.startTime}
               </Text>
@@ -307,7 +260,7 @@ const ReservationDetails = ({ route, navigation }) => {
               <Text style={[styles.title, { color: theme.dark }]}>
                 Hora de Salida
               </Text>
-              <Text style={styles.textDesc}>
+              <Text style={[styles.textDesc, { color: theme.gray }]}>
                 {resInfo.date},{`\n`}
                 {resInfo.endTime}
               </Text>
@@ -327,14 +280,16 @@ const ReservationDetails = ({ route, navigation }) => {
           })}
           <TouchableOpacity activeOpacity={0.7} onPress={handleAddCompanion}>
             <View style={styles.addCompanionBtn}>
-              <Feather name='plus-circle' size={20} color={colors.purple} />
-              <Text style={styles.addCompanionText}>Agregar acompañante</Text>
+              <Feather name='plus-circle' size={20} color={theme.purple} />
+              <Text style={[styles.addCompanionText, { color: theme.purple }]}>
+                Agregar acompañante
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.description}>
+          <Text style={[styles.description, { color: theme.gray }]}>
             Este es el paso final, luego de presionar el botón de Reservar, se
             habrá realizado exitosamente la reserva.
           </Text>
@@ -343,7 +298,9 @@ const ReservationDetails = ({ route, navigation }) => {
             onPress={handleSubmitForm}
             disabled={loading}
           >
-            <View style={styles.reserveBtn}>
+            <View
+              style={[styles.reserveBtn, { backgroundColor: theme.purple }]}
+            >
               {loading ? (
                 <ActivityIndicator size='small' color='#FFF' />
               ) : (
@@ -361,7 +318,6 @@ export default ReservationDetails;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.background,
     flex: 1,
   },
   contentWrapper: {
@@ -374,7 +330,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 20,
     letterSpacing: 0.6,
-    color: colors.gray,
     marginBottom: 20,
   },
   reservationInfoWrapper: {
@@ -390,7 +345,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     letterSpacing: 0.6,
     lineHeight: 18.75,
-    color: colors.dark,
     marginBottom: 10,
   },
   floor: {
@@ -398,7 +352,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     letterSpacing: 0.6,
     lineHeight: 18.75,
-    color: colors.gray,
     marginBottom: 10,
   },
   textDesc: {
@@ -406,7 +359,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 0.6,
     lineHeight: 20,
-    color: colors.gray,
     marginBottom: 4,
   },
   cubicleAddOns: {
@@ -422,7 +374,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   reserveBtn: {
-    backgroundColor: colors.purple,
     paddingVertical: 17,
     alignItems: 'center',
     justifyContent: 'center',
@@ -453,7 +404,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 0.6,
     lineHeight: 17.58,
-    color: colors.purple,
     marginLeft: 5,
   },
 });

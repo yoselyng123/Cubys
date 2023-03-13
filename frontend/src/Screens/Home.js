@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { useContext, useEffect, useState, useRef, useCallback } from 'react';
 /* Assets */
-import colors from '../assets/colors';
 import { userContext } from '../context/userContext';
 import dayjs from 'dayjs';
 import themeContext from '../context/themeContext';
@@ -23,81 +22,16 @@ import CardsList from '../components/CardsList';
 import SectionDivider from '../components/SectionDivider';
 import Loading from '../components/Loading';
 /* APOLLO SERVER */
-import { useQuery, useMutation, gql } from '@apollo/client';
-
-const GET_CUBICLES = gql`
-  query getCubicles {
-    getCubicles {
-      id
-      sala
-      cubicleNumber
-      floor
-    }
-  }
-`;
-
-const DELETE_RESERVATION_MUTATION = gql`
-  mutation deleteReservation($id: ID!) {
-    deleteReservation(id: $id)
-  }
-`;
-
-const GET_RESERVATIONS_BY_STATUS = gql`
-  query getMyReservationsByStatus($completed: Boolean!) {
-    getMyReservationsByStatus(completed: $completed) {
-      id
-      createdBy
-      startTime
-      endTime
-      date
-      cubicleID
-      completed
-      companions {
-        carnet
-        carrera
-        name
-      }
-    }
-  }
-`;
-
-const UPDATE_RESERVATION_STATUS = gql`
-  mutation updateReservationStatus($id: ID!, $completed: Boolean!) {
-    updateReservationStatus(id: $id, completed: $completed) {
-      id
-      createdBy
-      startTime
-      endTime
-      date
-      cubicleID
-      completed
-      companions {
-        carnet
-        carrera
-        name
-      }
-    }
-  }
-`;
-
-const GET_ALL_RESERVATIONS_BY_STATUS = gql`
-  query getReservationsByStatus($completed: Boolean!) {
-    getReservationsByStatus(completed: $completed) {
-      id
-      createdBy
-      startTime
-      endTime
-      date
-      cubicleID
-      completed
-      companions {
-        carnet
-        carrera
-        name
-      }
-    }
-  }
-`;
+import { useQuery, useMutation } from '@apollo/client';
+import {
+  GET_CUBICLES,
+  GET_RESERVATIONS_BY_STATUS,
+  GET_ALL_RESERVATIONS_BY_STATUS,
+} from '../hooks/queries';
+import {
+  DELETE_RESERVATION_MUTATION,
+  UPDATE_RESERVATION_STATUS,
+} from '../hooks/mutations';
 
 const Home = ({ navigation }) => {
   const theme = useContext(themeContext);
@@ -474,7 +408,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     letterSpacing: 0.6,
     lineHeight: 32.8,
-    color: colors.dark,
     marginBottom: 7,
   },
   greetingsText: {
@@ -482,14 +415,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     letterSpacing: 0.6,
     lineHeight: 26,
-    color: colors.gray,
   },
   reservationsTitle: {
     fontFamily: 'Roboto-Medium',
     fontSize: 15,
     letterSpacing: 0.6,
     lineHeight: 26,
-    color: colors.dark,
     marginBottom: 20,
   },
   noReservationsText: {
@@ -497,7 +428,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     letterSpacing: 0.6,
     lineHeight: 26,
-    color: colors.gray,
     marginLeft: 10,
   },
 });

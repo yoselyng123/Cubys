@@ -10,36 +10,18 @@ import {
 import React, { useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 /* Assets */
-import colors from '../assets/colors';
 import { userContext } from '../context/userContext';
 import themeContext from '../context/themeContext';
-import { Feather, AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { showMessage } from 'react-native-flash-message';
 /* Components */
 import Header from '../components/Header';
 import Input from '../components/Input';
-import DateInput from '../components/DateInput';
+import Loading from '../components/Loading';
 /* APOLLO SERVER */
 import SplashScreen from './SplashScreen';
-import { gql, useMutation } from '@apollo/client';
-import Loading from '../components/Loading';
-
-const UPDATE_USER_MUTATION = gql`
-  mutation updateUser($id: ID!, $password: String!) {
-    updateUser(id: $id, password: $password) {
-      token
-      user {
-        id
-        name
-        email
-        carrera
-        carnet
-        role
-        joined
-      }
-    }
-  }
-`;
+import { useMutation } from '@apollo/client';
+import { UPDATE_USER_MUTATION } from '../hooks/mutations';
 
 const Profile = ({ navigation }) => {
   const theme = useContext(themeContext);
@@ -345,7 +327,6 @@ export default Profile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   content: {
     paddingTop: 24,
@@ -363,21 +344,18 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 50,
-    backgroundColor: colors.gray,
     justifyContent: 'center',
     alignItems: 'center',
   },
   profileName: {
     fontSize: 20,
     fontFamily: 'Roboto-Medium',
-    color: colors.dark,
     marginTop: 10,
     letterSpacing: 0.6,
   },
   profileJob: {
     fontSize: 13,
     fontFamily: 'Roboto-Medium',
-    color: colors.gray,
     marginTop: 5,
     letterSpacing: 0.6,
   },
@@ -392,30 +370,25 @@ const styles = StyleSheet.create({
   logout: {
     fontSize: 13,
     fontFamily: 'Roboto-Medium',
-    color: colors.red,
     letterSpacing: 0.6,
   },
   save: {
     fontSize: 13,
     fontFamily: 'Roboto-Medium',
-    color: colors.purple,
     letterSpacing: 0.6,
     marginRight: 25,
   },
   joinedtext: {
     fontSize: 13,
     fontFamily: 'Roboto-Medium',
-    color: colors.gray,
     letterSpacing: 0.6,
   },
   joineddate: {
     fontSize: 13,
     fontFamily: 'Roboto-Medium',
-    color: colors.dark,
     letterSpacing: 0.6,
   },
   saveChangesBtn: {
-    backgroundColor: colors.purple,
     paddingVertical: 12,
     justifyContent: 'center',
     alignItems: 'center',
