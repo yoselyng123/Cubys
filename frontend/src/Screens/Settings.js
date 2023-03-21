@@ -15,6 +15,7 @@ import { useColorScheme } from 'react-native';
 /* Components */
 import Header from '../components/Header';
 import SectionDivider from '../components/SectionDivider';
+import RadioBtn from '../components/RadioBtn';
 
 const Settings = () => {
   const scheme = useColorScheme();
@@ -35,6 +36,7 @@ const Settings = () => {
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Header title='cubys' navigateAvailable={false} />
       <View style={styles.contentWrapper}>
+        {/* Screen Description */}
         <View style={styles.descriptionContainer}>
           <View style={styles.texts}>
             <Text style={[styles.description, { color: theme.dark }]}>
@@ -44,91 +46,28 @@ const Settings = () => {
               <Text style={styles.markread}>Restablecer</Text>
             </TouchableOpacity>
           </View>
-          <SectionDivider marginBottom={10} />
         </View>
+        <SectionDivider marginBottom={10} />
+        {/* Options */}
         <ScrollView
           showsVerticalScrollIndicator={false}
-          style={styles.scrollview}
+          contentContainerStyle={styles.scrollview}
         >
           <View style={styles.scrollContainer}>
             <View>
               <View style={styles.settingItemContainer}>
                 <Text style={[styles.title, { color: theme.dark }]}>Tema</Text>
                 <View style={styles.itemWrapper}>
-                  <View style={styles.radiobuttonItem}>
-                    <RadioButton
-                      value='light'
-                      status={
-                        appearanceTheme === 'light' ? 'checked' : 'unchecked'
-                      }
-                      onPress={() => {
-                        setAppearanceTheme('light');
-                        EventRegister.emit('changeTheme', appearanceTheme);
-                      }}
-                      color={theme.purple}
-                      uncheckedColor={theme.dark}
-                    />
-                    <TouchableOpacity
-                      activeOpacity={0.7}
-                      onPress={() => {
-                        setAppearanceTheme('light');
-                        EventRegister.emit('changeTheme', appearanceTheme);
-                      }}
-                    >
-                      <Text
-                        style={
-                          appearanceTheme === 'light'
-                            ? [
-                                styles.radiobuttonItemTextSelected,
-                                { color: theme.purple },
-                              ]
-                            : [
-                                styles.radiobuttonItemTextUnselected,
-                                { color: theme.gray },
-                              ]
-                        }
-                      >
-                        Claro
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.radiobuttonItem}>
-                    <RadioButton
-                      value='dark'
-                      status={
-                        appearanceTheme === 'dark' ? 'checked' : 'unchecked'
-                      }
-                      onPress={() => {
-                        setAppearanceTheme('dark');
-                        EventRegister.emit('changeTheme', appearanceTheme);
-                      }}
-                      color={theme.purple}
-                      uncheckedColor={theme.gray}
-                    />
-                    <TouchableOpacity
-                      activeOpacity={0.7}
-                      onPress={() => {
-                        setAppearanceTheme('dark');
-                        EventRegister.emit('changeTheme', appearanceTheme);
-                      }}
-                    >
-                      <Text
-                        style={
-                          appearanceTheme === 'dark'
-                            ? [
-                                styles.radiobuttonItemTextSelected,
-                                { color: theme.purple },
-                              ]
-                            : [
-                                styles.radiobuttonItemTextUnselected,
-                                { color: theme.gray },
-                              ]
-                        }
-                      >
-                        Oscuro
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
+                  <RadioBtn
+                    appearanceTheme={appearanceTheme}
+                    setAppearanceTheme={setAppearanceTheme}
+                    value='light'
+                  />
+                  <RadioBtn
+                    appearanceTheme={appearanceTheme}
+                    setAppearanceTheme={setAppearanceTheme}
+                    value='dark'
+                  />
                 </View>
               </View>
               <SectionDivider marginBottom={20} marginTop={20} />
