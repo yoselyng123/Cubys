@@ -5,6 +5,7 @@ import {
   Text,
   ActivityIndicator,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 /* Assets */
 import { useState, useEffect, useContext, useRef, useCallback } from 'react';
@@ -93,9 +94,10 @@ const AvailableCubicles = ({ navigation }) => {
     }
 
     return (
-      outOfWorkingHoursValidation() &&
+      //outOfWorkingHoursValidation() &&
       endTimeHigherThanStartTime() &&
-      twoHoursMaxValidation()
+      twoHoursMaxValidation() &&
+      startTimeBeforeCurrentTime()
     );
   };
 
@@ -141,6 +143,20 @@ const AvailableCubicles = ({ navigation }) => {
     ) {
       setError(true);
       errorMessage('La hora de entrada debe ser mayor a la hora de salida.');
+      return false;
+    }
+    return true;
+  };
+
+  const startTimeBeforeCurrentTime = () => {
+    if (
+      parseInt(parseMilitarHoursFormat(startTime)) <
+      parseInt(parseMilitarHoursFormat(dayjs().format('h:mma')))
+    ) {
+      setError(true);
+      errorMessage(
+        'La hora de entrada debe ser mayor o igual a la hora actual.'
+      );
       return false;
     }
     return true;
@@ -284,7 +300,7 @@ const AvailableCubicles = ({ navigation }) => {
         navigation={navigation}
       />
       <ScrollView style={styles.contentWrapper}>
-        <View style={styles.infoWrapper}>
+        {/* <View style={styles.infoWrapper}>
           <View style={styles.infoLeftWrapper}>
             <InfoAvailability
               label='Fecha'
@@ -311,7 +327,7 @@ const AvailableCubicles = ({ navigation }) => {
               error={error}
             />
           </View>
-        </View>
+        </View> */}
         {/* MAP */}
 
         <View style={styles.mapContainer}>

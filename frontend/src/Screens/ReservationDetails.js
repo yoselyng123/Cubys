@@ -1,6 +1,5 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useRef, useCallback } from 'react';
 import {
-  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,6 +11,9 @@ import {
 /* Assets */
 import { Feather, AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { showMessage } from 'react-native-flash-message';
+import useNotifications from '../hooks/useNotifications';
+import { useFocusEffect } from '@react-navigation/native';
+import dayjs from 'dayjs';
 /* Components */
 import Header from '../components/Header';
 import ReserveForm from '../components/ReserveForm';
@@ -27,6 +29,16 @@ import { GET_RESERVATIONS } from '../hooks/queries';
 const ReservationDetails = ({ route, navigation }) => {
   const theme = useContext(themeContext);
   const { setMyReservations, user } = useContext(userContext);
+  const [currentDate, setCurrentDate] = useState(dayjs());
+
+  const myInterval = useRef();
+
+  const {
+    scheduleNotification,
+    FiveMinutesBeforeStart,
+    FiveMinutesBeforeEnd,
+    onTime,
+  } = useNotifications();
 
   const { cubicleInfo, resInfo } = route.params;
   const [companionsList, setCompanionsList] = useState([
@@ -42,10 +54,43 @@ const ReservationDetails = ({ route, navigation }) => {
     },
   ]);
 
+  const errorMessage = (message) => {
+    return showMessage({
+      message: 'Error',
+      description: message,
+      type: 'danger',
+      duration: '3000',
+
+      icon: () => (
+        <MaterialIcons
+          name='cancel'
+          size={38}
+          color='#FF9B9D'
+          style={{ paddingRight: 20 }}
+        />
+      ),
+    });
+  };
+
+  // When component Mounts and Unmounts from navigation
+  useFocusEffect(
+    useCallback(() => {
+      // Do something when the screen is focused
+      myInterval.current = setInterval(() => {
+        setCurrentDate(dayjs());
+      }, 1000 * 10);
+      return () => {
+        // Do something when the screen is blurred
+        clearInterval(myInterval.current);
+      };
+    }, [])
+  );
+
   const [createReservation, { loading, data, error }] = useMutation(
     CREATE_RESERVATION,
     {
-      onCompleted: () => {
+      onCompleted: (data) => {
+        handleShowNotification(data.createReservation);
         showMessage({
           message: 'Success',
           description: 'Se ha creado la reservación con éxito.',
@@ -61,23 +106,11 @@ const ReservationDetails = ({ route, navigation }) => {
           ),
         });
       },
-      onError: () => {
-        showMessage({
-          message: 'Error',
-          description:
-            'No se pudo realizar la reservación. Por favor intente de nuevo.',
-          type: 'danger',
-          duration: '2000',
-
-          icon: () => (
-            <MaterialIcons
-              name='cancel'
-              size={38}
-              color='#FF9B9D'
-              style={{ paddingRight: 20 }}
-            />
-          ),
-        });
+      onError: (error) => {
+        console.log(error);
+        errorMessage(
+          'No se pudo realizar la reservación. Por favor intente de nuevo.'
+        );
       },
       refetchQueries: [{ query: GET_RESERVATIONS }],
     }
@@ -103,42 +136,14 @@ const ReservationDetails = ({ route, navigation }) => {
         companion.carnet === '' ||
         companion.carrera === ''
       ) {
-        showMessage({
-          message: 'Error',
-          description: 'Los campos no pueden quedar vacios',
-          type: 'danger',
-          duration: '2000',
-
-          icon: () => (
-            <MaterialIcons
-              name='cancel'
-              size={38}
-              color='#FF9B9D'
-              style={{ paddingRight: 20 }}
-            />
-          ),
-        });
+        errorMessage('Los campos no pueden quedar vacios');
         return false;
       } else {
         if (
           companion.carnet.length < 11 ||
           oneSpecialChar.test(companion.carnet)
         ) {
-          showMessage({
-            message: 'Error',
-            description: 'Carnet inválido',
-            type: 'danger',
-            duration: '2000',
-
-            icon: () => (
-              <MaterialIcons
-                name='cancel'
-                size={38}
-                color='#FF9B9D'
-                style={{ paddingRight: 20 }}
-              />
-            ),
-          });
+          errorMessage('Carnet inválido');
           return false;
         }
         return true;
@@ -191,11 +196,51 @@ const ReservationDetails = ({ route, navigation }) => {
 
       setCompanionsList(copyListCompanions);
     } else {
-      Alert.alert(
-        'Error',
+      errorMessage(
         'Ha alcanzado la capacidad máxima de personas por cubiculo.'
       );
     }
+  };
+
+  const handleShowNotification = (data) => {
+    let currentHour = dayjs().format('H') * 3600;
+    let currentMin = dayjs().minute() * 60;
+
+    const timesForNotifications = {
+      fiveMinBeforeStart: FiveMinutesBeforeStart(
+        data.startTime,
+        currentHour,
+        currentMin
+      ),
+      onTime: onTime(data.startTime, currentHour, currentMin),
+      FiveMinBeforeEnd: FiveMinutesBeforeEnd(
+        data.endTime,
+        currentHour,
+        currentMin
+      ),
+    };
+
+    console.log(
+      `\nFiveMinBefore: ${timesForNotifications.fiveMinBeforeStart}\nFiveMinBeforeEnd: ${timesForNotifications.FiveMinBeforeEnd} \nonTime: ${timesForNotifications.onTime}`
+    );
+
+    scheduleNotification(
+      timesForNotifications.fiveMinBeforeStart,
+      '¡Faltan 5 minutos!',
+      'Recuerda: el inicio de tu reservación comienza en 5 minutos.'
+    );
+
+    scheduleNotification(
+      timesForNotifications.onTime,
+      '¡Comenzó tu reservación!',
+      'A partir de este momento ha iniciado el tiempo establecido de tu reservación'
+    );
+
+    scheduleNotification(
+      timesForNotifications.FiveMinBeforeEnd,
+      '¡Quedan 5 minutos!',
+      'El tiempo de tu reservación está por terminar.'
+    );
   };
 
   const handleFloorShowcase = (floor) => {
@@ -278,7 +323,10 @@ const ReservationDetails = ({ route, navigation }) => {
               />
             );
           })}
-          <TouchableOpacity activeOpacity={0.7} onPress={handleAddCompanion}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => handleAddCompanion()}
+          >
             <View style={styles.addCompanionBtn}>
               <Feather name='plus-circle' size={20} color={theme.purple} />
               <Text style={[styles.addCompanionText, { color: theme.purple }]}>

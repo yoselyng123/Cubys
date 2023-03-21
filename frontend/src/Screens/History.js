@@ -58,7 +58,7 @@ const History = ({ navigation }) => {
         </View>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          style={styles.scrollview}
+          contentContainerStyle={styles.content}
         >
           <View style={styles.scrollContainer}>
             {loadingReservationsTrue ? (

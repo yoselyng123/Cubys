@@ -4,7 +4,6 @@ import {
   View,
   TouchableOpacity,
   ActivityIndicator,
-  Alert,
   ScrollView,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -12,54 +11,20 @@ import { useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 /* ASSETS */
 import { StatusBar } from 'expo-status-bar';
-import colors from '../assets/colors';
-import Header from '../components/Header';
-import Input from '../components/Input';
-import CarreraSelect from '../components/CarreraSelect';
 import dayjs from 'dayjs';
 import { showMessage } from 'react-native-flash-message';
+/* Components */
+import Header from '../components/Header';
 /* ICONS */
-import { Feather, MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 /* APOLLO SERVER */
-import { useMutation, gql } from '@apollo/client';
-import { userContext } from '../context/userContext';
-import Validation from '../components/Validation';
+import { useMutation } from '@apollo/client';
+import { SIGN_UP_MUTATION } from '../hooks/mutations';
+/* Context */
 import themeContext from '../context/themeContext';
-
-const SIGN_UP_MUTATION = gql`
-  mutation signUp(
-    $email: String!
-    $password: String!
-    $name: String!
-    $carrera: String!
-    $carnet: String!
-    $role: String!
-    $joined: String!
-  ) {
-    signUp(
-      input: {
-        email: $email
-        password: $password
-        name: $name
-        carrera: $carrera
-        carnet: $carnet
-        role: $role
-        joined: $joined
-      }
-    ) {
-      token
-      user {
-        id
-        name
-        email
-        carrera
-        carnet
-        role
-        joined
-      }
-    }
-  }
-`;
+import { userContext } from '../context/userContext';
+import SignUpForm from '../components/SignUpForm';
+import ValidationsList from '../components/ValidationsList';
 
 const SignUp = ({ navigation }) => {
   const theme = useContext(themeContext);
@@ -77,6 +42,24 @@ const SignUp = ({ navigation }) => {
     specialChar: false,
   });
 
+  const errorMessage = (message) => {
+    showMessage({
+      message: 'Error',
+      description: message,
+      type: 'danger',
+      duration: '2000',
+
+      icon: () => (
+        <MaterialIcons
+          name='cancel'
+          size={38}
+          color='#FF9B9D'
+          style={{ paddingRight: 20 }}
+        />
+      ),
+    });
+  };
+
   const [signUp, { loading }] = useMutation(SIGN_UP_MUTATION, {
     onCompleted: (data) => {
       // Store Token
@@ -89,11 +72,10 @@ const SignUp = ({ navigation }) => {
     },
     onError: ({ networkError }) => {
       if (networkError) {
-        Alert.alert(
+        errorMessage(
           'Sin conexión. Chequea tu conexión a internet e intenta de nuevo.'
         );
       } else {
-        Alert.alert('Credenciales inválidas. Intente de nuevo.');
         console.log(error);
       }
     },
@@ -101,13 +83,11 @@ const SignUp = ({ navigation }) => {
 
   const handleSignUp = () => {
     // Validate secure password
-
     let validationsPassword =
       validations.eightCharacters &&
       validations.numeric &&
       validations.specialChar &&
       validations.upperAndLower;
-
     if (
       email !== '' &&
       name !== '' &&
@@ -117,69 +97,13 @@ const SignUp = ({ navigation }) => {
       confirmPassword !== ''
     ) {
       if (!email.includes('@') || !email.includes('@unimet.edu.ve')) {
-        showMessage({
-          message: 'Error',
-          description: 'Correo inválido.',
-          type: 'danger',
-          duration: '2000',
-
-          icon: () => (
-            <MaterialIcons
-              name='cancel'
-              size={38}
-              color='#FF9B9D'
-              style={{ paddingRight: 20 }}
-            />
-          ),
-        });
+        errorMessage('Correo inválido.');
       } else if (carnet.length < 11 || carnet.length > 11) {
-        showMessage({
-          message: 'Error',
-          description: 'Carnet inválido.',
-          type: 'danger',
-          duration: '2000',
-
-          icon: () => (
-            <MaterialIcons
-              name='cancel'
-              size={38}
-              color='#FF9B9D'
-              style={{ paddingRight: 20 }}
-            />
-          ),
-        });
+        errorMessage('Carnet inválido.');
       } else if (!validationsPassword) {
-        showMessage({
-          message: 'Error',
-          description: 'La contraseña no cumple con los requisitos.',
-          type: 'danger',
-          duration: '2000',
-
-          icon: () => (
-            <MaterialIcons
-              name='cancel'
-              size={38}
-              color='#FF9B9D'
-              style={{ paddingRight: 20 }}
-            />
-          ),
-        });
+        errorMessage('La contraseña no cumple con los requisitos.');
       } else if (password !== confirmPassword) {
-        showMessage({
-          message: 'Error',
-          description: 'Las contraseñas no coinciden.',
-          type: 'danger',
-          duration: '2000',
-
-          icon: () => (
-            <MaterialIcons
-              name='cancel'
-              size={38}
-              color='#FF9B9D'
-              style={{ paddingRight: 20 }}
-            />
-          ),
-        });
+        errorMessage('Las contraseñas no coinciden.');
       } else {
         let role = 'user';
         let joined = dayjs().format('DD MMM YYYY');
@@ -188,21 +112,7 @@ const SignUp = ({ navigation }) => {
         });
       }
     } else {
-      showMessage({
-        message: 'Error',
-        description: 'Los campos no pueden quedar vacios.',
-        type: 'danger',
-        duration: '2000',
-
-        icon: () => (
-          <MaterialIcons
-            name='cancel'
-            size={38}
-            color='#FF9B9D'
-            style={{ paddingRight: 20 }}
-          />
-        ),
-      });
+      errorMessage('Los campos no pueden quedar vacios.');
     }
   };
 
@@ -269,107 +179,25 @@ const SignUp = ({ navigation }) => {
       />
 
       <ScrollView style={styles.content}>
-        <View style={styles.inputContainer}>
-          <Input
-            style={styles.input}
-            title='Correo Electrónico'
-            placeholder='Ingrese su dirección de correo'
-            text={email}
-            onChangeText={(newText) => setEmail(newText.toLowerCase())}
-          />
-          <Input
-            style={styles.input}
-            title='Nombre y Apellido'
-            placeholder='Ingrese su nombre y apellido'
-            text={name}
-            onChangeText={(newText) => setName(newText)}
-          />
-          <Input
-            style={styles.input}
-            title='Carnet'
-            placeholder='Ingresa tu carnet UNIMET'
-            text={carnet}
-            onChangeText={(newText) => setCarnet(newText)}
-          />
-
-          <CarreraSelect carrera={carrera} setCarrera={setCarrera} />
-          <Input
-            style={styles.input}
-            title='Contraseña'
-            placeholder='Ingrese su contraseña'
-            isPassword={true}
-            text={password}
-            onChangeText={(newText) => setPassword(newText)}
-          />
-          <Input
-            style={styles.input}
-            title='Confirmar Contraseña'
-            placeholder='Repita la contraseña'
-            isPassword={true}
-            text={confirmPassword}
-            onChangeText={(newText) => setConfirmPassword(newText)}
-            onSubmit={handleSignUp}
-          />
-        </View>
-        <View style={styles.validations}>
-          <Validation
-            icon={
-              validations.eightCharacters ? (
-                <Ionicons
-                  name='md-checkmark-sharp'
-                  size={15}
-                  color={colors.green}
-                />
-              ) : (
-                <Feather name='x' size={15} color={colors.gray} />
-              )
-            }
-            text='Al menos 8 caracteres'
-          />
-
-          <Validation
-            icon={
-              validations.upperAndLower ? (
-                <Ionicons
-                  name='md-checkmark-sharp'
-                  size={15}
-                  color={colors.green}
-                />
-              ) : (
-                <Feather name='x' size={15} color={colors.gray} />
-              )
-            }
-            text='Al menos 1 mayuscula y 1 minuscula'
-          />
-          <Validation
-            icon={
-              validations.numeric ? (
-                <Ionicons
-                  name='md-checkmark-sharp'
-                  size={15}
-                  color={colors.green}
-                />
-              ) : (
-                <Feather name='x' size={15} color={colors.gray} />
-              )
-            }
-            text='Al menos 1 numero'
-          />
-          <Validation
-            icon={
-              validations.specialChar ? (
-                <Ionicons
-                  name='md-checkmark-sharp'
-                  size={15}
-                  color={colors.green}
-                />
-              ) : (
-                <Feather name='x' size={15} color={colors.gray} />
-              )
-            }
-            text='Al menos 1 caracter especial'
-          />
-        </View>
+        {/* Form */}
+        <SignUpForm
+          name={name}
+          setName={setName}
+          carrera={carrera}
+          setCarrera={setCarrera}
+          carnet={carnet}
+          setCarnet={setCarnet}
+          email={email}
+          setEmail={setEmail}
+          password={password}
+          setPassword={setPassword}
+          confirmPassword={confirmPassword}
+          setConfirmPassword={setConfirmPassword}
+          handleSignUp={handleSignUp}
+        />
+        {/* Validations */}
+        <ValidationsList validations={validations} />
+        {/* Footer */}
         <View style={styles.footer}>
           <TouchableOpacity
             activeOpacity={0.7}
@@ -378,7 +206,7 @@ const SignUp = ({ navigation }) => {
             }}
             disabled={loading}
           >
-            <View style={styles.btnSignIn}>
+            <View style={[styles.btnSignIn, { backgroundColor: theme.purple }]}>
               {loading ? (
                 <ActivityIndicator size='small' color='#FFF' />
               ) : (
@@ -388,14 +216,18 @@ const SignUp = ({ navigation }) => {
           </TouchableOpacity>
 
           <View style={styles.noAccount}>
-            <Text style={styles.textNoAction}>Ya tiene una cuenta?</Text>
+            <Text style={[styles.textNoAction, { color: theme.gray }]}>
+              Ya tiene una cuenta?
+            </Text>
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => {
                 navigation.navigate('SignIn');
               }}
             >
-              <Text style={styles.textAction}>Iniciar Sesión</Text>
+              <Text style={[styles.textAction, { color: theme.purple }]}>
+                Iniciar Sesión
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -414,7 +246,6 @@ export default SignUp;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   content: {
     paddingTop: 40,
@@ -422,7 +253,6 @@ const styles = StyleSheet.create({
   },
   btnSignIn: {
     borderRadius: 10,
-    backgroundColor: colors.purple,
     paddingVertical: 15,
     alignItems: 'center',
     justifyContent: 'center',
@@ -443,19 +273,12 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontFamily: 'Roboto-Medium',
     fontSize: 15,
-    color: colors.purple,
     letterSpacing: 0.6,
   },
   textNoAction: {
     fontFamily: 'Roboto-Regular',
     fontSize: 15,
-    color: colors.gray,
     letterSpacing: 0.6,
-  },
-  validations: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    marginBottom: 20,
   },
   footer: {
     marginBottom: 80,

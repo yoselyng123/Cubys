@@ -329,7 +329,7 @@ const Home = ({ navigation }) => {
             <Text style={[styles.greetingsTitle, { color: theme.dark }]}>
               Hola
             </Text>
-            <Text style={styles.greetingsText}>
+            <Text style={[styles.greetingsText, { color: theme.gray }]}>
               Reserva un cubículo cuando quieras.
             </Text>
             {/* Cards */}
@@ -377,7 +377,7 @@ const Home = ({ navigation }) => {
                 );
               })
             ) : (
-              <Text style={styles.noReservationsText}>
+              <Text style={[styles.noReservationsText, { color: theme.gray }]}>
                 No hay reservaciones
               </Text>
             )}

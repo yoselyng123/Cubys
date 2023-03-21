@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
   LeftInfoWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: '1%',
+    gap: 10,
     flex: 1,
   },
   rightInfoWrapper: {

@@ -77,9 +77,63 @@ const CREATE_RESERVATION = gql`
   }
 `;
 
+const SIGN_IN_MUTATION = gql`
+  mutation signIn($email: String!, $password: String!) {
+    signIn(input: { email: $email, password: $password }) {
+      token
+      user {
+        id
+        name
+        email
+        carrera
+        carnet
+        role
+        joined
+      }
+    }
+  }
+`;
+
+const SIGN_UP_MUTATION = gql`
+  mutation signUp(
+    $email: String!
+    $password: String!
+    $name: String!
+    $carrera: String!
+    $carnet: String!
+    $role: String!
+    $joined: String!
+  ) {
+    signUp(
+      input: {
+        email: $email
+        password: $password
+        name: $name
+        carrera: $carrera
+        carnet: $carnet
+        role: $role
+        joined: $joined
+      }
+    ) {
+      token
+      user {
+        id
+        name
+        email
+        carrera
+        carnet
+        role
+        joined
+      }
+    }
+  }
+`;
+
 export {
   DELETE_RESERVATION_MUTATION,
   UPDATE_RESERVATION_STATUS,
   UPDATE_USER_MUTATION,
   CREATE_RESERVATION,
+  SIGN_IN_MUTATION,
+  SIGN_UP_MUTATION,
 };

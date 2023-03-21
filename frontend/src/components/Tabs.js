@@ -21,7 +21,7 @@ const Tabs = () => {
       screenOptions={({ route }) => ({
         tabBarStyle: {
           backgroundColor: theme.white,
-          height: 95,
+          height: Platform.OS === 'android' ? 60 : 95,
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
           shadowColor: 'rgba(0, 0, 0, 0.5)',

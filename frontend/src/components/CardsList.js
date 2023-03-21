@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     marginBottom: 25,
-    gap: '15%',
+    gap: 10,
     alignSelf: 'center',
     justifyContent: 'space-between',
     alignItems: 'center',

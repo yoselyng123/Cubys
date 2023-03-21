@@ -20,24 +20,8 @@ import Input from '../components/Input';
 import { MaterialIcons } from '@expo/vector-icons';
 import { showMessage } from 'react-native-flash-message';
 /* APOLLO SERVER */
-import { useMutation, gql } from '@apollo/client';
-
-const SIGN_IN_MUTATION = gql`
-  mutation signIn($email: String!, $password: String!) {
-    signIn(input: { email: $email, password: $password }) {
-      token
-      user {
-        id
-        name
-        email
-        carrera
-        carnet
-        role
-        joined
-      }
-    }
-  }
-`;
+import { useMutation } from '@apollo/client';
+import { SIGN_IN_MUTATION } from '../hooks/mutations';
 
 const SignIn = ({ navigation }) => {
   const theme = useContext(themeContext);
@@ -46,6 +30,24 @@ const SignIn = ({ navigation }) => {
   // State for User input
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const errorMessage = (message) => {
+    showMessage({
+      message: 'Error',
+      description: message,
+      type: 'danger',
+      duration: '2000',
+
+      icon: () => (
+        <MaterialIcons
+          name='cancel'
+          size={38}
+          color='#FF9B9D'
+          style={{ paddingRight: 20 }}
+        />
+      ),
+    });
+  };
 
   const [signIn, { loading }] = useMutation(SIGN_IN_MUTATION, {
     onCompleted: (data) => {
@@ -59,46 +61,20 @@ const SignIn = ({ navigation }) => {
     },
     onError: ({ networkError }) => {
       if (networkError) {
-        showMessage({
-          message: 'Error',
-          description:
-            'Sin Conexión. Verifique su conexión a internet e intente nuevamente.',
-          type: 'danger',
-          duration: '2000',
-
-          icon: () => (
-            <MaterialIcons
-              name='cancel'
-              size={38}
-              color='#FF9B9D'
-              style={{ paddingRight: 20 }}
-            />
-          ),
-        });
+        errorMessage(
+          'Sin Conexión. Verifique su conexión a internet e intente nuevamente.'
+        );
       } else {
-        showMessage({
-          message: 'Error',
-          description: 'Credenciales Inválidas.',
-          type: 'danger',
-          duration: '2000',
-
-          icon: () => (
-            <MaterialIcons
-              name='cancel'
-              size={38}
-              color='#FF9B9D'
-              style={{ paddingRight: 20 }}
-            />
-          ),
-        });
+        showMessage('Credenciales Inválidas.');
       }
     },
   });
 
   const handleSignIn = () => {
     // AQUI SE MANEJA EL INPUT DEL USUARIO
+
     signIn({
-      variables: { email, password },
+      variables: { email: email.toLowerCase(), password },
     });
   };
 
@@ -122,7 +98,7 @@ const SignIn = ({ navigation }) => {
               title='Correo Electrónico'
               placeholder='Ingrese su dirección de correo'
               text={email}
-              onChangeText={(newText) => setEmail(newText.toLowerCase())}
+              onChangeText={(newText) => setEmail(newText)}
             />
             <Input
               style={styles.input}

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import React, { useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -231,60 +232,64 @@ const Profile = ({ navigation }) => {
       <View style={[styles.container, { backgroundColor: theme.background }]}>
         <Header title='cubys' navigateAvailable={false} />
 
-        <View style={styles.content}>
-          <Image
-            source={{
-              uri: 'https://www.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png',
-            }}
-            style={styles.profileImage}
-          />
-          <Text style={[styles.profileName, { color: theme.dark }]}>
-            {user.name}
-          </Text>
-          <Text style={styles.profileJob}>{user.carrera}</Text>
-          <ScrollView
-            style={styles.inputContainer}
-            showsVerticalScrollIndicator={false}
-          >
-            <Input
-              style={styles.input}
-              title='Correo Electrónico'
-              placeholder='Ingrese el correo'
-              isPassword={false}
-              text={user.email}
-              isSignInPassword={false}
-              disabled={true}
-            />
-            <Input
-              style={styles.input}
-              title='Contraseña'
-              placeholder='Ingrese la nueva contraseña'
-              isPassword={true}
-              text={password}
-              onChangeText={(newText) => setPassword(newText)}
-              disabled={loadingUpdateUser}
-            />
-            <Input
-              style={styles.input}
-              title='Carnet'
-              placeholder='Ingrese su carnet UNIMET'
-              isPassword={false}
-              text={user.carnet}
-              disabled={true}
-            />
-            {/* <DateInput
-              style={styles.input}
-              title='Birth Date (Optional)'
-              placeholder='Enter your birth date'
-            /> */}
-          </ScrollView>
-          <View style={styles.footer}>
-            <Text style={[styles.joinedtext, { color: theme.gray }]}>
-              Joined{'  '}
-              <Text style={[styles.joineddate, { color: theme.dark }]}>
-                {user.joined}
+        <ScrollView
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.userInfoContainer}>
+            <View style={styles.userTopContainer}>
+              <Image
+                source={{
+                  uri: 'https://www.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png',
+                }}
+                style={styles.profileImage}
+              />
+              <Text style={[styles.profileName, { color: theme.dark }]}>
+                {user.name}
               </Text>
-            </Text>
+              <Text style={[styles.profileJob, { color: theme.gray }]}>
+                {user.carrera}
+              </Text>
+            </View>
+            <View style={styles.inputContainer}>
+              <Input
+                style={styles.input}
+                title='Correo Electrónico'
+                placeholder='Ingrese el correo'
+                isPassword={false}
+                text={user.email}
+                isSignInPassword={false}
+                disabled={true}
+              />
+              <Input
+                style={styles.input}
+                title='Contraseña'
+                placeholder='Ingrese la nueva contraseña'
+                isPassword={true}
+                text={password}
+                onChangeText={(newText) => setPassword(newText)}
+                disabled={loadingUpdateUser}
+              />
+              <Input
+                style={styles.input}
+                title='Carnet'
+                placeholder='Ingrese su carnet UNIMET'
+                isPassword={false}
+                text={user.carnet}
+                disabled={true}
+              />
+            </View>
+          </View>
+
+          <View style={styles.footer}>
+            <View style={styles.joinedWrapper}>
+              <Text style={[styles.joinedtext, { color: theme.gray }]}>
+                Joined{'  '}
+                <Text style={[styles.joineddate, { color: theme.dark }]}>
+                  {user.joined}
+                </Text>
+              </Text>
+            </View>
             <View
               style={{
                 flexDirection: 'row',
@@ -299,7 +304,9 @@ const Profile = ({ navigation }) => {
                     handleSaveChanges();
                   }}
                 >
-                  <Text style={styles.save}>Save</Text>
+                  <Text style={[styles.save, { color: theme.purple }]}>
+                    Save
+                  </Text>
                 </TouchableOpacity>
               )}
 
@@ -309,11 +316,13 @@ const Profile = ({ navigation }) => {
                   handleSignOut();
                 }}
               >
-                <Text style={styles.logout}>Cerrar Sesión</Text>
+                <Text style={[styles.logout, { color: theme.red }]}>
+                  Cerrar Sesión
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </ScrollView>
         <Loading show={loadingUpdateUser} />
       </View>
     );
@@ -330,10 +339,15 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingTop: 24,
-    paddingBottom: 64,
     paddingHorizontal: 15,
     flex: 1,
+    width: '100%',
     justifyContent: 'space-between',
+  },
+  userInfoContainer: {},
+  userTopContainer: {
+    alignSelf: 'center',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   inputContainer: {
@@ -364,8 +378,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    position: 'absolute',
-    bottom: 125,
+    flex: 1,
+  },
+  joinedWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   logout: {
     fontSize: 13,
