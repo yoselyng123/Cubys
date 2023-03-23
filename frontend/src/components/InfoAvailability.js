@@ -123,6 +123,7 @@ const InfoAvailability = ({ label, content, setContent, error }) => {
               key: '1',
               value: null,
             }}
+            useNativeAndroidPickerStyle={false}
           />
         </View>
       )}

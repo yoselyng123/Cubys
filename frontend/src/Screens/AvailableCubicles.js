@@ -5,7 +5,6 @@ import {
   Text,
   ActivityIndicator,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 /* Assets */
 import { useState, useEffect, useContext, useRef, useCallback } from 'react';
@@ -299,8 +298,8 @@ const AvailableCubicles = ({ navigation }) => {
         navigateAvailable={true}
         navigation={navigation}
       />
-      <ScrollView style={styles.contentWrapper}>
-        {/* <View style={styles.infoWrapper}>
+      <ScrollView contentContainerStyle={styles.contentWrapper}>
+        <View style={styles.infoWrapper}>
           <View style={styles.infoLeftWrapper}>
             <InfoAvailability
               label='Fecha'
@@ -327,7 +326,7 @@ const AvailableCubicles = ({ navigation }) => {
               error={error}
             />
           </View>
-        </View> */}
+        </View>
         {/* MAP */}
 
         <View style={styles.mapContainer}>
@@ -385,42 +384,37 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentWrapper: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: 16,
     paddingTop: 20,
-  },
-  description: {
-    fontFamily: 'Roboto-Regular',
-    fontSize: 13,
-    lineHeight: 20,
-    letterSpacing: 0.6,
-    marginBottom: 20,
+    justifyContent: 'space-between',
   },
   infoWrapper: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
     flex: 1,
     width: '100%',
-    gap: '50%',
   },
   infoLeftWrapper: {
     flex: 1,
+    marginRight: '10%',
   },
   infoRightWrapper: {
     flex: 1,
-    marginRight: '15%',
+    marginRight: '10%',
   },
   footer: {
-    flex: 3,
-    gap: '30%',
+    flex: 1,
     marginBottom: 40,
+    justifyContent: 'flex-end',
   },
   btnConfirm: {
     borderRadius: 10,
     paddingVertical: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: '8%',
   },
   textConfirm: {
     fontFamily: 'Roboto-Medium',

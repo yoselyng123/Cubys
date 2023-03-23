@@ -15,6 +15,7 @@ import { userContext } from '../context/userContext';
 import themeContext from '../context/themeContext';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { showMessage } from 'react-native-flash-message';
+import blankProfile from '../assets/img/blankProfile.png';
 /* Components */
 import Header from '../components/Header';
 import Input from '../components/Input';
@@ -231,19 +232,14 @@ const Profile = ({ navigation }) => {
     return (
       <View style={[styles.container, { backgroundColor: theme.background }]}>
         <Header title='cubys' navigateAvailable={false} />
-
         <ScrollView
-          contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.contentWrapper}
+          alwaysBounceVertical={false}
         >
-          <View style={styles.userInfoContainer}>
+          <View>
             <View style={styles.userTopContainer}>
-              <Image
-                source={{
-                  uri: 'https://www.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png',
-                }}
-                style={styles.profileImage}
-              />
+              <Image source={blankProfile} style={styles.profileImage} />
               <Text style={[styles.profileName, { color: theme.dark }]}>
                 {user.name}
               </Text>
@@ -337,14 +333,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  content: {
-    paddingTop: 24,
-    paddingHorizontal: 15,
-    flex: 1,
-    width: '100%',
+  contentWrapper: {
+    flexGrow: 1,
+    paddingHorizontal: 16,
+    paddingTop: 20,
     justifyContent: 'space-between',
   },
-  userInfoContainer: {},
   userTopContainer: {
     alignSelf: 'center',
     justifyContent: 'center',
@@ -357,7 +351,7 @@ const styles = StyleSheet.create({
   profileImage: {
     width: 80,
     height: 80,
-    borderRadius: 50,
+    borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentWrapper: {
-    marginTop: 10,
+    paddingTop: 10,
     paddingHorizontal: 16,
   },
   descriptionContainer: {

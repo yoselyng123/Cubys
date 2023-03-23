@@ -201,13 +201,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     marginBottom: 25,
-    gap: 10,
+    //gap: 10,
     alignSelf: 'center',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   cardsWrapperLeft: {
     width: '48%',
+    marginRight: '4%',
   },
   cardsWrapperRight: {
     width: '48%',

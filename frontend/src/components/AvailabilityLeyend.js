@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   leyendColor: {
     height: 8,
     width: 8,
-    borderRadius: '50%',
+    borderRadius: 4,
   },
   leyendText: {
     fontSize: 11,

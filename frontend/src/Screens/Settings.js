@@ -21,21 +21,23 @@ const Settings = () => {
   const scheme = useColorScheme();
   const theme = useContext(themeContext);
   const [appearanceTheme, setAppearanceTheme] = useState(scheme);
-  const [notificationsChecked, setNotificationsChecked] = useState('first');
 
   useEffect(() => {
+    console.log(scheme);
     if (scheme === 'light') {
       setAppearanceTheme('light');
     } else if (scheme === 'dark') {
       setAppearanceTheme('dark');
     }
-    console.log(scheme);
   }, [scheme]);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Header title='cubys' navigateAvailable={false} />
-      <View style={styles.contentWrapper}>
+      <ScrollView
+        contentContainerStyle={styles.contentWrapper}
+        alwaysBounceVertical={false}
+      >
         {/* Screen Description */}
         <View style={styles.descriptionContainer}>
           <View style={styles.texts}>
@@ -49,30 +51,27 @@ const Settings = () => {
         </View>
         <SectionDivider marginBottom={10} />
         {/* Options */}
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollview}
-        >
-          <View style={styles.scrollContainer}>
-            <View>
-              <View style={styles.settingItemContainer}>
-                <Text style={[styles.title, { color: theme.dark }]}>Tema</Text>
-                <View style={styles.itemWrapper}>
-                  <RadioBtn
-                    appearanceTheme={appearanceTheme}
-                    setAppearanceTheme={setAppearanceTheme}
-                    value='light'
-                  />
-                  <RadioBtn
-                    appearanceTheme={appearanceTheme}
-                    setAppearanceTheme={setAppearanceTheme}
-                    value='dark'
-                  />
-                </View>
-              </View>
-              <SectionDivider marginBottom={20} marginTop={20} />
 
-              {/* <View style={styles.settingItemContainer}>
+        <View style={styles.optionsContainer}>
+          <View>
+            <View style={styles.settingItemContainer}>
+              <Text style={[styles.title, { color: theme.dark }]}>Tema</Text>
+              <View style={styles.itemWrapper}>
+                <RadioBtn
+                  appearanceTheme={appearanceTheme}
+                  setAppearanceTheme={setAppearanceTheme}
+                  value='light'
+                />
+                <RadioBtn
+                  appearanceTheme={appearanceTheme}
+                  setAppearanceTheme={setAppearanceTheme}
+                  value='dark'
+                />
+              </View>
+            </View>
+            <SectionDivider marginBottom={20} marginTop={20} />
+
+            {/* <View style={styles.settingItemContainer}>
                 <Text style={[styles.title, { color: theme.dark }]}>
                   Notificaciones
                 </Text>
@@ -146,10 +145,9 @@ const Settings = () => {
                 </View>
               </View>
               <SectionDivider marginBottom={20} marginTop={20} /> */}
-            </View>
           </View>
-        </ScrollView>
-      </View>
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -161,7 +159,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentWrapper: {
-    flex: 1,
+    flexGrow: 1,
   },
   descriptionContainer: {
     paddingHorizontal: 16,
@@ -212,7 +210,7 @@ const styles = StyleSheet.create({
     color: colors.purple,
     marginBottom: 20,
   },
-  scrollContainer: {
+  optionsContainer: {
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 18,

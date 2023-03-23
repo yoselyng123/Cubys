@@ -322,66 +322,64 @@ const Home = ({ navigation }) => {
       <View style={[styles.container, { backgroundColor: theme.background }]}>
         <Header title='cubys' navigateAvailable={false} />
         <ScrollView
-          style={styles.contentWrapper}
+          contentContainerStyle={styles.scrollContainer}
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.scrollContainer}>
-            <Text style={[styles.greetingsTitle, { color: theme.dark }]}>
-              Hola
-            </Text>
-            <Text style={[styles.greetingsText, { color: theme.gray }]}>
-              Reserva un cubículo cuando quieras.
-            </Text>
-            {/* Cards */}
+          <Text style={[styles.greetingsTitle, { color: theme.dark }]}>
+            Hola
+          </Text>
+          <Text style={[styles.greetingsText, { color: theme.gray }]}>
+            Reserva un cubículo cuando quieras.
+          </Text>
+          {/* Cards */}
 
-            <CardsList
-              navigation={navigation}
-              reservedNumber={
-                user.role !== 'admin' ? myReservations.length : reservedNumber
-              }
-              availableCubicles={availableCubicles}
-              loadingCubicles={loadingCubicles}
-              historialCount={historialCount}
-            />
+          <CardsList
+            navigation={navigation}
+            reservedNumber={
+              user.role !== 'admin' ? myReservations.length : reservedNumber
+            }
+            availableCubicles={availableCubicles}
+            loadingCubicles={loadingCubicles}
+            historialCount={historialCount}
+          />
 
-            {/* Separation Line */}
-            <SectionDivider marginBottom={20} />
-            <Text style={[styles.reservationsTitle, { color: theme.dark }]}>
-              Próximas Reservaciones
+          {/* Separation Line */}
+          <SectionDivider marginBottom={20} />
+          <Text style={[styles.reservationsTitle, { color: theme.dark }]}>
+            Próximas Reservaciones
+          </Text>
+          {loadingReservationsFalse ? (
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <ActivityIndicator size='small' color={theme.dark} />
+            </View>
+          ) : myReservations.length > 0 ? (
+            myReservations.map((reservation, index) => {
+              return (
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  key={index}
+                  onPress={() =>
+                    navigation.navigate('ReservationDetailsAdmin', {
+                      reservation,
+                    })
+                  }
+                >
+                  <Reservation
+                    info={reservation}
+                    id={reservation.cubicleID}
+                    deleteReservation={deleteReservation}
+                    pressedCancel={pressedCancel}
+                    setPressedDeletedIndex={setPressedDeletedIndex}
+                    index={index}
+                  />
+                </TouchableOpacity>
+              );
+            })
+          ) : (
+            <Text style={[styles.noReservationsText, { color: theme.gray }]}>
+              No hay reservaciones
             </Text>
-            {loadingReservationsFalse ? (
-              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <ActivityIndicator size='small' color={theme.dark} />
-              </View>
-            ) : myReservations.length > 0 ? (
-              myReservations.map((reservation, index) => {
-                return (
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    key={index}
-                    onPress={() =>
-                      navigation.navigate('ReservationDetailsAdmin', {
-                        reservation,
-                      })
-                    }
-                  >
-                    <Reservation
-                      info={reservation}
-                      id={reservation.cubicleID}
-                      deleteReservation={deleteReservation}
-                      pressedCancel={pressedCancel}
-                      setPressedDeletedIndex={setPressedDeletedIndex}
-                      index={index}
-                    />
-                  </TouchableOpacity>
-                );
-              })
-            ) : (
-              <Text style={[styles.noReservationsText, { color: theme.gray }]}>
-                No hay reservaciones
-              </Text>
-            )}
-          </View>
+          )}
         </ScrollView>
         <Loading show={loadingDeleteReservation} />
       </View>
@@ -398,9 +396,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContainer: {
-    flex: 1,
+    flexGrow: 1,
     marginHorizontal: 16,
-    marginTop: 28,
+    paddingTop: 28,
     paddingBottom: 90,
   },
   greetingsTitle: {
