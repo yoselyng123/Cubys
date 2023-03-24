@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   StatusBar,
 } from 'react-native';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 /* ASSETS */
 import colors from '../assets/colors';
 import { Entypo } from '@expo/vector-icons';

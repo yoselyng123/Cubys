@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import CarreraSelect from './CarreraSelect';
 /* Components */
 import Input from './Input';

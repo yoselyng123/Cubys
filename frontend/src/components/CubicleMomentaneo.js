@@ -1,5 +1,5 @@
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import colors from '../assets/colors';
 import { userContext } from '../context/userContext';
 import themeContext from '../context/themeContext';

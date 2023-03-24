@@ -5,7 +5,7 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 
 /* ASSETS */

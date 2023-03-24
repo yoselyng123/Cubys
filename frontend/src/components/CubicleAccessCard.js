@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import CustomSwitch from './CustomSwitch';
 /* Assets */
 import themeContext from '../context/themeContext';

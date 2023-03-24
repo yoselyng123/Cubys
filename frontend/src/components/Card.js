@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 /* Assets */
 import { Ionicons } from '@expo/vector-icons';
 import colors from '../assets/colors';

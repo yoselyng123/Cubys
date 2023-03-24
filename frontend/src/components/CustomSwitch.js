@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { useContext, useState, useEffect } from 'react';
 /* Assets */
 import themeContext from '../context/themeContext';

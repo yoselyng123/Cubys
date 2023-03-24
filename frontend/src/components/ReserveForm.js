@@ -8,7 +8,7 @@ import {
 import { useContext } from 'react';
 /* Assets */
 import colors from '../assets/colors';
-import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import useToastMessage from '../hooks/useToastMessage';
 
 import CarreraSelect from './CarreraSelect';

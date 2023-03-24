@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { useContext } from 'react';
 /* ICONS */
-import { Feather, MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 /* Components */
 import Validation from './Validation';
 /* Context */

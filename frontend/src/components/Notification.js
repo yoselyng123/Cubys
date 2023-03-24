@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 /* Assets */
 import colors from '../assets/colors';
 import themeContext from '../context/themeContext';

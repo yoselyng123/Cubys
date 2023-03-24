@@ -6,10 +6,8 @@ import {
   ScrollView,
 } from 'react-native';
 import { useContext, useEffect, useState } from 'react';
-import { RadioButton } from 'react-native-paper';
 /* Assets */
 import colors from '../assets/colors';
-import { EventRegister } from 'react-native-event-listeners';
 import themeContext from '../context/themeContext';
 import { useColorScheme } from 'react-native';
 /* Components */

@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useContext, useState, useEffect } from 'react';
+import { useContext } from 'react';
 /* Assets */
 import colors from '../../assets/colors';
 import { userContext } from '../../context/userContext';

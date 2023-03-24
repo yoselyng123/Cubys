@@ -1,5 +1,4 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React from 'react';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 /* ASSETS */

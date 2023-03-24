@@ -12,8 +12,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 /* Assets */
 import { userContext } from '../context/userContext';
 import themeContext from '../context/themeContext';
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import { showMessage } from 'react-native-flash-message';
 import blankProfile from '../assets/img/blankProfile.png';
 import useToastMessage from '../hooks/useToastMessage';
 /* Components */

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 /* Components */
 import InfoBubble from './InfoBubble';
 import Mesa from './Mesa';
