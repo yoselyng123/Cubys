@@ -1,12 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  View,
-  Image,
-  ImageBackground,
-  TouchableOpacity,
-  useWindowDimensions,
-} from 'react-native';
+import { StyleSheet, View, ImageBackground } from 'react-native';
 /* Assets */
 import floor1 from '../assets/img/piso1.png';
 import floor2 from '../assets/img/piso2.png';
@@ -49,7 +42,7 @@ const Map = ({ floor, setSelectedCubicle }) => {
         active: false,
       },
       {
-        left: '42.8%',
+        left: '43%',
         bottom: '79.5%',
         rotate: true,
         active: false,
@@ -119,6 +112,9 @@ const Map = ({ floor, setSelectedCubicle }) => {
   useEffect(() => {
     let newCubiclesList = cubiclesList.map((item) => {
       item.isSelected = false;
+      console.log(
+        `Cubicle N: ${item.cubicleNumber} --- Availability: ${item.availability}`
+      );
       return { ...item };
     });
     setCubiclesData(newCubiclesList);

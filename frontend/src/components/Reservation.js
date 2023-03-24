@@ -6,20 +6,8 @@ import { Ionicons } from '@expo/vector-icons';
 import themeContext from '../context/themeContext';
 import { useContext } from 'react';
 /* APOLLO SERVER */
-import { useQuery, gql } from '@apollo/client';
-
-const GET_CUBICLE_BY_ID = gql`
-  query getCubiclebyID($id: ID!) {
-    getCubicleByID(id: $id) {
-      id
-      cubicleNumber
-      floor
-      sala
-      maxCapacity
-      minCapacity
-    }
-  }
-`;
+import { useQuery } from '@apollo/client';
+import { GET_CUBICLE_BY_ID } from '../hooks/queries';
 
 const Reservation = ({
   info,

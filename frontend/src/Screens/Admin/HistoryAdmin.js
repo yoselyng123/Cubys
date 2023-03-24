@@ -14,26 +14,8 @@ import themeContext from '../../context/themeContext';
 import Header from '../../components/Header';
 import SectionDivider from '../../components/SectionDivider';
 import Reservation from '../../components/Reservation';
-import { gql, useQuery } from '@apollo/client';
-
-const GET_ALL_RESERVATIONS_BY_STATUS = gql`
-  query getReservationsByStatus($completed: Boolean!) {
-    getReservationsByStatus(completed: $completed) {
-      id
-      createdBy
-      startTime
-      endTime
-      date
-      cubicleID
-      completed
-      companions {
-        carnet
-        carrera
-        name
-      }
-    }
-  }
-`;
+import { useQuery } from '@apollo/client';
+import { GET_ALL_RESERVATIONS_BY_STATUS } from '../../hooks/queries';
 
 const HistoryAdmin = ({ navigation }) => {
   const theme = useContext(themeContext);

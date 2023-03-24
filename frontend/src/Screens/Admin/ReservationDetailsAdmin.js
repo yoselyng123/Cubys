@@ -7,35 +7,6 @@ import themeContext from '../../context/themeContext';
 /* Components */
 import Header from '../../components/Header';
 import SectionDivider from '../../components/SectionDivider';
-/* Apollo */
-import { gql, useQuery } from '@apollo/client';
-
-const GET_RESERVATION_BY_ID = gql`
-  query getReservationbyID($id: ID!) {
-    getReservationByID(id: $id) {
-      id
-      createdBy
-      startTime
-      endTime
-      date
-      cubicleID
-      completed
-      companions {
-        carnet
-        carrera
-        name
-      }
-    }
-  }
-`;
-
-// function Companion({ companion }) {
-//   return (
-//     <Text style={[styles.content, { marginBottom: 2 }]}>
-//       {companion.name} - {companion.carrera}
-//     </Text>
-//   );
-// }
 
 const ReservedCubicles = ({ navigation, route }) => {
   const { reservation } = route.params;
@@ -55,8 +26,6 @@ const ReservedCubicles = ({ navigation, route }) => {
       return '';
     }
   };
-
-  useEffect(() => {}, []);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>

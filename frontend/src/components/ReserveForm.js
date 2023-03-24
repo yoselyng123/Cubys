@@ -1,5 +1,4 @@
 import {
-  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -10,7 +9,8 @@ import { useContext } from 'react';
 /* Assets */
 import colors from '../assets/colors';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
-import { showMessage } from 'react-native-flash-message';
+import useToastMessage from '../hooks/useToastMessage';
+
 import CarreraSelect from './CarreraSelect';
 import themeContext from '../context/themeContext';
 import { userContext } from '../context/userContext';
@@ -24,23 +24,15 @@ const ReserveForm = ({
   const theme = useContext(themeContext);
 
   const { user } = useContext(userContext);
+  const { showToast } = useToastMessage();
 
   const handleDeleteCompanion = () => {
     if (companionsList.length === 2) {
-      showMessage({
-        message: 'Error',
-        description:
+      showToast({
+        type: 'errorToast',
+        title: 'Error',
+        message:
           'Se requiere un minimo de 3 personas para reservar un cubículo.',
-        type: 'danger',
-        duration: '2000',
-        icon: () => (
-          <MaterialIcons
-            name='cancel'
-            size={38}
-            color='#FF9B9D'
-            style={{ paddingRight: 20 }}
-          />
-        ),
       });
     } else {
       let copyListCompanions = [...companionsList];

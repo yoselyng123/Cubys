@@ -17,37 +17,19 @@ import themeContext from '../context/themeContext';
 import colors from '../assets/colors';
 import Header from '../components/Header';
 import Input from '../components/Input';
-import { MaterialIcons } from '@expo/vector-icons';
-import { showMessage } from 'react-native-flash-message';
+import useToastMessage from '../hooks/useToastMessage';
 /* APOLLO SERVER */
 import { useMutation } from '@apollo/client';
 import { SIGN_IN_MUTATION } from '../hooks/mutations';
 
 const SignIn = ({ navigation }) => {
   const theme = useContext(themeContext);
-
   const { setUser, setMyReservations } = useContext(userContext);
   // State for User input
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const errorMessage = (message) => {
-    showMessage({
-      message: 'Error',
-      description: message,
-      type: 'danger',
-      duration: '2000',
-
-      icon: () => (
-        <MaterialIcons
-          name='cancel'
-          size={38}
-          color='#FF9B9D'
-          style={{ paddingRight: 20 }}
-        />
-      ),
-    });
-  };
+  const { showToast } = useToastMessage();
 
   const [signIn, { loading }] = useMutation(SIGN_IN_MUTATION, {
     onCompleted: (data) => {
@@ -61,11 +43,17 @@ const SignIn = ({ navigation }) => {
     },
     onError: ({ networkError }) => {
       if (networkError) {
-        errorMessage(
-          'Sin Conexión. Verifique su conexión a internet e intente nuevamente.'
-        );
+        showToast({
+          type: 'errorToast',
+          title: 'Sin Conexión',
+          message: 'Verifique su conexión a internet e intente nuevamente.',
+        });
       } else {
-        showMessage('Credenciales Inválidas.');
+        showToast({
+          type: 'errorToast',
+          title: 'Error',
+          message: 'Credenciales Inválidas.',
+        });
       }
     },
   });

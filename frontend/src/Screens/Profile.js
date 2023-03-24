@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
-  SafeAreaView,
 } from 'react-native';
 import React, { useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,6 +15,7 @@ import themeContext from '../context/themeContext';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { showMessage } from 'react-native-flash-message';
 import blankProfile from '../assets/img/blankProfile.png';
+import useToastMessage from '../hooks/useToastMessage';
 /* Components */
 import Header from '../components/Header';
 import Input from '../components/Input';
@@ -28,6 +28,7 @@ import { UPDATE_USER_MUTATION } from '../hooks/mutations';
 const Profile = ({ navigation }) => {
   const theme = useContext(themeContext);
   const { user, setUser } = useContext(userContext);
+  const { showToast } = useToastMessage();
 
   const [validations, setValidations] = useState({
     eightCharacters: false,
@@ -47,55 +48,26 @@ const Profile = ({ navigation }) => {
         AsyncStorage.setItem('token', data.updateUser.token).then(() => {
           setUser(data.updateUser.user);
         });
-        showMessage({
-          message: 'Modificación Exitosa',
-          description: 'Se ha cambiado la contraseña',
-          type: 'success',
-          duration: '2000',
-          icon: () => (
-            <AntDesign
-              name='checkcircleo'
-              size={38}
-              color='#97E3A4'
-              style={{ paddingRight: 20 }}
-            />
-          ),
+        showToast({
+          type: 'successToast',
+          title: 'Modificación Exitosa',
+          message: 'Se ha cambiado la contraseña.',
         });
         setPassword('');
       },
       onError: ({ networkError }) => {
         if (networkError) {
-          showMessage({
-            message: 'Error',
-            description:
+          showToast({
+            type: 'errorToast',
+            title: 'Error',
+            message:
               'Sin conexión. Chequea tu conexión a internet e intenta de nuevo.',
-            type: 'danger',
-            duration: '2000',
-
-            icon: () => (
-              <MaterialIcons
-                name='cancel'
-                size={38}
-                color='#FF9B9D'
-                style={{ paddingRight: 20 }}
-              />
-            ),
           });
         } else {
-          showMessage({
-            message: 'Error',
-            description: 'Intenta de nuevo.',
-            type: 'danger',
-            duration: '2000',
-
-            icon: () => (
-              <MaterialIcons
-                name='cancel'
-                size={38}
-                color='#FF9B9D'
-                style={{ paddingRight: 20 }}
-              />
-            ),
+          showToast({
+            type: 'errorToast',
+            title: 'Error',
+            message: 'Intenta de nuevo.',
           });
         }
       },
@@ -167,21 +139,11 @@ const Profile = ({ navigation }) => {
 
     if (password !== '') {
       if (!validationsPassword) {
-        showMessage({
-          message: 'Error',
-          description:
+        showToast({
+          type: 'errorToast',
+          title: 'Error',
+          message:
             'Verifique que la contraseña contenga: \n1. Al menos una mayúscula y una minúscula.\n2. Al menos un número.\n3. Al menos un carácter especial.\n4. Al menos 8 carácteres.',
-          type: 'danger',
-          duration: '6000',
-
-          icon: () => (
-            <MaterialIcons
-              name='cancel'
-              size={38}
-              color='#FF9B9D'
-              style={{ paddingRight: 20 }}
-            />
-          ),
         });
       } else {
         Alert.alert(

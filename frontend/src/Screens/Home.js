@@ -12,9 +12,8 @@ import { useContext, useEffect, useState, useRef, useCallback } from 'react';
 import { userContext } from '../context/userContext';
 import dayjs from 'dayjs';
 import themeContext from '../context/themeContext';
-import { showMessage } from 'react-native-flash-message';
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
+import useToastMessage from '../hooks/useToastMessage';
 /* Components */
 import Header from '../components/Header';
 import Reservation from '../components/Reservation';
@@ -35,7 +34,7 @@ import {
 
 const Home = ({ navigation }) => {
   const theme = useContext(themeContext);
-
+  const { showToast } = useToastMessage();
   const myInterval = useRef();
 
   const [pressedCancel, setPressedCancel] = useState(false);
@@ -53,40 +52,21 @@ const Home = ({ navigation }) => {
       onCompleted: () => {
         const myReservationsCopy = [...myReservations];
         setPressedCancel(false);
-        showMessage({
-          message: 'Info',
-          description: 'Se ha cancelado la reservación con éxito.',
-          type: 'info',
-          duration: '2000',
-          icon: () => (
-            <AntDesign
-              name='checkcircleo'
-              size={38}
-              color='#AFDBF5'
-              style={{ paddingRight: 20 }}
-            />
-          ),
+        showToast({
+          type: 'infoToast',
+          title: 'Info',
+          message: 'Se ha cancelado la reservación con éxito.',
         });
         myReservationsCopy.pop(pressedDeletedIndex);
         setMyReservations(myReservationsCopy);
         //refetchAllReservations();
       },
       onError: () => {
-        showMessage({
-          message: 'Error',
-          description:
+        showToast({
+          type: 'errorToast',
+          title: 'Error',
+          message:
             'No se pudo cancelar la reservación. Por favor intente de nuevo.',
-          type: 'danger',
-          duration: '2000',
-
-          icon: () => (
-            <MaterialIcons
-              name='cancel'
-              size={38}
-              color='#FF9B9D'
-              style={{ paddingRight: 20 }}
-            />
-          ),
         });
       },
     });

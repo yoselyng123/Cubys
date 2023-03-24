@@ -15,49 +15,13 @@ import dayjs from 'dayjs';
 /* Components */
 import Header from '../../components/Header';
 import SectionDivider from '../../components/SectionDivider';
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import Reservation from '../../components/Reservation';
+import { GET_ALL_RESERVATIONS_BY_STATUS } from '../../hooks/queries';
+import { UPDATE_RESERVATION_STATUS } from '../../hooks/mutations';
 
 // TODO: TERMINAR CHECKIFCOMPLETED Y TRAER TODAS LAS RESERVACIONES
 // CON STATUS ACTIVO
-
-const GET_ALL_RESERVATIONS_BY_STATUS = gql`
-  query getReservationsByStatus($completed: Boolean!) {
-    getReservationsByStatus(completed: $completed) {
-      id
-      createdBy
-      startTime
-      endTime
-      date
-      cubicleID
-      completed
-      companions {
-        carnet
-        carrera
-        name
-      }
-    }
-  }
-`;
-
-const UPDATE_RESERVATION_STATUS = gql`
-  mutation updateReservationStatus($id: ID!, $completed: Boolean!) {
-    updateReservationStatus(id: $id, completed: $completed) {
-      id
-      createdBy
-      startTime
-      endTime
-      date
-      cubicleID
-      completed
-      companions {
-        carnet
-        carrera
-        name
-      }
-    }
-  }
-`;
 
 const ReservedCubicles = ({ navigation }) => {
   const theme = useContext(themeContext);

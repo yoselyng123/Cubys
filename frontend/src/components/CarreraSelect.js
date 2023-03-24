@@ -89,6 +89,7 @@ const CarreraSelect = ({ carrera, setCarrera, multipleUsers }) => {
                   height: 40,
                   borderBottomWidth: 1,
                   borderBottomColor: theme.divider,
+                  paddingHorizontal: 0,
                   fontFamily: 'Roboto-Medium',
                   fontSize: 14,
                   color: theme.dark,
@@ -96,7 +97,7 @@ const CarreraSelect = ({ carrera, setCarrera, multipleUsers }) => {
                   paddingRight: 30, // to ensure the text is never behind the icon
                 },
                 iconContainer: {
-                  top: 10,
+                  top: 15,
                   right: 10,
                 },
               }
@@ -152,6 +153,7 @@ const CarreraSelect = ({ carrera, setCarrera, multipleUsers }) => {
             />
           );
         }}
+        useNativeAndroidPickerStyle={false}
       />
     </View>
   );

@@ -1,11 +1,5 @@
-import { useContext, useEffect } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  useColorScheme,
-} from 'react-native';
+import { useContext } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { RadioButton } from 'react-native-paper';
 import themeContext from '../context/themeContext';
 import { EventRegister } from 'react-native-event-listeners';

@@ -9,8 +9,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 /* Assets */
-import { Feather, AntDesign, MaterialIcons } from '@expo/vector-icons';
-import { showMessage } from 'react-native-flash-message';
+import { Feather } from '@expo/vector-icons';
+import useToastMessage from '../hooks/useToastMessage';
 import useNotifications from '../hooks/useNotifications';
 import { useFocusEffect } from '@react-navigation/native';
 import dayjs from 'dayjs';
@@ -32,6 +32,7 @@ const ReservationDetails = ({ route, navigation }) => {
   const [currentDate, setCurrentDate] = useState(dayjs());
 
   const myInterval = useRef();
+  const { showToast } = useToastMessage();
 
   const {
     scheduleNotification,
@@ -54,24 +55,6 @@ const ReservationDetails = ({ route, navigation }) => {
     },
   ]);
 
-  const errorMessage = (message) => {
-    return showMessage({
-      message: 'Error',
-      description: message,
-      type: 'danger',
-      duration: '3000',
-
-      icon: () => (
-        <MaterialIcons
-          name='cancel'
-          size={38}
-          color='#FF9B9D'
-          style={{ paddingRight: 20 }}
-        />
-      ),
-    });
-  };
-
   // When component Mounts and Unmounts from navigation
   useFocusEffect(
     useCallback(() => {
@@ -91,26 +74,20 @@ const ReservationDetails = ({ route, navigation }) => {
     {
       onCompleted: (data) => {
         handleShowNotification(data.createReservation);
-        showMessage({
-          message: 'Success',
-          description: 'Se ha creado la reservación con éxito.',
-          type: 'success',
-          duration: '2000',
-          icon: () => (
-            <AntDesign
-              name='checkcircleo'
-              size={38}
-              color='#97E3A4'
-              style={{ paddingRight: 20 }}
-            />
-          ),
+        showToast({
+          type: 'successToast',
+          title: 'Success',
+          message: 'Se ha creado la reservación con éxito.',
         });
       },
       onError: (error) => {
         console.log(error);
-        errorMessage(
-          'No se pudo realizar la reservación. Por favor intente de nuevo.'
-        );
+        showToast({
+          type: 'errorToast',
+          title: 'Error',
+          message:
+            'No se pudo realizar la reservación. Por favor intente de nuevo.',
+        });
       },
       refetchQueries: [{ query: GET_RESERVATIONS }],
     }
@@ -136,14 +113,22 @@ const ReservationDetails = ({ route, navigation }) => {
         companion.carnet === '' ||
         companion.carrera === ''
       ) {
-        errorMessage('Los campos no pueden quedar vacios');
+        showToast({
+          type: 'errorToast',
+          title: 'Error',
+          message: 'Los campos no pueden quedar vacios',
+        });
         return false;
       } else {
         if (
           companion.carnet.length < 11 ||
           oneSpecialChar.test(companion.carnet)
         ) {
-          errorMessage('Carnet inválido');
+          showToast({
+            type: 'errorToast',
+            title: 'Error',
+            message: 'Carnet inválido',
+          });
           return false;
         }
         return true;
@@ -196,9 +181,11 @@ const ReservationDetails = ({ route, navigation }) => {
 
       setCompanionsList(copyListCompanions);
     } else {
-      errorMessage(
-        'Ha alcanzado la capacidad máxima de personas por cubiculo.'
-      );
+      showToast({
+        type: 'errorToast',
+        title: 'Error',
+        message: 'Ha alcanzado la capacidad máxima de personas por cubiculo.',
+      });
     }
   };
 
@@ -230,11 +217,16 @@ const ReservationDetails = ({ route, navigation }) => {
       'Recuerda: el inicio de tu reservación comienza en 5 minutos.'
     );
 
-    scheduleNotification(
-      timesForNotifications.onTime,
-      '¡Comenzó tu reservación!',
-      'A partir de este momento ha iniciado el tiempo establecido de tu reservación'
-    );
+    if (
+      timesForNotifications.onTime >= 0 ||
+      timesForNotifications.onTime >= -60
+    ) {
+      scheduleNotification(
+        timesForNotifications.onTime,
+        '¡Comenzó tu reservación!',
+        'A partir de este momento ha iniciado el tiempo establecido de tu reservación'
+      );
+    }
 
     scheduleNotification(
       timesForNotifications.FiveMinBeforeEnd,

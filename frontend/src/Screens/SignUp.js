@@ -12,11 +12,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 /* ASSETS */
 import { StatusBar } from 'expo-status-bar';
 import dayjs from 'dayjs';
-import { showMessage } from 'react-native-flash-message';
+import useToastMessage from '../hooks/useToastMessage';
 /* Components */
 import Header from '../components/Header';
-/* ICONS */
-import { MaterialIcons } from '@expo/vector-icons';
 /* APOLLO SERVER */
 import { useMutation } from '@apollo/client';
 import { SIGN_UP_MUTATION } from '../hooks/mutations';
@@ -42,23 +40,7 @@ const SignUp = ({ navigation }) => {
     specialChar: false,
   });
 
-  const errorMessage = (message) => {
-    showMessage({
-      message: 'Error',
-      description: message,
-      type: 'danger',
-      duration: '2000',
-
-      icon: () => (
-        <MaterialIcons
-          name='cancel'
-          size={38}
-          color='#FF9B9D'
-          style={{ paddingRight: 20 }}
-        />
-      ),
-    });
-  };
+  const { showToast } = useToastMessage();
 
   const [signUp, { loading }] = useMutation(SIGN_UP_MUTATION, {
     onCompleted: (data) => {
@@ -72,9 +54,11 @@ const SignUp = ({ navigation }) => {
     },
     onError: ({ networkError }) => {
       if (networkError) {
-        errorMessage(
-          'Sin conexión. Chequea tu conexión a internet e intenta de nuevo.'
-        );
+        showToast({
+          type: 'errorToast',
+          title: 'Sin Conexión',
+          message: 'Verifique su conexión a internet e intente nuevamente.',
+        });
       } else {
         console.log(error);
       }
@@ -97,13 +81,29 @@ const SignUp = ({ navigation }) => {
       confirmPassword !== ''
     ) {
       if (!email.includes('@') || !email.includes('@unimet.edu.ve')) {
-        errorMessage('Correo inválido.');
+        showToast({
+          type: 'errorToast',
+          title: 'Error',
+          message: 'Correo inválido.',
+        });
       } else if (carnet.length < 11 || carnet.length > 11) {
-        errorMessage('Carnet inválido.');
+        showToast({
+          type: 'errorToast',
+          title: 'Error',
+          message: 'Carnet inválido.',
+        });
       } else if (!validationsPassword) {
-        errorMessage('La contraseña no cumple con los requisitos.');
+        showToast({
+          type: 'errorToast',
+          title: 'Error',
+          message: 'La contraseña no cumple con los requisitos.',
+        });
       } else if (password !== confirmPassword) {
-        errorMessage('Las contraseñas no coinciden.');
+        showToast({
+          type: 'errorToast',
+          title: 'Error',
+          message: 'Las contraseñas no coinciden.',
+        });
       } else {
         let role = 'user';
         let joined = dayjs().format('DD MMM YYYY');
@@ -112,7 +112,11 @@ const SignUp = ({ navigation }) => {
         });
       }
     } else {
-      errorMessage('Los campos no pueden quedar vacios.');
+      showToast({
+        type: 'errorToast',
+        title: 'Error',
+        message: 'Los campos no pueden quedar vacios.',
+      });
     }
   };
 

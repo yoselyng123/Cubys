@@ -8,6 +8,8 @@ import Navigation from './src/navigation/Navigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 /* Alerts */
 import FlashMessage from 'react-native-flash-message';
+import Toast from 'react-native-toast-message';
+import useToastMessage from './src/hooks/useToastMessage';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,6 +26,8 @@ export default function App() {
     'Roboto-Thin': require('./src/assets/fonts/Roboto-Thin.ttf'),
   });
 
+  const { toastConfig } = useToastMessage();
+
   AsyncStorage.removeItem('token');
 
   if (!fontsLoaded) {
@@ -34,6 +38,7 @@ export default function App() {
       <ApolloProvider client={client}>
         <Navigation />
         <FlashMessage position='top' />
+        <Toast config={toastConfig} />
       </ApolloProvider>
     );
   }

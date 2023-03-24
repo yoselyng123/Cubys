@@ -11,9 +11,8 @@ import { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { userContext } from '../context/userContext';
 import themeContext from '../context/themeContext';
 import dayjs from 'dayjs';
-import { MaterialIcons } from '@expo/vector-icons';
-import { showMessage } from 'react-native-flash-message';
 import { useFocusEffect } from '@react-navigation/native';
+import useToastMessage from '../hooks/useToastMessage';
 /* Components */
 import Header from '../components/Header';
 import InfoAvailability from '../components/InfoAvailability';
@@ -25,11 +24,11 @@ import { GET_RESERVATIONS_BY_DATE } from '../hooks/queries';
 
 const AvailableCubicles = ({ navigation }) => {
   const theme = useContext(themeContext);
-  const { cubiclesList, user, myReservations } = useContext(userContext);
-
+  const { cubiclesList, user, myReservations, setCubiclesList } =
+    useContext(userContext);
+  const { showToast } = useToastMessage();
   const myInterval = useRef();
 
-  const [filteredCubicles, setFilteredCubicles] = useState(cubiclesList);
   const [date, setDate] = useState(dayjs().locale('es').format('DD MMM YYYY'));
   const [startTime, setStartTime] = useState(dayjs().format('h:mma'));
   const [endTime, setEndTime] = useState(
@@ -64,30 +63,14 @@ const AvailableCubicles = ({ navigation }) => {
     return newHour + minutes;
   };
 
-  const errorMessage = (message) => {
-    return showMessage({
-      message: 'Error',
-      description: message,
-      type: 'danger',
-      duration: '2000',
-
-      icon: () => (
-        <MaterialIcons
-          name='cancel'
-          size={38}
-          color='#FF9B9D'
-          style={{ paddingRight: 20 }}
-        />
-      ),
-    });
-  };
-
   /* V A L I D A T I O N S */
   const inputValidation = () => {
     if (startTime === endTime) {
-      errorMessage(
-        'La hora de entrada no puede ser igual a la hora de salida.'
-      );
+      showToast({
+        type: 'errorToast',
+        title: 'Error',
+        message: 'La hora de entrada no puede ser igual a la hora de salida.',
+      });
       setError(true);
       return false;
     }
@@ -107,14 +90,22 @@ const AvailableCubicles = ({ navigation }) => {
       parseInt(parseMilitarHoursFormat(startTime)) > 1700
     ) {
       setError(true);
-      errorMessage('La biblioteca abre de 7:00am a 5:00pm');
+      showToast({
+        type: 'errorToast',
+        title: 'Error',
+        message: 'La biblioteca abre de 7:00am a 5:00pm',
+      });
       return false;
     } else if (
       parseInt(parseMilitarHoursFormat(endTime) < 700) ||
       parseInt(parseMilitarHoursFormat(startTime)) < 700
     ) {
       setError(true);
-      errorMessage('La biblioteca abre de 7:00am a 5:00pm');
+      showToast({
+        type: 'errorToast',
+        title: 'Error',
+        message: 'La biblioteca abre de 7:00am a 5:00pm',
+      });
       return false;
     }
 
@@ -126,9 +117,12 @@ const AvailableCubicles = ({ navigation }) => {
       parseInt(parseMilitarHoursFormat(endTime)) -
         parseInt(parseMilitarHoursFormat(startTime))
     );
-
     if (quantity > 200) {
-      errorMessage('El tiempo máximo de reserva son 2 horas.');
+      showToast({
+        type: 'errorToast',
+        title: 'Error',
+        message: 'El tiempo máximo de reserva son 2 horas.',
+      });
       setError(true);
       return false;
     }
@@ -141,7 +135,11 @@ const AvailableCubicles = ({ navigation }) => {
       parseInt(parseMilitarHoursFormat(startTime))
     ) {
       setError(true);
-      errorMessage('La hora de entrada debe ser mayor a la hora de salida.');
+      showToast({
+        type: 'errorToast',
+        title: 'Error',
+        message: 'La hora de entrada debe ser mayor a la hora de salida.',
+      });
       return false;
     }
     return true;
@@ -153,16 +151,18 @@ const AvailableCubicles = ({ navigation }) => {
       parseInt(parseMilitarHoursFormat(dayjs().format('h:mma')))
     ) {
       setError(true);
-      errorMessage(
-        'La hora de entrada debe ser mayor o igual a la hora actual.'
-      );
+      showToast({
+        type: 'errorToast',
+        title: 'Error',
+        message: 'La hora de entrada debe ser mayor o igual a la hora actual.',
+      });
       return false;
     }
     return true;
   };
 
   const checkCubiclesAvailability = () => {
-    var newCubiclesList = [...filteredCubicles];
+    var newCubiclesList = [...cubiclesList];
 
     if (!loadingReservations && date && startTime && endTime) {
       for (let c = 0; c < newCubiclesList.length; c++) {
@@ -185,7 +185,7 @@ const AvailableCubicles = ({ navigation }) => {
                   parseInt(parseMilitarHoursFormat(reservation.endTime)))
             ) {
               newCubiclesList[c].availability = false;
-              setFilteredCubicles(newCubiclesList);
+              setCubiclesList(newCubiclesList);
             } else if (
               parseInt(parseMilitarHoursFormat(startTime)) <=
                 parseInt(parseMilitarHoursFormat(reservation.startTime)) &&
@@ -197,7 +197,7 @@ const AvailableCubicles = ({ navigation }) => {
                 parseInt(parseMilitarHoursFormat(reservation.endTime))
             ) {
               newCubiclesList[c].availability = false;
-              setFilteredCubicles(newCubiclesList);
+              setCubiclesList(newCubiclesList);
             } else if (
               parseInt(parseMilitarHoursFormat(startTime)) <=
                 parseInt(parseMilitarHoursFormat(reservation.startTime)) &&
@@ -209,10 +209,10 @@ const AvailableCubicles = ({ navigation }) => {
                 parseInt(parseMilitarHoursFormat(reservation.endTime))
             ) {
               newCubiclesList[c].availability = false;
-              setFilteredCubicles(newCubiclesList);
+              setCubiclesList(newCubiclesList);
             } else {
               newCubiclesList[c].availability = true;
-              setFilteredCubicles(newCubiclesList);
+              setCubiclesList(newCubiclesList);
             }
           }
         }
@@ -230,6 +230,7 @@ const AvailableCubicles = ({ navigation }) => {
   useEffect(() => {
     setStartTime(dayjs().format('h:mma'));
     setEndTime(dayjs().add(2, 'hour').format('h:mma'));
+    checkCubiclesAvailability();
   }, []);
 
   // When component Mounts and Unmounts from navigation
@@ -261,7 +262,11 @@ const AvailableCubicles = ({ navigation }) => {
     if (myReservations.length < 1) {
       return false;
     } else {
-      errorMessage('Ya tiene una reservación activa.');
+      showToast({
+        type: 'errorToast',
+        title: 'Error',
+        message: 'Ya tiene una reservación activa.',
+      });
       return true;
     }
   };
@@ -280,13 +285,20 @@ const AvailableCubicles = ({ navigation }) => {
             },
           });
         } else {
-          errorMessage(
-            'El cubículo se encuentra ocupado en el bloque de hora seleccionado.'
-          );
+          showToast({
+            type: 'errorToast',
+            title: 'Error',
+            message:
+              'El cubículo se encuentra ocupado en el bloque de hora seleccionado.',
+          });
         }
       }
     } else {
-      errorMessage('Debe seleccionar un cubículo para continuar.');
+      showToast({
+        type: 'errorToast',
+        title: 'Error',
+        message: 'Debe seleccionar un cubículo para continuar.',
+      });
     }
   };
 

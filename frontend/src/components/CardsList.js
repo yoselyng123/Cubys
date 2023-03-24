@@ -1,6 +1,5 @@
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { useContext } from 'react';
-import { Dimensions, useWindowDimensions } from 'react-native';
 /* Assets */
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
@@ -19,9 +18,6 @@ const CardsList = ({
   historialCount,
 }) => {
   const theme = useContext(themeContext);
-
-  const windowWidth = useWindowDimensions().width;
-  const cardWidth = (windowWidth - 32) / 2 - 9;
 
   const { lockStatus, user } = useContext(userContext);
 

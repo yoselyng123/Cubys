@@ -87,10 +87,24 @@ const GET_RESERVATIONS = gql`
   }
 `;
 
+const GET_CUBICLE_BY_ID = gql`
+  query getCubiclebyID($id: ID!) {
+    getCubicleByID(id: $id) {
+      id
+      cubicleNumber
+      floor
+      sala
+      maxCapacity
+      minCapacity
+    }
+  }
+`;
+
 export {
   GET_CUBICLES,
   GET_RESERVATIONS_BY_STATUS,
   GET_ALL_RESERVATIONS_BY_STATUS,
   GET_RESERVATIONS_BY_DATE,
   GET_RESERVATIONS,
+  GET_CUBICLE_BY_ID,
 };
