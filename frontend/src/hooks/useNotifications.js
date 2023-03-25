@@ -23,6 +23,7 @@ function useNotifications() {
   }, [notificationPermissions]);
 
   const scheduleNotification = (seconds, title, body) => {
+    requestNotificationPermissions();
     const schedulingOptions = {
       content: {
         title,

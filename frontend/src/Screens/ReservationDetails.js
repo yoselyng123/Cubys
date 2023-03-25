@@ -39,6 +39,7 @@ const ReservationDetails = ({ route, navigation }) => {
     FiveMinutesBeforeStart,
     FiveMinutesBeforeEnd,
     onTime,
+    requestNotificationPermissions,
   } = useNotifications();
 
   const { cubicleInfo, resInfo } = route.params;
@@ -217,12 +218,15 @@ const ReservationDetails = ({ route, navigation }) => {
       'Recuerda: el inicio de tu reservación comienza en 5 minutos.'
     );
 
-    if (
-      timesForNotifications.onTime >= 0 ||
-      timesForNotifications.onTime >= -60
-    ) {
+    if (timesForNotifications.onTime > 0) {
       scheduleNotification(
         timesForNotifications.onTime,
+        '¡Comenzó tu reservación!',
+        'A partir de este momento ha iniciado el tiempo establecido de tu reservación'
+      );
+    } else {
+      scheduleNotification(
+        3,
         '¡Comenzó tu reservación!',
         'A partir de este momento ha iniciado el tiempo establecido de tu reservación'
       );
@@ -317,7 +321,9 @@ const ReservationDetails = ({ route, navigation }) => {
           })}
           <TouchableOpacity
             activeOpacity={0.7}
-            onPress={() => handleAddCompanion()}
+            onPress={() => {
+              handleAddCompanion();
+            }}
           >
             <View style={styles.addCompanionBtn}>
               <Feather name='plus-circle' size={20} color={theme.purple} />

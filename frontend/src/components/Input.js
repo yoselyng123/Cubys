@@ -5,7 +5,7 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 
 /* ASSETS */
@@ -26,7 +26,7 @@ const Input = ({
 }) => {
   const theme = useContext(themeContext);
 
-  const [passwordVisible, setPasswordVisible] = React.useState(true);
+  const [passwordVisible, setPasswordVisible] = useState(true);
 
   return (
     <View style={styles.container}>
@@ -77,6 +77,13 @@ const Input = ({
           onSubmitEditing={onSubmit}
           blurOnSubmit={blurOnSubmit}
           ref={ref}
+          keyboardType={
+            title === 'Carnet'
+              ? 'number-pad'
+              : title === 'Correo Electrónico'
+              ? 'email-address'
+              : 'default'
+          }
         />
       )}
 

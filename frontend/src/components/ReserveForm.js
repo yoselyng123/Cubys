@@ -97,6 +97,7 @@ const ReserveForm = ({
             styles.input,
             { color: theme.dark, borderBottomColor: theme.divider },
           ]}
+          keyboardType='number-pad'
         />
         <CarreraSelect
           carrera={companion.carrera}
