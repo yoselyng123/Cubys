@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 /* Components */
 import Header from '../../components/Header';
@@ -32,13 +32,14 @@ const AccessCubicleAdmin = ({ navigation }) => {
             }}
           />
         </View>
-        {cubiclesList
+        {/* {cubiclesList
           .sort(function (a, b) {
             return a.floor - b.floor;
           })
           .map((cubicle, index) => {
             return <CubicleAccessCard key={index} cubicle={cubicle} />;
-          })}
+          })} */}
+        <CubicleAccessCard cubicle={cubiclesList[0]} />
       </ScrollView>
     </View>
   );

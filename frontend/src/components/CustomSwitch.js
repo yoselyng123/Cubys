@@ -17,6 +17,32 @@ const CustomSwitch = () => {
   const switchTranslate = useSharedValue(0);
   // state for activate Switch
   const [active, setActive] = useState(false);
+  // Turn on/off led
+  const callLed = () => {
+    fetch(`https://iot-cubys-backend.vercel.app/door1`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        setActive(!!json.door1);
+        console.log(!!json.door1);
+      });
+  };
+
+  useEffect(() => {
+    fetch('https://iot-cubys-backend.vercel.app/get_doors')
+      .then((response) => response.json())
+      .then((json) => {
+        setActive(!!json.door1);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
   // useEffect for change the switchTranslate Value
   useEffect(() => {
@@ -51,7 +77,7 @@ const CustomSwitch = () => {
     };
   });
   return (
-    <TouchableOpacity onPress={() => setActive(!active)}>
+    <TouchableOpacity onPress={() => callLed()}>
       <Animated.View
         style={[styles.switchWrapper, { backgroundColor: theme.light }]}
       >
