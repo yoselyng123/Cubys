@@ -8,8 +8,6 @@ const MesaBubble = ({
   cubicle,
   floor,
   counterfloor,
-  cubiclesData,
-  setCubiclesData,
   setSelectedCubicle,
 }) => {
   return (
@@ -31,8 +29,6 @@ const MesaBubble = ({
             : positions.floor2[counterfloor].rotate
         }
         cubicle={cubicle}
-        cubiclesData={cubiclesData}
-        setCubiclesData={setCubiclesData}
         setSelectedCubicle={setSelectedCubicle}
       />
       {/* INFO BUBBLE */}

@@ -150,6 +150,7 @@ const AvailableCubicles = ({ navigation }) => {
       parseInt(parseMilitarHoursFormat(startTime)) <
       parseInt(parseMilitarHoursFormat(dayjs().format('h:mma')))
     ) {
+      console.log(parseInt(parseMilitarHoursFormat(dayjs().format('h:mma'))));
       setError(true);
       showToast({
         type: 'errorToast',
@@ -163,7 +164,6 @@ const AvailableCubicles = ({ navigation }) => {
 
   const checkCubiclesAvailability = () => {
     var newCubiclesList = [...cubiclesList];
-
     if (!loadingReservations && date && startTime && endTime) {
       for (let c = 0; c < newCubiclesList.length; c++) {
         const cubicle = newCubiclesList[c];
@@ -231,6 +231,9 @@ const AvailableCubicles = ({ navigation }) => {
     setStartTime(dayjs().format('h:mma'));
     setEndTime(dayjs().add(2, 'hour').format('h:mma'));
     checkCubiclesAvailability();
+    cubiclesList.map((cubicle) => {
+      cubicle.isSelected = false;
+    });
   }, []);
 
   // When component Mounts and Unmounts from navigation

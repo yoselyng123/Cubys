@@ -5,7 +5,7 @@ import {
   View,
   ActivityIndicator,
 } from 'react-native';
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useState } from 'react';
 /* Assets */
 import themeContext from '../context/themeContext';
 /* Components */
@@ -16,6 +16,8 @@ import { GET_RESERVATIONS_BY_STATUS } from '../hooks/queries';
 
 const History = ({ navigation }) => {
   const theme = useContext(themeContext);
+  const [lazyData, setLazyData] = useState([]);
+  const [pageNumber, setPageNumber] = useState(1);
 
   const {
     loading: loadingReservationsTrue,
@@ -35,6 +37,19 @@ const History = ({ navigation }) => {
       refetchReservationsTrue();
     }
   }, [dataReservationsTrue]);
+
+  useEffect(() => {
+    // Simulamos una llamada a una API para obtener más datos de la lista
+    const fetchMoreData = () => {
+      setPageNumber(pageNumber + 1);
+      setLazyData([...lazyData, ...dataReservationsTrue]);
+    };
+    fetchMoreData();
+  }, [pageNumber]);
+
+  const renderReservation = ({ reservation }) => (
+    <Reservation key={index} info={reservation} id={reservation.cubicleID} />
+  );
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -64,17 +79,13 @@ const History = ({ navigation }) => {
             {loadingReservationsTrue ? (
               <ActivityIndicator size='small' color={theme.dark} />
             ) : dataReservationsTrue.getMyReservationsByStatus.length > 0 ? (
-              dataReservationsTrue.getMyReservationsByStatus.map(
-                (reservation, index) => {
-                  return (
-                    <Reservation
-                      key={index}
-                      info={reservation}
-                      id={reservation.cubicleID}
-                    />
-                  );
-                }
-              )
+              <FlatList
+                data={dataReservationsTrue}
+                renderItem={renderReservation}
+                keyExtractor={(item) => item.id}
+                onEndReached={() => setPageNumber(pageNumber + 1)}
+                onEndReachedThreshold={0.5}
+              />
             ) : (
               <Text style={styles.noReservationsText}>
                 No hay reservaciones

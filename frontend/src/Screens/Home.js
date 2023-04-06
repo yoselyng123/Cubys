@@ -241,6 +241,7 @@ const Home = ({ navigation }) => {
         copyOfCubicles[i] = {
           ...dataCubicles.getCubicles[i],
           availability: true,
+          isSelected: false,
         };
       }
       setCubiclesList(copyOfCubicles);

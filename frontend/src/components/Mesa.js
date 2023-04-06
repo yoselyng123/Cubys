@@ -7,17 +7,13 @@ import {
 import mesaVerde from '../assets/img/mesaVerde.png';
 import mesaRoja from '../assets/img/mesaRoja.png';
 import mesaMorada from '../assets/img/mesaMorada.png';
+import { useContext } from 'react';
+import { userContext } from '../context/userContext';
 
-const Mesa = ({
-  left,
-  bottom,
-  rotate,
-  cubicle,
-  cubiclesData,
-  setCubiclesData,
-  setSelectedCubicle,
-}) => {
+const Mesa = ({ left, bottom, rotate, cubicle, setSelectedCubicle }) => {
   const { width } = useWindowDimensions();
+
+  const { cubiclesList, setCubiclesList } = useContext(userContext);
 
   const handleMesaColor = (cubicle) => {
     if (cubicle.availability) {
@@ -34,7 +30,7 @@ const Mesa = ({
     <TouchableOpacity
       style={[styles.mesaWrapper, { left: left, bottom: bottom }]}
       onPress={() => {
-        let arr = cubiclesData.map((item) => {
+        let arr = cubiclesList.map((item) => {
           if (item.id === cubicle.id) {
             if (item.isSelected) {
               setSelectedCubicle(null);
@@ -47,7 +43,7 @@ const Mesa = ({
           }
           return item;
         });
-        setCubiclesData(arr);
+        setCubiclesList(arr);
       }}
     >
       <Image

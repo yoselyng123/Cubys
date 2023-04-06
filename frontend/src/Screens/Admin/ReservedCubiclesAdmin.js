@@ -107,6 +107,20 @@ const ReservedCubicles = ({ navigation }) => {
     };
   }, []);
 
+  const renderReservation = ({ reservation }) => (
+    <TouchableOpacity
+      activeOpacity={0.7}
+      key={index}
+      onPress={() =>
+        navigation.navigate('ReservationDetailsAdmin', {
+          reservation,
+        })
+      }
+    >
+      <Reservation key={index} info={reservation} id={reservation.cubicleID} />
+    </TouchableOpacity>
+  );
+
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Header
@@ -130,27 +144,11 @@ const ReservedCubicles = ({ navigation }) => {
             {loadingReservations ? (
               <ActivityIndicator size='small' color={theme.dark} />
             ) : dataReservations.getReservationsByStatus.length > 0 ? (
-              dataReservations.getReservationsByStatus.map(
-                (reservation, index) => {
-                  return (
-                    <TouchableOpacity
-                      activeOpacity={0.7}
-                      key={index}
-                      onPress={() =>
-                        navigation.navigate('ReservationDetailsAdmin', {
-                          reservation,
-                        })
-                      }
-                    >
-                      <Reservation
-                        key={index}
-                        info={reservation}
-                        id={reservation.cubicleID}
-                      />
-                    </TouchableOpacity>
-                  );
-                }
-              )
+              <FlatList
+                data={dataReservations.getReservationsByStatus}
+                renderItem={renderReservation}
+                keyExtractor={(item) => item.id}
+              />
             ) : (
               <Text style={styles.noReservationsText}>
                 No hay reservaciones

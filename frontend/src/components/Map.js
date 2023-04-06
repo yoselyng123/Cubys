@@ -105,20 +105,8 @@ const Map = ({ floor, setSelectedCubicle }) => {
       },
     ],
   };
-  const [cubiclesData, setCubiclesData] = useState([]);
 
   const { cubiclesList } = useContext(userContext);
-
-  useEffect(() => {
-    let newCubiclesList = cubiclesList.map((item) => {
-      item.isSelected = false;
-      console.log(
-        `Cubicle N: ${item.cubicleNumber} --- Availability: ${item.availability}`
-      );
-      return { ...item };
-    });
-    setCubiclesData(newCubiclesList);
-  }, []);
 
   var counterfloor1 = -1;
   var counterfloor2 = -1;
@@ -131,7 +119,7 @@ const Map = ({ floor, setSelectedCubicle }) => {
         style={[styles.img]}
       >
         {/* RENDER EACH TABLE */}
-        {cubiclesData.map((cubicle, index) => {
+        {cubiclesList.map((cubicle, index) => {
           if (cubicle.floor === floor) {
             if (floor === '1') {
               counterfloor1++;
@@ -142,8 +130,6 @@ const Map = ({ floor, setSelectedCubicle }) => {
                   floor={floor}
                   key={index}
                   counterfloor={counterfloor1}
-                  setCubiclesData={setCubiclesData}
-                  cubiclesData={cubiclesData}
                   setSelectedCubicle={setSelectedCubicle}
                 />
               );
@@ -156,8 +142,6 @@ const Map = ({ floor, setSelectedCubicle }) => {
                   floor={floor}
                   key={index}
                   counterfloor={counterfloor2}
-                  setCubiclesData={setCubiclesData}
-                  cubiclesData={cubiclesData}
                   setSelectedCubicle={setSelectedCubicle}
                 />
               );
