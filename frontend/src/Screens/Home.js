@@ -20,6 +20,7 @@ import Reservation from '../components/Reservation';
 import CardsList from '../components/CardsList';
 import SectionDivider from '../components/SectionDivider';
 import Loading from '../components/Loading';
+import NoReservations from '../components/NoReservations';
 /* APOLLO SERVER */
 import { useQuery, useMutation } from '@apollo/client';
 import {
@@ -357,9 +358,7 @@ const Home = ({ navigation }) => {
               );
             })
           ) : (
-            <Text style={[styles.noReservationsText, { color: theme.gray }]}>
-              No hay reservaciones
-            </Text>
+            <NoReservations />
           )}
         </ScrollView>
         <Loading show={loadingDeleteReservation} />
@@ -401,12 +400,5 @@ const styles = StyleSheet.create({
     letterSpacing: 0.6,
     lineHeight: 26,
     marginBottom: 20,
-  },
-  noReservationsText: {
-    fontFamily: 'Roboto-Italic',
-    fontSize: 14,
-    letterSpacing: 0.6,
-    lineHeight: 26,
-    marginLeft: 10,
   },
 });

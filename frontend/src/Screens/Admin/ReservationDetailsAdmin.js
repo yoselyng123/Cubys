@@ -7,6 +7,7 @@ import themeContext from '../../context/themeContext';
 /* Components */
 import Header from '../../components/Header';
 import SectionDivider from '../../components/SectionDivider';
+import ScreenDescription from '../../components/ScreenDescription';
 
 const ReservedCubicles = ({ navigation, route }) => {
   const { reservation } = route.params;
@@ -36,12 +37,7 @@ const ReservedCubicles = ({ navigation, route }) => {
         navigation={navigation}
       />
       <View style={styles.contentWrapper}>
-        <View style={styles.descriptionContainer}>
-          <Text style={styles.description}>
-            Aqui puedes ver los datos de la reservación.
-          </Text>
-          <SectionDivider />
-        </View>
+        <ScreenDescription description='Aqui puedes ver los datos de la reservación.' />
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={styles.scrollview}
@@ -70,8 +66,15 @@ const ReservedCubicles = ({ navigation, route }) => {
                     );
                   }
                 })}
-                <Text style={styles.content}>4 sillas y mesa</Text>
-                <Text style={[styles.content, { marginBottom: 20 }]}>
+                <Text style={[styles.content, { color: theme.gray }]}>
+                  4 sillas y mesa
+                </Text>
+                <Text
+                  style={[
+                    styles.content,
+                    { marginBottom: 20, color: theme.gray },
+                  ]}
+                >
                   1 pizarra
                 </Text>
               </View>
@@ -80,13 +83,23 @@ const ReservedCubicles = ({ navigation, route }) => {
                 <Text style={[styles.title, { color: theme.dark }]}>
                   Hora de Inicio
                 </Text>
-                <Text style={[styles.content, { marginBottom: 30 }]}>
+                <Text
+                  style={[
+                    styles.content,
+                    { marginBottom: 30, color: theme.gray },
+                  ]}
+                >
                   {reservation.date}, {reservation.startTime}
                 </Text>
                 <Text style={[styles.title, { color: theme.dark }]}>
                   Hora de Fin
                 </Text>
-                <Text style={[styles.content, { marginBottom: 20 }]}>
+                <Text
+                  style={[
+                    styles.content,
+                    { marginBottom: 20, color: theme.gray },
+                  ]}
+                >
                   {reservation.date}, {reservation.endTime}
                 </Text>
               </View>
@@ -95,7 +108,12 @@ const ReservedCubicles = ({ navigation, route }) => {
                 <Text style={[styles.title, { color: theme.dark }]}>
                   Responsable
                 </Text>
-                <Text style={[styles.content, { marginBottom: 30 }]}>
+                <Text
+                  style={[
+                    styles.content,
+                    { marginBottom: 30, color: theme.gray },
+                  ]}
+                >
                   {user.role !== 'admin'
                     ? `${user.name} - ${user.carrera}`
                     : `${reservation.companions[0].name} - ${reservation.companions[0].carrera}`}
@@ -106,7 +124,10 @@ const ReservedCubicles = ({ navigation, route }) => {
                 {reservation.companions.map((companion, index1) => {
                   return (
                     <Text
-                      style={[styles.content, { marginBottom: 2 }]}
+                      style={[
+                        styles.content,
+                        { marginBottom: 2, color: theme.gray },
+                      ]}
                       key={index1}
                     >
                       {companion.name} - {companion.carrera}
@@ -126,35 +147,21 @@ export default ReservedCubicles;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.background,
     flex: 1,
   },
   contentWrapper: {
     flex: 1,
-  },
-  descriptionContainer: {
-    paddingHorizontal: 16,
-    paddingTop: 20,
   },
   scrollContainer: {
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 18,
   },
-  description: {
-    fontFamily: 'Roboto-Regular',
-    fontSize: 13,
-    lineHeight: 20,
-    letterSpacing: 0.6,
-    color: colors.gray,
-    marginBottom: 20,
-  },
   title: {
     fontFamily: 'Roboto-Bold',
     fontSize: 16,
     lineHeight: 18.75,
     letterSpacing: 0.6,
-    color: colors.dark,
     marginBottom: 10,
   },
   content: {
@@ -162,7 +169,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 20,
     letterSpacing: 0.6,
-    color: colors.gray,
   },
   reserveBtn: {
     backgroundColor: colors.purple,

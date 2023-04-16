@@ -29,7 +29,7 @@
     "i18n-js": "^4.2.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-native": "0.71.4",
+    "react-native": "0.71.6",
     "react-native-event-listeners": "^1.0.7",
     "react-native-modal-datetime-picker": "^13.1.2",
     "react-native-paper": "^4.12.4",

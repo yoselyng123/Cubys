@@ -7,7 +7,6 @@ import { client } from './src/utils/apollo';
 import Navigation from './src/navigation/Navigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 /* Alerts */
-import FlashMessage from 'react-native-flash-message';
 import Toast from 'react-native-toast-message';
 import useToastMessage from './src/hooks/useToastMessage';
 
@@ -37,7 +36,6 @@ export default function App() {
     return (
       <ApolloProvider client={client}>
         <Navigation />
-        <FlashMessage position='top' />
         <Toast config={toastConfig} />
       </ApolloProvider>
     );

@@ -7,6 +7,8 @@ import themeContext from '../context/themeContext';
 /* Components */
 import Header from '../components/Header';
 import SectionDivider from '../components/SectionDivider';
+import NoReservations from '../components/NoReservations';
+import ScreenDescription from '../components/ScreenDescription';
 
 const ReservedCubicles = ({ navigation }) => {
   const theme = useContext(themeContext);
@@ -47,12 +49,7 @@ const ReservedCubicles = ({ navigation }) => {
         navigation={navigation}
       />
       <View style={styles.contentWrapper}>
-        <View style={styles.descriptionContainer}>
-          <Text style={[styles.description, { color: theme.gray }]}>
-            Aqui puedes ver tu reservación actual
-          </Text>
-          <SectionDivider />
-        </View>
+        <ScreenDescription description='Aqui puedes ver tu reservación actual.' />
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={styles.scrollview}
@@ -79,7 +76,12 @@ const ReservedCubicles = ({ navigation }) => {
                               >
                                 Cubículo #{cubicle.cubicleNumber}
                               </Text>
-                              <Text style={styles.floorText}>
+                              <Text
+                                style={[
+                                  styles.floorText,
+                                  { color: theme.gray },
+                                ]}
+                              >
                                 {handleFloorShowcase(cubicle.floor)}
                               </Text>
                             </View>
@@ -159,9 +161,7 @@ const ReservedCubicles = ({ navigation }) => {
                 );
               })
             ) : (
-              <Text style={[styles.noReservationsText, { color: theme.gray }]}>
-                No hay reservaciones
-              </Text>
+              <NoReservations />
             )}
           </View>
         </ScrollView>
@@ -179,21 +179,10 @@ const styles = StyleSheet.create({
   contentWrapper: {
     flex: 1,
   },
-  descriptionContainer: {
-    paddingHorizontal: 16,
-    paddingTop: 20,
-  },
   scrollContainer: {
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 18,
-  },
-  description: {
-    fontFamily: 'Roboto-Regular',
-    fontSize: 13,
-    lineHeight: 20,
-    letterSpacing: 0.6,
-    marginBottom: 20,
   },
   title: {
     fontFamily: 'Roboto-Bold',
@@ -216,14 +205,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 18.75,
     letterSpacing: 0.6,
-    color: colors.gray,
-  },
-  noReservationsText: {
-    fontFamily: 'Roboto-Italic',
-    fontSize: 14,
-    letterSpacing: 0.6,
-    lineHeight: 26,
-    color: colors.gray,
-    marginLeft: 10,
   },
 });

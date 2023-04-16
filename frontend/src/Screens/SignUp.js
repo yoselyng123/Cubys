@@ -80,7 +80,7 @@ const SignUp = ({ navigation }) => {
       password !== '' &&
       confirmPassword !== ''
     ) {
-      if (!email.includes('@') || !email.includes('@unimet.edu.ve')) {
+      if (!email.includes('@') || !email.includes('@correo.unimet.edu.ve')) {
         showToast({
           type: 'errorToast',
           title: 'Error',

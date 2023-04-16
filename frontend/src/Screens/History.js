@@ -1,23 +1,18 @@
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  ActivityIndicator,
-} from 'react-native';
-import { useEffect, useContext, useState } from 'react';
+import { StyleSheet, View, ActivityIndicator, FlatList } from 'react-native';
+import { useEffect, useContext } from 'react';
 /* Assets */
 import themeContext from '../context/themeContext';
 /* Components */
 import Header from '../components/Header';
 import Reservation from '../components/Reservation';
+import NoReservations from '../components/NoReservations';
+import ScreenDescription from '../components/ScreenDescription';
+/* Apollo */
 import { useQuery } from '@apollo/client';
 import { GET_RESERVATIONS_BY_STATUS } from '../hooks/queries';
 
 const History = ({ navigation }) => {
   const theme = useContext(themeContext);
-  const [lazyData, setLazyData] = useState([]);
-  const [pageNumber, setPageNumber] = useState(1);
 
   const {
     loading: loadingReservationsTrue,
@@ -38,19 +33,6 @@ const History = ({ navigation }) => {
     }
   }, [dataReservationsTrue]);
 
-  useEffect(() => {
-    // Simulamos una llamada a una API para obtener más datos de la lista
-    const fetchMoreData = () => {
-      setPageNumber(pageNumber + 1);
-      setLazyData([...lazyData, ...dataReservationsTrue]);
-    };
-    fetchMoreData();
-  }, [pageNumber]);
-
-  const renderReservation = ({ reservation }) => (
-    <Reservation key={index} info={reservation} id={reservation.cubicleID} />
-  );
-
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Header
@@ -60,39 +42,23 @@ const History = ({ navigation }) => {
         navigation={navigation}
       />
       <View style={styles.contentWrapper}>
-        <View style={styles.descriptionContainer}>
-          <Text style={styles.description}>
-            Aquí puedes ver tus reservaciones pasadas.
-          </Text>
-          <View
-            style={{
-              borderBottomColor: theme.divider,
-              borderBottomWidth: 2,
-            }}
-          />
+        <ScreenDescription description='Aquí puedes ver tus reservaciones pasadas.' />
+
+        <View style={styles.scrollContainer}>
+          {loadingReservationsTrue ? (
+            <ActivityIndicator size='small' color={theme.dark} />
+          ) : dataReservationsTrue.getMyReservationsByStatus.length > 0 ? (
+            <FlatList
+              data={dataReservationsTrue.getMyReservationsByStatus}
+              renderItem={({ item }) => (
+                <Reservation info={item} id={item.cubicleID} />
+              )}
+              keyExtractor={(item) => item.id}
+            />
+          ) : (
+            <NoReservations />
+          )}
         </View>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.content}
-        >
-          <View style={styles.scrollContainer}>
-            {loadingReservationsTrue ? (
-              <ActivityIndicator size='small' color={theme.dark} />
-            ) : dataReservationsTrue.getMyReservationsByStatus.length > 0 ? (
-              <FlatList
-                data={dataReservationsTrue}
-                renderItem={renderReservation}
-                keyExtractor={(item) => item.id}
-                onEndReached={() => setPageNumber(pageNumber + 1)}
-                onEndReachedThreshold={0.5}
-              />
-            ) : (
-              <Text style={styles.noReservationsText}>
-                No hay reservaciones
-              </Text>
-            )}
-          </View>
-        </ScrollView>
       </View>
     </View>
   );
@@ -104,10 +70,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  descriptionContainer: {
-    paddingHorizontal: 16,
-    paddingTop: 20,
-  },
   contentWrapper: {
     flex: 1,
   },
@@ -115,19 +77,5 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 18,
-  },
-  description: {
-    fontFamily: 'Roboto-Regular',
-    fontSize: 13,
-    lineHeight: 20,
-    letterSpacing: 0.6,
-    marginBottom: 20,
-  },
-  noReservationsText: {
-    fontFamily: 'Roboto-Italic',
-    fontSize: 14,
-    letterSpacing: 0.6,
-    lineHeight: 26,
-    marginLeft: 10,
   },
 });

@@ -18,6 +18,7 @@ import { useQuery, useMutation } from '@apollo/client';
 import Reservation from '../../components/Reservation';
 import { GET_ALL_RESERVATIONS_BY_STATUS } from '../../hooks/queries';
 import { UPDATE_RESERVATION_STATUS } from '../../hooks/mutations';
+import NoReservations from '../../components/NoReservations';
 
 // TODO: TERMINAR CHECKIFCOMPLETED Y TRAER TODAS LAS RESERVACIONES
 // CON STATUS ACTIVO
@@ -150,9 +151,7 @@ const ReservedCubicles = ({ navigation }) => {
                 keyExtractor={(item) => item.id}
               />
             ) : (
-              <Text style={styles.noReservationsText}>
-                No hay reservaciones
-              </Text>
+              <NoReservations />
             )}
           </View>
         </ScrollView>
@@ -187,13 +186,5 @@ const styles = StyleSheet.create({
     letterSpacing: 0.6,
     color: colors.gray,
     marginBottom: 20,
-  },
-  noReservationsText: {
-    fontFamily: 'Roboto-Italic',
-    fontSize: 14,
-    letterSpacing: 0.6,
-    lineHeight: 26,
-    color: colors.gray,
-    marginLeft: 10,
   },
 });

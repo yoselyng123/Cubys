@@ -1,10 +1,10 @@
 import {
   ScrollView,
   StyleSheet,
-  Text,
   View,
   ActivityIndicator,
   TouchableOpacity,
+  FlatList,
 } from 'react-native';
 import { useContext } from 'react';
 /* Assets */
@@ -12,10 +12,11 @@ import colors from '../../assets/colors';
 import themeContext from '../../context/themeContext';
 /* Components */
 import Header from '../../components/Header';
-import SectionDivider from '../../components/SectionDivider';
 import Reservation from '../../components/Reservation';
 import { useQuery } from '@apollo/client';
 import { GET_ALL_RESERVATIONS_BY_STATUS } from '../../hooks/queries';
+import NoReservations from '../../components/NoReservations';
+import ScreenDescription from '../../components/ScreenDescription';
 
 const HistoryAdmin = ({ navigation }) => {
   const theme = useContext(themeContext);
@@ -36,49 +37,34 @@ const HistoryAdmin = ({ navigation }) => {
         navigateAvailable={true}
         navigation={navigation}
       />
+      <ScreenDescription
+        description='Aquí podrás ver las todas las reservaciones pasadas realizadas por
+            los usuarios.'
+      />
       <View style={styles.contentWrapper}>
-        <View style={styles.descriptionContainer}>
-          <Text style={styles.description}>
-            Aquí podrás ver las todas las reservaciones pasadas realizadas por
-            los usuarios.
-          </Text>
-          <SectionDivider />
-        </View>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={styles.scrollview}
-        >
-          <View style={styles.scrollContainer}>
-            {loadingReservations ? (
-              <ActivityIndicator size='small' color={theme.dark} />
-            ) : dataReservations.getReservationsByStatus.length > 0 ? (
-              dataReservations.getReservationsByStatus.map(
-                (reservation, index) => {
-                  return (
-                    <TouchableOpacity
-                      activeOpacity={0.7}
-                      key={index}
-                      onPress={() =>
-                        navigation.navigate('ReservationDetailsAdmin', {
-                          reservation,
-                        })
-                      }
-                    >
-                      <Reservation
-                        info={reservation}
-                        id={reservation.cubicleID}
-                      />
-                    </TouchableOpacity>
-                  );
+        {loadingReservations ? (
+          <ActivityIndicator size='small' color={theme.dark} />
+        ) : dataReservations.getReservationsByStatus.length > 0 ? (
+          <FlatList
+            data={dataReservations.getReservationsByStatus}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() =>
+                  navigation.navigate('ReservationDetailsAdmin', {
+                    reservation: item,
+                  })
                 }
-              )
-            ) : (
-              <Text style={styles.noReservationsText}>
-                No hay reservaciones
-              </Text>
+              >
+                <Reservation info={item} id={item.cubicleID} />
+              </TouchableOpacity>
             )}
-          </View>
-        </ScrollView>
+            keyExtractor={(item) => item.id}
+            style={styles.reservationWrapper}
+          />
+        ) : (
+          <NoReservations />
+        )}
       </View>
     </View>
   );
@@ -88,35 +74,12 @@ export default HistoryAdmin;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.background,
     flex: 1,
-  },
-  descriptionContainer: {
-    paddingHorizontal: 16,
-    paddingTop: 20,
   },
   contentWrapper: {
     flex: 1,
   },
-  scrollContainer: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 18,
-  },
-  description: {
-    fontFamily: 'Roboto-Regular',
-    fontSize: 13,
-    lineHeight: 20,
-    letterSpacing: 0.6,
-    color: colors.gray,
-    marginBottom: 20,
-  },
-  noReservationsText: {
-    fontFamily: 'Roboto-Italic',
-    fontSize: 14,
-    letterSpacing: 0.6,
-    lineHeight: 26,
-    color: colors.gray,
-    marginLeft: 10,
+  reservationWrapper: {
+    padding: 16,
   },
 });

@@ -29,6 +29,10 @@ const Settings = () => {
     }
   }, [scheme]);
 
+  useEffect(() => {
+    console.log(`Schema: ${scheme}, appearance: ${appearanceTheme}`);
+  }, []);
+
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Header title='cubys' navigateAvailable={false} />

@@ -7,6 +7,7 @@ import themeContext from '../context/themeContext';
 /* Components */
 import Header from '../components/Header';
 import SectionDivider from '../components/SectionDivider';
+import ScreenDescription from '../components/ScreenDescription';
 
 const AccessCubicle = ({ navigation }) => {
   const theme = useContext(themeContext);
@@ -21,10 +22,7 @@ const AccessCubicle = ({ navigation }) => {
         navigation={navigation}
       />
       <View style={styles.container}>
-        <Text style={styles.description}>
-          Use este botón para acceder al cubículo que reservó.
-        </Text>
-        <SectionDivider />
+        <ScreenDescription description='Este botón le da acceso al cubículo que reservó.' />
         <View style={styles.btnWrapper}>
           <TouchableOpacity
             activeOpacity={0.7}
@@ -62,15 +60,7 @@ export default AccessCubicle;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 20,
-    paddingHorizontal: 16,
-  },
-  description: {
-    fontFamily: 'Roboto-Regular',
-    fontSize: 13,
-    lineHeight: 20,
-    letterSpacing: 0.6,
-    marginBottom: 20,
+    flex: 1,
   },
   btnWrapper: {
     marginTop: 150,

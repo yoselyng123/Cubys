@@ -39,7 +39,6 @@ const ReservationDetails = ({ route, navigation }) => {
     FiveMinutesBeforeStart,
     FiveMinutesBeforeEnd,
     onTime,
-    requestNotificationPermissions,
   } = useNotifications();
 
   const { cubicleInfo, resInfo } = route.params;
