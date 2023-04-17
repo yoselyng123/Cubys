@@ -129,6 +129,16 @@ const SIGN_UP_MUTATION = gql`
   }
 `;
 
+const TOGGLE_DOOR = gql`
+  mutation toggleDoor($cubicleId: ID!) {
+    toggleDoor(cubicleID: $cubicleId) {
+      id
+      cubicleID
+      open
+    }
+  }
+`;
+
 export {
   DELETE_RESERVATION_MUTATION,
   UPDATE_RESERVATION_STATUS,
@@ -136,4 +146,5 @@ export {
   CREATE_RESERVATION,
   SIGN_IN_MUTATION,
   SIGN_UP_MUTATION,
+  TOGGLE_DOOR,
 };

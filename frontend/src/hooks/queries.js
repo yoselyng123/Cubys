@@ -100,6 +100,16 @@ const GET_CUBICLE_BY_ID = gql`
   }
 `;
 
+const GET_DOORS = gql`
+  query getDoors {
+    getDoors {
+      id
+      cubicleID
+      open
+    }
+  }
+`;
+
 export {
   GET_CUBICLES,
   GET_RESERVATIONS_BY_STATUS,
@@ -107,4 +117,5 @@ export {
   GET_RESERVATIONS_BY_DATE,
   GET_RESERVATIONS,
   GET_CUBICLE_BY_ID,
+  GET_DOORS,
 };

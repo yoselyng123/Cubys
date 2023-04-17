@@ -4,7 +4,7 @@ import CustomSwitch from './CustomSwitch';
 /* Assets */
 import themeContext from '../context/themeContext';
 
-const CubicleAccessCard = ({ cubicle }) => {
+const CubicleAccessCard = ({ cubicle, setLoadingToggleDoor }) => {
   const theme = useContext(themeContext);
 
   const handleFloorShowcase = (floor) => {
@@ -41,7 +41,10 @@ const CubicleAccessCard = ({ cubicle }) => {
               {cubicle.sala}
             </Text>
           </View>
-          <CustomSwitch />
+          <CustomSwitch
+            cubicle={cubicle}
+            setLoadingToggleDoor={setLoadingToggleDoor}
+          />
         </View>
       </View>
     </View>

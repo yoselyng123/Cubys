@@ -8,6 +8,7 @@ export default function UserContextProvider({ children }) {
   const [myReservations, setMyReservations] = useState([]);
   const [lockStatus, setLockStatus] = useState('Cerrado');
   const [cubiclesList, setCubiclesList] = useState([]);
+  const [doorsList, setDoorsList] = useState([]);
 
   return (
     <userContext.Provider
@@ -22,6 +23,8 @@ export default function UserContextProvider({ children }) {
         setLockStatus,
         cubiclesList,
         setCubiclesList,
+        setDoorsList,
+        doorsList,
       }}
     >
       {children}

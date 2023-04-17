@@ -9,40 +9,63 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from 'react-native-reanimated';
+import useToastMessage from '../hooks/useToastMessage';
+/* Apollo */
+import { TOGGLE_DOOR } from '../hooks/mutations';
+import { useMutation } from '@apollo/client';
 
-const CustomSwitch = () => {
+const CustomSwitch = ({ cubicle, setLoadingToggleDoor }) => {
   const theme = useContext(themeContext);
+
+  const { showToast } = useToastMessage();
 
   // value for Switch Animation
   const switchTranslate = useSharedValue(0);
   // state for activate Switch
   const [active, setActive] = useState(false);
-  // Turn on/off led
-  const callLed = () => {
-    fetch(`https://iot-cubys-backend.vercel.app/door1`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+
+  const [toggleDoor, { loading: loadingToggleDoor, data: dataToggleDoor }] =
+    useMutation(TOGGLE_DOOR, {
+      onCompleted: (data) => {
+        console.log(data);
+        showToast({
+          type: 'infoToast',
+          title: 'Info',
+          message: data.toggleDoor.open
+            ? 'Se ha abierto el cubículo'
+            : 'Se ha cerrado el cubículo',
+        });
       },
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        setActive(!!json.door1);
-        console.log(!!json.door1);
+      onError: () => {
+        showToast({
+          type: 'errorToast',
+          title: 'Error',
+          message:
+            'No se pudo cambiar el estado del cubículo. Por favor intente de nuevo.',
+        });
+      },
+    });
+
+  useEffect(() => {
+    setLoadingToggleDoor(loadingToggleDoor);
+  }, [loadingToggleDoor]);
+
+  // Turn on/off led
+  const handleToggleDoor = () => {
+    if (cubicle.doorID) {
+      var cubicleId = cubicle.id;
+      console.log(cubicleId);
+      toggleDoor({
+        variables: { cubicleId },
       });
+    }
   };
 
   useEffect(() => {
-    fetch('https://iot-cubys-backend.vercel.app/get_doors')
-      .then((response) => response.json())
-      .then((json) => {
-        setActive(!!json.door1);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
+    if (dataToggleDoor) {
+      setActive(dataToggleDoor.toggleDoor.open);
+    }
+  }, [dataToggleDoor]);
 
   // useEffect for change the switchTranslate Value
   useEffect(() => {
@@ -77,7 +100,7 @@ const CustomSwitch = () => {
     };
   });
   return (
-    <TouchableOpacity onPress={() => callLed()}>
+    <TouchableOpacity onPress={() => handleToggleDoor()}>
       <Animated.View
         style={[styles.switchWrapper, { backgroundColor: theme.light }]}
       >
