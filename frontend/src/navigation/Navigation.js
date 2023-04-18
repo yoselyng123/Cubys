@@ -57,11 +57,7 @@ function RootNavigator() {
 
   return (
     <themeContext.Provider
-      value={
-        appearanceTheme === 'dark' && scheme === 'dark'
-          ? theme.dark
-          : theme.light
-      }
+      value={appearanceTheme === 'dark' ? theme.dark : theme.light}
     >
       <UserContextProvider>
         <Stack.Navigator

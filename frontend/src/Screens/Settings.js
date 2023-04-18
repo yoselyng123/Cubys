@@ -21,16 +21,12 @@ const Settings = () => {
   const [appearanceTheme, setAppearanceTheme] = useState(scheme);
 
   useEffect(() => {
-    console.log(scheme);
-    if (scheme === 'light') {
-      setAppearanceTheme('light');
-    } else if (scheme === 'dark') {
-      setAppearanceTheme('dark');
-    }
-  }, [scheme]);
-
-  useEffect(() => {
     console.log(`Schema: ${scheme}, appearance: ${appearanceTheme}`);
+    if (scheme === 'dark') {
+      setAppearanceTheme('dark');
+    } else {
+      setAppearanceTheme('light');
+    }
   }, []);
 
   return (

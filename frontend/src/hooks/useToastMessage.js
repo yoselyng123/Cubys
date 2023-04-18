@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
     height: 90,
     borderRadius: 20,
     alignItems: 'center',
+    paddingRight: 15,
   },
   infoWrapper: {
     justifyContent: 'center',

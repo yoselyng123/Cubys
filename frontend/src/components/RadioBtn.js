@@ -14,7 +14,7 @@ const RadioBtn = ({ appearanceTheme, setAppearanceTheme, value }) => {
         status={appearanceTheme === value ? 'checked' : 'unchecked'}
         onPress={() => {
           setAppearanceTheme(value);
-          EventRegister.emit('changeTheme', appearanceTheme);
+          EventRegister.emit('changeTheme', value);
         }}
         color={theme.purple}
         uncheckedColor={theme.dark}
@@ -23,7 +23,7 @@ const RadioBtn = ({ appearanceTheme, setAppearanceTheme, value }) => {
         activeOpacity={0.7}
         onPress={() => {
           setAppearanceTheme(value);
-          EventRegister.emit('changeTheme', appearanceTheme);
+          EventRegister.emit('changeTheme', value);
         }}
       >
         <Text
