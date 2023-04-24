@@ -308,7 +308,7 @@ const Home = ({ navigation }) => {
           showsVerticalScrollIndicator={false}
         >
           <Text style={[styles.greetingsTitle, { color: theme.dark }]}>
-            Hola
+            Hola Unimetano,
           </Text>
           <Text style={[styles.greetingsText, { color: theme.gray }]}>
             Reserva un cubículo cuando quieras.

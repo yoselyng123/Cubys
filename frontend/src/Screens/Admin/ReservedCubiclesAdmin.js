@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  FlatList,
 } from 'react-native';
 import { useContext, useState, useEffect } from 'react';
 /* Assets */
@@ -137,24 +138,22 @@ const ReservedCubicles = ({ navigation }) => {
           </Text>
           <SectionDivider />
         </View>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={styles.scrollview}
-        >
-          <View style={styles.scrollContainer}>
-            {loadingReservations ? (
-              <ActivityIndicator size='small' color={theme.dark} />
-            ) : dataReservations.getReservationsByStatus.length > 0 ? (
-              <FlatList
-                data={dataReservations.getReservationsByStatus}
-                renderItem={renderReservation}
-                keyExtractor={(item) => item.id}
-              />
-            ) : (
-              <NoReservations />
-            )}
-          </View>
-        </ScrollView>
+
+        <View style={styles.scrollContainer}>
+          {loadingReservations ? (
+            <ActivityIndicator size='small' color={theme.dark} />
+          ) : dataReservations.getReservationsByStatus.length > 0 ? (
+            <FlatList
+              data={dataReservations.getReservationsByStatus}
+              renderItem={({ item }) => (
+                <Reservation info={item} id={item.cubicleID} />
+              )}
+              keyExtractor={(item) => item.id}
+            />
+          ) : (
+            <NoReservations />
+          )}
+        </View>
       </View>
     </View>
   );

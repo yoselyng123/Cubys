@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 /* Components */
 import Header from '../../components/Header';
 import CubicleAccessCard from '../../components/CubicleAccessCard';
@@ -14,8 +14,11 @@ import Loading from '../../components/Loading';
 
 const AccessCubicleAdmin = ({ navigation }) => {
   const [loadingToggleDoor, setLoadingToggleDoor] = useState(false);
+  const [firstFloorList, setFirstFloorList] = useState([]);
+  const [secondFloorList, setSecondFloorList] = useState([]);
 
   const theme = useContext(themeContext);
+
   const { cubiclesList, setDoorsList, doorsList, setCubiclesList } =
     useContext(userContext);
 
@@ -29,6 +32,8 @@ const AccessCubicleAdmin = ({ navigation }) => {
   useEffect(() => {
     if (dataDoors) {
       const copyOfCubicles = [];
+      var copyOfFirstFloor = [];
+      var copyOfSecondFloor = [];
       setDoorsList(dataDoors.getDoors);
       for (let i = 0; i < cubiclesList.length; i++) {
         let doorProv = dataDoors.getDoors.find(
@@ -44,10 +49,21 @@ const AccessCubicleAdmin = ({ navigation }) => {
         } else {
           copyOfCubicles[i] = cubiclesList[i];
         }
+        filterFloor(copyOfCubicles[i], copyOfFirstFloor, copyOfSecondFloor);
       }
       setCubiclesList(copyOfCubicles);
+      setFirstFloorList(copyOfFirstFloor);
+      setSecondFloorList(copyOfSecondFloor);
     }
   }, [dataDoors]);
+
+  const filterFloor = (cubicle, copyOfFirstFloor, copyOfSecondFloor) => {
+    if (cubicle.floor === '1') {
+      copyOfFirstFloor.push(cubicle);
+    } else if (cubicle.floor === '2') {
+      copyOfSecondFloor.push(cubicle);
+    }
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -58,8 +74,37 @@ const AccessCubicleAdmin = ({ navigation }) => {
         navigation={navigation}
       />
       <ScreenDescription description='Usa este botón para acceder a los cubículos.' />
+
       <ScrollView style={styles.contentWrapper}>
-        {cubiclesList
+        <View>
+          <Text style={[styles.floorTitleText, { color: theme.gray }]}>
+            Primer Piso
+          </Text>
+          {firstFloorList.map((cubicle, index) => {
+            return (
+              <CubicleAccessCard
+                key={index}
+                cubicle={cubicle}
+                setLoadingToggleDoor={setLoadingToggleDoor}
+              />
+            );
+          })}
+        </View>
+        <View>
+          <Text style={[styles.floorTitleText, { color: theme.gray }]}>
+            Segundo Piso
+          </Text>
+          {secondFloorList.map((cubicle, index) => {
+            return (
+              <CubicleAccessCard
+                key={index}
+                cubicle={cubicle}
+                setLoadingToggleDoor={setLoadingToggleDoor}
+              />
+            );
+          })}
+        </View>
+        {/* {cubiclesList
           .sort(function (a, b) {
             return a.floor - b.floor;
           })
@@ -71,7 +116,7 @@ const AccessCubicleAdmin = ({ navigation }) => {
                 setLoadingToggleDoor={setLoadingToggleDoor}
               />
             );
-          })}
+          })} */}
       </ScrollView>
       <Loading show={loadingToggleDoor} />
     </View>
@@ -87,5 +132,13 @@ const styles = StyleSheet.create({
   contentWrapper: {
     paddingTop: 10,
     paddingHorizontal: 16,
+  },
+  floorSelectorContainer: {
+    alignItems: 'flex-end',
+  },
+  floorTitleText: {
+    fontFamily: 'Roboto-Medium',
+    fontSize: 16,
+    marginBottom: 10,
   },
 });

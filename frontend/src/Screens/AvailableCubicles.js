@@ -57,6 +57,10 @@ const AvailableCubicles = ({ navigation }) => {
       } else {
         newHour = Number(newHour) + 12;
       }
+    } else {
+      if (newHour === '00') {
+        newHour = Number(newHour) + 24;
+      }
     }
     var minutes = hour.split(':')[1].slice(0, 2);
 
@@ -130,6 +134,9 @@ const AvailableCubicles = ({ navigation }) => {
   };
 
   const endTimeHigherThanStartTime = () => {
+    console.log(parseInt(parseMilitarHoursFormat(endTime)));
+    console.log(parseInt(parseMilitarHoursFormat(startTime)));
+
     if (
       parseInt(parseMilitarHoursFormat(endTime)) <
       parseInt(parseMilitarHoursFormat(startTime))

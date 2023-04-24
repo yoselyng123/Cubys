@@ -8,15 +8,14 @@ import {
 } from 'react-native';
 import { useContext } from 'react';
 /* Assets */
-import colors from '../../assets/colors';
 import themeContext from '../../context/themeContext';
 /* Components */
 import Header from '../../components/Header';
 import Reservation from '../../components/Reservation';
+import ScreenDescription from '../../components/ScreenDescription';
+import NoReservations from '../../components/NoReservations';
 import { useQuery } from '@apollo/client';
 import { GET_ALL_RESERVATIONS_BY_STATUS } from '../../hooks/queries';
-import NoReservations from '../../components/NoReservations';
-import ScreenDescription from '../../components/ScreenDescription';
 
 const HistoryAdmin = ({ navigation }) => {
   const theme = useContext(themeContext);
@@ -41,6 +40,7 @@ const HistoryAdmin = ({ navigation }) => {
         description='Aquí podrás ver las todas las reservaciones pasadas realizadas por
             los usuarios.'
       />
+
       <View style={styles.contentWrapper}>
         {loadingReservations ? (
           <ActivityIndicator size='small' color={theme.dark} />

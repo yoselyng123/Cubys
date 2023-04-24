@@ -32,7 +32,7 @@ const ReservedCubicles = ({ navigation, route }) => {
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Header
         style={styles.header}
-        title='Reservaciones'
+        title='Reservación'
         navigateAvailable={true}
         navigation={navigation}
       />

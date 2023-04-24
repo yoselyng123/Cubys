@@ -23,7 +23,7 @@ const SignUpForm = ({
       <Input
         style={styles.input}
         title='Correo Electrónico'
-        placeholder='Ingrese su dirección de correo'
+        placeholder='ejemplo@correo.unimet.edu.ve'
         text={email}
         onChangeText={(newText) => setEmail(newText.toLowerCase())}
       />

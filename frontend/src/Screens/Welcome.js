@@ -5,9 +5,11 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 /* ASSETS */
 import colors from '../assets/colors';
+import unimetLogo from '../assets/img/UnimetLogo.png';
 
 const Welcome = ({ navigation }) => {
   return (
@@ -16,9 +18,13 @@ const Welcome = ({ navigation }) => {
         <Text style={styles.title}>cubys</Text>
       </SafeAreaView>
       <View style={styles.welcomeContainer}>
+        <View style={styles.unimetLogoWrapper}>
+          <Image source={unimetLogo} style={styles.unimetLogoImg} />
+        </View>
+
         <Text style={styles.subtitle}>Bienvenido</Text>
         <Text style={styles.description}>
-          Reserve cubículos desde{'\n'}cualquier lugar en la UNIMET.
+          Reserve cubículos desde{'\n'}cualquier lugar en la UNIMET
         </Text>
       </View>
       <View style={styles.footer}>
@@ -132,5 +138,16 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#fff',
     letterSpacing: 0.6,
+  },
+  unimetLogoWrapper: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  unimetLogoImg: {
+    width: '100%',
+    aspectRatio: 1,
+    marginBottom: '3%',
+    resizeMode: 'contain',
   },
 });
