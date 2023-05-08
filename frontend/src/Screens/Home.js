@@ -64,20 +64,9 @@ const Home = ({ navigation }) => {
           title: 'Info',
           message: 'Se ha cancelado la reservación con éxito.',
         });
-        // var copyOfCubiclesList = [...cubiclesList];
-        // cubiclesList.map((cubicle, index) => {
-        //   if (
-        //     cubicle.id === myReservationsCopy[pressedDeletedIndex].cubicleID
-        //   ) {
-        //     copyOfCubiclesList[index].availability = false;
-        //   }
-        // });
-        // setCubiclesList(copyOfCubiclesList);
         myReservationsCopy.pop(pressedDeletedIndex);
         setMyReservations(myReservationsCopy);
         setLockStatus(false);
-        //refetchReservations(); ?
-        // TODO: CHECK QUE LA RESERVACION SE VE AUN ACTIVA EN EL MAPA A PESAR DE ELIMINARLA
       },
       onError: () => {
         showToast({
@@ -320,6 +309,7 @@ const Home = ({ navigation }) => {
     return (
       <View style={[styles.container, { backgroundColor: theme.background }]}>
         <Header title='cubys' navigateAvailable={false} />
+
         <ScrollView
           contentContainerStyle={styles.scrollContainer}
           showsVerticalScrollIndicator={false}

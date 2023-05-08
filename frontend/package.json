@@ -39,6 +39,7 @@
     "react-native-screens": "~3.20.0",
     "react-native-svg": "13.4.0",
     "react-native-toast-message": "^2.1.6",
+    "react-native-walkthrough-tooltip": "^1.5.0",
     "react-native-web": "~0.18.11"
   },
   "devDependencies": {

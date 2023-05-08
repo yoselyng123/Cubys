@@ -9,8 +9,8 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import { useState, useContext } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 /* ASSETS */
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
 import { userContext } from '../context/userContext';
 import themeContext from '../context/themeContext';
