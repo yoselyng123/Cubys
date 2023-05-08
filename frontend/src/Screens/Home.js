@@ -45,22 +45,39 @@ const Home = ({ navigation }) => {
   const [reservedNumber, setReservedNumber] = useState(0);
   const [pressedDeletedIndex, setPressedDeletedIndex] = useState(null);
 
-  const { setMyReservations, myReservations, setCubiclesList, user } =
-    useContext(userContext);
+  const {
+    setMyReservations,
+    myReservations,
+    setCubiclesList,
+    user,
+    setLockStatus,
+    cubiclesList,
+  } = useContext(userContext);
 
   const [deleteReservation, { loading: loadingDeleteReservation }] =
     useMutation(DELETE_RESERVATION_MUTATION, {
       onCompleted: () => {
-        const myReservationsCopy = [...myReservations];
+        var myReservationsCopy = [...myReservations];
         setPressedCancel(false);
         showToast({
           type: 'infoToast',
           title: 'Info',
           message: 'Se ha cancelado la reservación con éxito.',
         });
+        // var copyOfCubiclesList = [...cubiclesList];
+        // cubiclesList.map((cubicle, index) => {
+        //   if (
+        //     cubicle.id === myReservationsCopy[pressedDeletedIndex].cubicleID
+        //   ) {
+        //     copyOfCubiclesList[index].availability = false;
+        //   }
+        // });
+        // setCubiclesList(copyOfCubiclesList);
         myReservationsCopy.pop(pressedDeletedIndex);
         setMyReservations(myReservationsCopy);
-        //refetchAllReservations();
+        setLockStatus(false);
+        //refetchReservations(); ?
+        // TODO: CHECK QUE LA RESERVACION SE VE AUN ACTIVA EN EL MAPA A PESAR DE ELIMINARLA
       },
       onError: () => {
         showToast({

@@ -134,9 +134,6 @@ const AvailableCubicles = ({ navigation }) => {
   };
 
   const endTimeHigherThanStartTime = () => {
-    console.log(parseInt(parseMilitarHoursFormat(endTime)));
-    console.log(parseInt(parseMilitarHoursFormat(startTime)));
-
     if (
       parseInt(parseMilitarHoursFormat(endTime)) <
       parseInt(parseMilitarHoursFormat(startTime))
@@ -157,7 +154,6 @@ const AvailableCubicles = ({ navigation }) => {
       parseInt(parseMilitarHoursFormat(startTime)) <
       parseInt(parseMilitarHoursFormat(dayjs().format('h:mma')))
     ) {
-      console.log(parseInt(parseMilitarHoursFormat(dayjs().format('h:mma'))));
       setError(true);
       showToast({
         type: 'errorToast',
@@ -174,6 +170,10 @@ const AvailableCubicles = ({ navigation }) => {
     if (!loadingReservations && date && startTime && endTime) {
       for (let c = 0; c < newCubiclesList.length; c++) {
         const cubicle = newCubiclesList[c];
+        if (dataReservations.getReservationsByDate.length === 0) {
+          newCubiclesList[c].availability = true;
+          setCubiclesList(newCubiclesList);
+        }
         for (
           let r = 0;
           r < dataReservations.getReservationsByDate.length;
@@ -247,9 +247,11 @@ const AvailableCubicles = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       // Do something when the screen is focused
+      refetchReservations({ date });
       myInterval.current = setInterval(() => {
         setStartTime(dayjs().format('h:mma'));
         setEndTime(dayjs().add(2, 'hour').format('h:mma'));
+        checkCubiclesAvailability();
       }, 1000 * 300);
       return () => {
         // Do something when the screen is blurred

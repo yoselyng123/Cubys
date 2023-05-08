@@ -73,9 +73,9 @@ const CardsList = ({
             >
               <Card
                 title='Botón de Acceso'
-                subtitle={lockStatus}
+                subtitle={lockStatus ? 'Abierto' : 'Cerrado'}
                 icon={
-                  lockStatus === 'Abierto' ? (
+                  lockStatus ? (
                     <Feather
                       name='unlock'
                       size={38}

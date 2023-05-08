@@ -6,7 +6,7 @@ export default function UserContextProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [myReservations, setMyReservations] = useState([]);
-  const [lockStatus, setLockStatus] = useState('Cerrado');
+  const [lockStatus, setLockStatus] = useState(false);
   const [cubiclesList, setCubiclesList] = useState([]);
   const [doorsList, setDoorsList] = useState([]);
 

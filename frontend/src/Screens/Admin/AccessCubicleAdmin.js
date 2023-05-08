@@ -1,5 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+} from 'react-native';
 /* Components */
 import Header from '../../components/Header';
 import CubicleAccessCard from '../../components/CubicleAccessCard';
@@ -76,47 +82,42 @@ const AccessCubicleAdmin = ({ navigation }) => {
       <ScreenDescription description='Usa este botón para acceder a los cubículos.' />
 
       <ScrollView style={styles.contentWrapper}>
-        <View>
-          <Text style={[styles.floorTitleText, { color: theme.gray }]}>
-            Primer Piso
-          </Text>
-          {firstFloorList.map((cubicle, index) => {
-            return (
-              <CubicleAccessCard
-                key={index}
-                cubicle={cubicle}
-                setLoadingToggleDoor={setLoadingToggleDoor}
-              />
-            );
-          })}
-        </View>
-        <View>
-          <Text style={[styles.floorTitleText, { color: theme.gray }]}>
-            Segundo Piso
-          </Text>
-          {secondFloorList.map((cubicle, index) => {
-            return (
-              <CubicleAccessCard
-                key={index}
-                cubicle={cubicle}
-                setLoadingToggleDoor={setLoadingToggleDoor}
-              />
-            );
-          })}
-        </View>
-        {/* {cubiclesList
-          .sort(function (a, b) {
-            return a.floor - b.floor;
-          })
-          .map((cubicle, index) => {
-            return (
-              <CubicleAccessCard
-                key={index}
-                cubicle={cubicle}
-                setLoadingToggleDoor={setLoadingToggleDoor}
-              />
-            );
-          })} */}
+        {firstFloorList.length > 0 && secondFloorList.length > 0 ? (
+          <>
+            <View>
+              <Text style={[styles.floorTitleText, { color: theme.gray }]}>
+                Primer Piso
+              </Text>
+              {firstFloorList.map((cubicle, index) => {
+                return (
+                  <CubicleAccessCard
+                    key={index}
+                    cubicle={cubicle}
+                    setLoadingToggleDoor={setLoadingToggleDoor}
+                  />
+                );
+              })}
+            </View>
+            <View>
+              <Text style={[styles.floorTitleText, { color: theme.gray }]}>
+                Segundo Piso
+              </Text>
+              {secondFloorList.map((cubicle, index) => {
+                return (
+                  <CubicleAccessCard
+                    key={index}
+                    cubicle={cubicle}
+                    setLoadingToggleDoor={setLoadingToggleDoor}
+                  />
+                );
+              })}
+            </View>
+          </>
+        ) : (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size='small' color={theme.dark} />
+          </View>
+        )}
       </ScrollView>
       <Loading show={loadingToggleDoor} />
     </View>
@@ -140,5 +141,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto-Medium',
     fontSize: 16,
     marginBottom: 10,
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: '2%',
   },
 });
