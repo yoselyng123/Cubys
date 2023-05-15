@@ -57,10 +57,6 @@ const AvailableCubicles = ({ navigation }) => {
       } else {
         newHour = Number(newHour) + 12;
       }
-    } else {
-      if (newHour === '00') {
-        newHour = Number(newHour) + 24;
-      }
     }
     var minutes = hour.split(':')[1].slice(0, 2);
 
@@ -80,7 +76,7 @@ const AvailableCubicles = ({ navigation }) => {
     }
 
     return (
-      //outOfWorkingHoursValidation() &&
+      outOfWorkingHoursValidation() &&
       endTimeHigherThanStartTime() &&
       twoHoursMaxValidation() &&
       startTimeBeforeCurrentTime()
@@ -90,8 +86,8 @@ const AvailableCubicles = ({ navigation }) => {
   const outOfWorkingHoursValidation = () => {
     // Validate reservation is in working hours
     if (
-      parseInt(parseMilitarHoursFormat(endTime)) > 1700 ||
-      parseInt(parseMilitarHoursFormat(startTime)) > 1700
+      parseMilitarHoursFormat(endTime) > 1700 ||
+      parseMilitarHoursFormat(startTime) > 1700
     ) {
       setError(true);
       showToast({
@@ -101,8 +97,8 @@ const AvailableCubicles = ({ navigation }) => {
       });
       return false;
     } else if (
-      parseInt(parseMilitarHoursFormat(endTime) < 700) ||
-      parseInt(parseMilitarHoursFormat(startTime)) < 700
+      parseMilitarHoursFormat(endTime) < 700 ||
+      parseMilitarHoursFormat(startTime) < 700
     ) {
       setError(true);
       showToast({

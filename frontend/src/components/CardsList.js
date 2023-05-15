@@ -50,14 +50,15 @@ const CardsList = ({
   useEffect(() => {
     (async () => {
       const isFirstTime = await checkFirstTimeSignIn();
-
       if (isFirstTime) {
-        setToolTipVisible({
-          toolTipCubicles: true,
-          toolTipReservations: false,
-          toolTipAccess: false,
-          toolTipHistorial: false,
-        });
+        setTimeout(function () {
+          setToolTipVisible({
+            toolTipCubicles: true,
+            toolTipReservations: false,
+            toolTipAccess: false,
+            toolTipHistorial: false,
+          });
+        }, 2000);
       }
     })();
   }, []);
@@ -95,6 +96,7 @@ const CardsList = ({
                 styles.walkthroughWrapper,
                 { backgroundColor: theme.purple },
               ]}
+              disableShadow={true}
             >
               <TouchableOpacity
                 style={styles.cardItem}
@@ -107,11 +109,7 @@ const CardsList = ({
                   title='Cubículos'
                   subtitle={availableCubicles}
                   icon={
-                    <FontAwesome5
-                      name='check'
-                      size={38}
-                      color={colors.purple}
-                    />
+                    <FontAwesome5 name='check' size={38} color={theme.purple} />
                   }
                 />
               </TouchableOpacity>
@@ -149,6 +147,7 @@ const CardsList = ({
                 styles.walkthroughWrapper,
                 { backgroundColor: theme.purple },
               ]}
+              disableShadow={true}
             >
               <TouchableOpacity
                 style={styles.cardItem}
@@ -169,14 +168,14 @@ const CardsList = ({
                       <Feather
                         name='unlock'
                         size={38}
-                        color={colors.purple}
+                        color={theme.purple}
                         style={{ fontWeight: 800 }}
                       />
                     ) : (
                       <Feather
                         name='lock'
                         size={38}
-                        color={colors.purple}
+                        color={theme.purple}
                         style={{ fontWeight: 800 }}
                       />
                     )
@@ -219,6 +218,7 @@ const CardsList = ({
                 styles.walkthroughWrapper,
                 { backgroundColor: theme.purple },
               ]}
+              disableShadow={true}
             >
               <TouchableOpacity
                 style={styles.cardItem}
@@ -239,7 +239,7 @@ const CardsList = ({
                     <FontAwesome5
                       name='calendar-check'
                       size={38}
-                      color={colors.purple}
+                      color={theme.purple}
                     />
                   }
                 />
@@ -277,6 +277,7 @@ const CardsList = ({
                 styles.walkthroughWrapper,
                 { backgroundColor: theme.purple },
               ]}
+              disableShadow={true}
             >
               <TouchableOpacity
                 style={styles.cardItem}
@@ -292,7 +293,7 @@ const CardsList = ({
                     <MaterialIcons
                       name='restore'
                       size={38}
-                      color={colors.purple}
+                      color={theme.purple}
                     />
                   }
                 />
@@ -321,6 +322,7 @@ const CardsList = ({
                 styles.walkthroughWrapper,
                 { backgroundColor: theme.purple },
               ]}
+              disableShadow={true}
             >
               <TouchableOpacity
                 style={styles.cardItem}
@@ -336,7 +338,7 @@ const CardsList = ({
                     <MaterialIcons
                       name='restore'
                       size={38}
-                      color={colors.purple}
+                      color={theme.purple}
                     />
                   }
                 />

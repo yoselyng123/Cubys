@@ -70,7 +70,7 @@ const Reservation = ({
       <View style={[styles.container, { backgroundColor: theme.white }]}>
         <View
           style={{
-            borderColor: colors.purple,
+            borderColor: theme.purple,
             borderLeftWidth: 3,
             paddingLeft: 8,
           }}
@@ -105,8 +105,11 @@ const Reservation = ({
                 <Text
                   style={
                     pressedCancel
-                      ? [styles.cancelRes, { opacity: 0.5 }]
-                      : styles.cancelRes
+                      ? [
+                          styles.cancelRes,
+                          { opacity: 0.5, color: theme.purple },
+                        ]
+                      : [styles.cancelRes, { color: theme.purple }]
                   }
                 >
                   Cancelar
@@ -208,7 +211,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto-Medium',
     fontSize: 14,
     letterSpacing: 0.6,
-    color: colors.purple,
   },
   bottomSection: {
     marginTop: 15,

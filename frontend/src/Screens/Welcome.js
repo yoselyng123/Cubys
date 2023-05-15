@@ -10,10 +10,14 @@ import {
 /* ASSETS */
 import colors from '../assets/colors';
 import unimetLogo from '../assets/img/UnimetLogo.png';
+import themeContext from '../context/themeContext';
+import { useContext } from 'react';
 
 const Welcome = ({ navigation }) => {
+  const theme = useContext(themeContext);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.purple }]}>
       <SafeAreaView>
         <Text style={styles.title}>cubys</Text>
       </SafeAreaView>
@@ -24,7 +28,7 @@ const Welcome = ({ navigation }) => {
 
         <Text style={styles.subtitle}>Bienvenido</Text>
         <Text style={styles.description}>
-          Reserve cubículos desde{'\n'}cualquier lugar en la UNIMET
+          Reserva cubículos desde{'\n'}cualquier lugar en la UNIMET
         </Text>
       </View>
       <View style={styles.footer}>
@@ -62,7 +66,6 @@ const styles = StyleSheet.create({
     paddingVertical: 64,
     paddingHorizontal: 15,
     flex: 1,
-    backgroundColor: colors.purple,
     justifyContent: 'space-between',
   },
   title: {

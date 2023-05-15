@@ -43,7 +43,9 @@ const Settings = () => {
               Configuración
             </Text>
             <TouchableOpacity activeOpacity={0.7}>
-              <Text style={styles.markread}>Restablecer</Text>
+              <Text style={[styles.markread, { color: theme.purple }]}>
+                Restablecer
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

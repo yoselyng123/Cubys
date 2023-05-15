@@ -108,7 +108,9 @@ const SignIn = ({ navigation }) => {
               }}
               disabled={loading}
             >
-              <View style={styles.btnSignIn}>
+              <View
+                style={[styles.btnSignIn, { backgroundColor: theme.purple }]}
+              >
                 {loading ? (
                   <ActivityIndicator size='small' color='#FFF' />
                 ) : (
@@ -124,7 +126,9 @@ const SignIn = ({ navigation }) => {
                   navigation.navigate('SignUp');
                 }}
               >
-                <Text style={styles.textAction}>Crear cuenta</Text>
+                <Text style={[styles.textAction, { color: theme.purple }]}>
+                  Crear cuenta
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -144,7 +148,6 @@ export default SignIn;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   content: {
     paddingTop: 44,
@@ -155,7 +158,6 @@ const styles = StyleSheet.create({
   },
   btnSignIn: {
     borderRadius: 10,
-    backgroundColor: colors.purple,
     paddingVertical: 15,
     alignItems: 'center',
     justifyContent: 'center',
