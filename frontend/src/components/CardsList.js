@@ -4,7 +4,6 @@ import { useContext, useState, useEffect } from 'react';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-import colors from '../assets/colors';
 import { userContext } from '../context/userContext';
 import themeContext from '../context/themeContext';
 import Tooltip from 'react-native-walkthrough-tooltip';
@@ -18,10 +17,11 @@ const CardsList = ({
   availableCubicles,
   loadingCubicles,
   historialCount,
+  dataLoaded,
 }) => {
   const theme = useContext(themeContext);
 
-  const { lockStatus, user } = useContext(userContext);
+  const { lockStatus, user, setIsFirstTimeSigningIn } = useContext(userContext);
   const [toolTipVisible, setToolTipVisible] = useState({
     toolTipCubicles: false,
     toolTipReservations: false,
@@ -50,7 +50,9 @@ const CardsList = ({
   useEffect(() => {
     (async () => {
       const isFirstTime = await checkFirstTimeSignIn();
+      console.log(`Is firstTime: ${isFirstTime}`);
       if (isFirstTime) {
+        setIsFirstTimeSigningIn(true);
         setTimeout(function () {
           setToolTipVisible({
             toolTipCubicles: true,
@@ -58,7 +60,7 @@ const CardsList = ({
             toolTipAccess: false,
             toolTipHistorial: false,
           });
-        }, 2000);
+        }, 700);
       }
     })();
   }, []);
@@ -97,12 +99,15 @@ const CardsList = ({
                 { backgroundColor: theme.purple },
               ]}
               disableShadow={true}
+              closeOnChildInteraction={true}
             >
               <TouchableOpacity
                 style={styles.cardItem}
                 activeOpacity={0.7}
                 onPress={() => {
-                  navigation.navigate('AvailableCubicles');
+                  if (!toolTipVisible.toolTipCubicles) {
+                    navigation.navigate('AvailableCubicles');
+                  }
                 }}
               >
                 <Card
@@ -153,10 +158,12 @@ const CardsList = ({
                 style={styles.cardItem}
                 activeOpacity={0.7}
                 onPress={() => {
-                  if (user.role === 'admin') {
-                    navigation.navigate('CubicleAccessAdmin');
-                  } else {
-                    navigation.navigate('CubicleAccess');
+                  if (!toolTipVisible.toolTipAccess) {
+                    if (user.role === 'admin') {
+                      navigation.navigate('CubicleAccessAdmin');
+                    } else {
+                      navigation.navigate('CubicleAccess');
+                    }
                   }
                 }}
               >
@@ -224,10 +231,12 @@ const CardsList = ({
                 style={styles.cardItem}
                 activeOpacity={0.7}
                 onPress={() => {
-                  if (user.role === 'admin') {
-                    navigation.navigate('ReservedCubiclesAdmin');
-                  } else {
-                    navigation.navigate('ReservedCubicles');
+                  if (!toolTipVisible.toolTipReservations) {
+                    if (user.role === 'admin') {
+                      navigation.navigate('ReservedCubiclesAdmin');
+                    } else {
+                      navigation.navigate('ReservedCubicles');
+                    }
                   }
                 }}
               >
@@ -265,14 +274,15 @@ const CardsList = ({
                 </Text>
               }
               placement='top'
-              onClose={() =>
+              onClose={() => {
                 setToolTipVisible({
                   toolTipCubicles: false,
                   toolTipReservations: false,
                   toolTipAccess: false,
                   toolTipHistorial: false,
-                })
-              }
+                });
+                setIsFirstTimeSigningIn(false);
+              }}
               contentStyle={[
                 styles.walkthroughWrapper,
                 { backgroundColor: theme.purple },
@@ -283,7 +293,9 @@ const CardsList = ({
                 style={styles.cardItem}
                 activeOpacity={0.7}
                 onPress={() => {
-                  navigation.navigate('HistoryAdmin');
+                  if (!toolTipVisible.toolTipHistorial) {
+                    navigation.navigate('HistoryAdmin');
+                  }
                 }}
               >
                 <Card
@@ -310,14 +322,15 @@ const CardsList = ({
                 </Text>
               }
               placement='top'
-              onClose={() =>
+              onClose={() => {
                 setToolTipVisible({
                   toolTipCubicles: false,
                   toolTipReservations: false,
                   toolTipAccess: false,
                   toolTipHistorial: false,
-                })
-              }
+                });
+                setIsFirstTimeSigningIn(false);
+              }}
               contentStyle={[
                 styles.walkthroughWrapper,
                 { backgroundColor: theme.purple },
@@ -328,7 +341,9 @@ const CardsList = ({
                 style={styles.cardItem}
                 activeOpacity={0.7}
                 onPress={() => {
-                  navigation.navigate('History');
+                  if (!toolTipVisible.toolTipHistorial) {
+                    navigation.navigate('History');
+                  }
                 }}
               >
                 <Card

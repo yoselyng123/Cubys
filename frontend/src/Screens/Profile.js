@@ -122,6 +122,7 @@ const Profile = ({ navigation }) => {
           await AsyncStorage.removeItem('token');
           setUser(null);
           navigation.navigate('Welcome');
+          await AsyncStorage.removeItem('firstTimeSignIn');
         },
       },
     ]);

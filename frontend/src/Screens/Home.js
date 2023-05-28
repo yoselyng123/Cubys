@@ -8,10 +8,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useContext, useEffect, useState, useRef, useCallback } from 'react';
-/* Assets */
+/* Context */
 import { userContext } from '../context/userContext';
-import dayjs from 'dayjs';
 import themeContext from '../context/themeContext';
+/* Assets */
+import dayjs from 'dayjs';
 import { useFocusEffect } from '@react-navigation/native';
 import useToastMessage from '../hooks/useToastMessage';
 /* Components */
@@ -32,28 +33,37 @@ import {
   DELETE_RESERVATION_MUTATION,
   UPDATE_RESERVATION_STATUS,
 } from '../hooks/mutations';
+import HomeSkeleton from '../components/HomeSkeleton';
 
 const Home = ({ navigation }) => {
+  // Pulling Theme and user from Context
   const theme = useContext(themeContext);
-  const { showToast } = useToastMessage();
-  const myInterval = useRef();
-
-  const [pressedCancel, setPressedCancel] = useState(false);
-  const [availableCubicles, setAvailableCubicles] = useState(0);
-  const [historialCount, setHistorialCount] = useState(0);
-  const [currentDate, setCurrentDate] = useState(dayjs());
-  const [reservedNumber, setReservedNumber] = useState(0);
-  const [pressedDeletedIndex, setPressedDeletedIndex] = useState(null);
-
   const {
     setMyReservations,
     myReservations,
     setCubiclesList,
     user,
     setLockStatus,
-    cubiclesList,
+    isFirstTimeSigningIn,
   } = useContext(userContext);
 
+  // Creating alert element for messages to user
+  const { showToast } = useToastMessage();
+
+  //Reference to interval to keep track of time in app
+  const myInterval = useRef();
+  const [currentDate, setCurrentDate] = useState(dayjs());
+
+  // Keeping track of Btn Cancel in a reservation and index of Reservation
+  const [pressedCancel, setPressedCancel] = useState(false);
+  const [pressedDeletedIndex, setPressedDeletedIndex] = useState(null);
+
+  // Card counters updated from db
+  const [availableCubicles, setAvailableCubicles] = useState(0);
+  const [historialCount, setHistorialCount] = useState(0);
+  const [reservedNumber, setReservedNumber] = useState(0);
+
+  // Mutation that handles delete reservation in db
   const [deleteReservation, { loading: loadingDeleteReservation }] =
     useMutation(DELETE_RESERVATION_MUTATION, {
       onCompleted: () => {
@@ -257,20 +267,17 @@ const Home = ({ navigation }) => {
 
   if (errorCubicles) return Alert.alert(`Error! ${errorCubicles.message}`);
 
-  useEffect(() => {
-    refetchReservationsFalse();
-    refetchReservationsTrue();
-    if (user) {
-      if (user.role === 'admin') {
-        refetchReservationsFalseAdmin();
-      }
-    }
-  }, []);
-
   // When component Mounts and Unmounts from navigation
   useFocusEffect(
     useCallback(() => {
       // Do something when the screen is focused
+      refetchReservationsFalse(); // Movi desde aqui a este useCallback de un UseEffect Vacio
+      refetchReservationsTrue();
+      if (user) {
+        if (user.role === 'admin') {
+          refetchReservationsFalseAdmin();
+        }
+      } // Hasta aqui
       myInterval.current = setInterval(() => {
         setCurrentDate(dayjs());
       }, 1000 * 10);
@@ -307,7 +314,10 @@ const Home = ({ navigation }) => {
 
   if (user) {
     return (
-      <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <View
+        style={[styles.container, { backgroundColor: theme.background }]}
+        pointerEvents={isFirstTimeSigningIn ? 'none' : 'auto'}
+      >
         <Header title='cubys' navigateAvailable={false} />
 
         <ScrollView
@@ -372,7 +382,7 @@ const Home = ({ navigation }) => {
       </View>
     );
   } else {
-    return null;
+    return <HomeSkeleton />;
   }
 };
 

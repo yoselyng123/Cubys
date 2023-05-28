@@ -1,20 +1,25 @@
+import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+/* Tab Navigation */
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 /* Screens */
 import Profile from '../Screens/Profile';
 import Settings from '../Screens/Settings';
 import Home from '../Screens/Home';
-import Notifications from '../Screens/Notifications';
 /* Icons */
 import { Ionicons } from '@expo/vector-icons';
 /* Theme Related */
 import themeContext from '../context/themeContext';
-import { useContext } from 'react';
+/* Assets */
+import { userContext } from '../context/userContext';
 
 const Tab = createBottomTabNavigator();
 
 const Tabs = () => {
   const theme = useContext(themeContext);
+  // Keeping track of users first time signing in on device
+  const { isFirstTimeSigningIn } = useContext(userContext);
+
   return (
     <Tab.Navigator
       initialRouteName='Home'
@@ -65,10 +70,43 @@ const Tabs = () => {
         headerShown: false,
       })}
     >
-      <Tab.Screen name='Home' component={Home} />
-      <Tab.Screen name='Profile' component={Profile} />
+      <Tab.Screen
+        name='Home'
+        component={Home}
+        listeners={{
+          tabPress: (e) => {
+            // Prevent default action
+            if (isFirstTimeSigningIn) {
+              e.preventDefault();
+            }
+          },
+        }}
+      />
+      <Tab.Screen
+        name='Profile'
+        component={Profile}
+        listeners={{
+          tabPress: (e) => {
+            // Prevent default action
+            if (isFirstTimeSigningIn) {
+              e.preventDefault();
+            }
+          },
+        }}
+      />
       {/* <Tab.Screen name='Notifications' component={Notifications} /> */}
-      <Tab.Screen name='Settings' component={Settings} />
+      <Tab.Screen
+        name='Settings'
+        component={Settings}
+        listeners={{
+          tabPress: (e) => {
+            // Prevent default action
+            if (isFirstTimeSigningIn) {
+              e.preventDefault();
+            }
+          },
+        }}
+      />
     </Tab.Navigator>
   );
 };

@@ -9,6 +9,7 @@ export default function UserContextProvider({ children }) {
   const [lockStatus, setLockStatus] = useState(false);
   const [cubiclesList, setCubiclesList] = useState([]);
   const [doorsList, setDoorsList] = useState([]);
+  const [isFirstTimeSigningIn, setIsFirstTimeSigningIn] = useState(false);
 
   return (
     <userContext.Provider
@@ -25,6 +26,8 @@ export default function UserContextProvider({ children }) {
         setCubiclesList,
         setDoorsList,
         doorsList,
+        isFirstTimeSigningIn,
+        setIsFirstTimeSigningIn,
       }}
     >
       {children}

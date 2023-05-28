@@ -22,7 +22,7 @@ const CustomSwitch = ({ cubicle, setLoadingToggleDoor }) => {
   // value for Switch Animation
   const switchTranslate = useSharedValue(0);
   // state for activate Switch
-  const [active, setActive] = useState(false);
+  const [active, setActive] = useState(cubicle.open);
 
   const [toggleDoor, { loading: loadingToggleDoor, data: dataToggleDoor }] =
     useMutation(TOGGLE_DOOR, {
@@ -32,8 +32,8 @@ const CustomSwitch = ({ cubicle, setLoadingToggleDoor }) => {
           type: 'infoToast',
           title: 'Info',
           message: data.toggleDoor.open
-            ? 'Se ha abierto el cubículo'
-            : 'Se ha cerrado el cubículo',
+            ? 'Se ha cerrado el cubículo'
+            : 'Se ha abierto el cubículo',
         });
       },
       onError: () => {
@@ -54,7 +54,6 @@ const CustomSwitch = ({ cubicle, setLoadingToggleDoor }) => {
   const handleToggleDoor = () => {
     if (cubicle.doorID) {
       var cubicleId = cubicle.id;
-      console.log(cubicleId);
       toggleDoor({
         variables: { cubicleId },
       });
@@ -69,7 +68,7 @@ const CustomSwitch = ({ cubicle, setLoadingToggleDoor }) => {
 
   // useEffect for change the switchTranslate Value
   useEffect(() => {
-    if (active) {
+    if (!active) {
       switchTranslate.value = 19.9;
     } else {
       switchTranslate.value = 0;
@@ -99,28 +98,33 @@ const CustomSwitch = ({ cubicle, setLoadingToggleDoor }) => {
       backgroundColor,
     };
   });
-  return (
-    <TouchableOpacity onPress={() => handleToggleDoor()}>
-      <Animated.View
-        style={[styles.switchWrapper, { backgroundColor: theme.light }]}
-      >
+
+  if (cubicle.doorID) {
+    return (
+      <TouchableOpacity onPress={() => handleToggleDoor()}>
         <Animated.View
-          style={[
-            styles.iconWrapper,
-            { backgroundColor: theme.purple },
-            customSpringStyles,
-          ]}
+          style={[styles.switchWrapper, { backgroundColor: theme.light }]}
         >
-          <Feather
-            name={active ? 'unlock' : 'lock'}
-            size={15}
-            color={theme.light}
-            style={{ fontWeight: 800 }}
-          />
+          <Animated.View
+            style={[
+              styles.iconWrapper,
+              { backgroundColor: theme.purple },
+              customSpringStyles,
+            ]}
+          >
+            <Feather
+              name={!active ? 'unlock' : 'lock'}
+              size={15}
+              color={theme.light}
+              style={{ fontWeight: 800 }}
+            />
+          </Animated.View>
         </Animated.View>
-      </Animated.View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  } else {
+    return null;
+  }
 };
 
 export default CustomSwitch;

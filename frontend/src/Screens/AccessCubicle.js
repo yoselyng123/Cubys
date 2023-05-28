@@ -22,6 +22,8 @@ const AccessCubicle = ({ navigation }) => {
 
   const [currentTime, setCurrentTime] = useState(dayjs().format('h:mma'));
 
+  //TODO: AL PRINCIPIO DEBE ESTAR SIEMPRE CERRADO EL CUBICULO
+
   const [toggleDoor, { loading: loadingToggleDoor, data: dataToggleDoor }] =
     useMutation(TOGGLE_DOOR, {
       onCompleted: (data) => {
@@ -59,6 +61,21 @@ const AccessCubicle = ({ navigation }) => {
       return true;
     } else {
       console.log('OUT OF HOURS');
+      if (myReservations.length <= 0) {
+        showToast({
+          type: 'errorToast',
+          title: 'Error',
+          message:
+            'No tiene reservación activa. No se puede abrir ningún cubículo',
+        });
+      } else {
+        showToast({
+          type: 'errorToast',
+          title: 'Error',
+          message:
+            'No se puede abrir el cubículo. Intente de nuevo cuando este dentro de las horas de su reservación.',
+        });
+      }
       return false;
     }
   };

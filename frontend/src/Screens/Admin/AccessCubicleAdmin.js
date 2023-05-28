@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useCallback } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -13,6 +13,7 @@ import ScreenDescription from '../../components/ScreenDescription';
 /* Assets */
 import themeContext from '../../context/themeContext';
 import { userContext } from '../../context/userContext';
+import { useFocusEffect } from '@react-navigation/native';
 /* Apollo */
 import { GET_DOORS } from '../../hooks/queries';
 import { useQuery } from '@apollo/client';
@@ -62,6 +63,16 @@ const AccessCubicleAdmin = ({ navigation }) => {
       setSecondFloorList(copyOfSecondFloor);
     }
   }, [dataDoors]);
+
+  useFocusEffect(
+    useCallback(() => {
+      // Do something when the screen is focused
+      refetchDoors();
+      return () => {
+        // Do something when the screen is blurred
+      };
+    }, [])
+  );
 
   const filterFloor = (cubicle, copyOfFirstFloor, copyOfSecondFloor) => {
     if (cubicle.floor === '1') {

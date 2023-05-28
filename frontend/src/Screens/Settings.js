@@ -14,6 +14,7 @@ import { useColorScheme } from 'react-native';
 import Header from '../components/Header';
 import SectionDivider from '../components/SectionDivider';
 import RadioBtn from '../components/RadioBtn';
+import { EventRegister } from 'react-native-event-listeners';
 
 const Settings = () => {
   const scheme = useColorScheme();
@@ -42,7 +43,13 @@ const Settings = () => {
             <Text style={[styles.description, { color: theme.dark }]}>
               Configuración
             </Text>
-            <TouchableOpacity activeOpacity={0.7}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {
+                setAppearanceTheme('light');
+                EventRegister.emit('changeTheme', 'light');
+              }}
+            >
               <Text style={[styles.markread, { color: theme.purple }]}>
                 Restablecer
               </Text>
@@ -70,81 +77,6 @@ const Settings = () => {
               </View>
             </View>
             <SectionDivider marginBottom={20} marginTop={20} />
-
-            {/* <View style={styles.settingItemContainer}>
-                <Text style={[styles.title, { color: theme.dark }]}>
-                  Notificaciones
-                </Text>
-                <View style={styles.itemWrapper}>
-                  <View style={styles.radiobuttonItem}>
-                    <RadioButton
-                      value='first'
-                      status={
-                        notificationsChecked === 'first'
-                          ? 'checked'
-                          : 'unchecked'
-                      }
-                      onPress={() => setNotificationsChecked('first')}
-                      color={theme.purple}
-                      uncheckedColor={theme.gray}
-                    />
-                    <TouchableOpacity
-                      activeOpacity={0.7}
-                      onPress={() => setNotificationsChecked('first')}
-                    >
-                      <Text
-                        style={
-                          notificationsChecked === 'first'
-                            ? [
-                                styles.radiobuttonItemTextSelected,
-                                { color: theme.purple },
-                              ]
-                            : [
-                                styles.radiobuttonItemTextUnselected,
-                                { color: theme.gray },
-                              ]
-                        }
-                      >
-                        Mostrar
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.radiobuttonItem}>
-                    <RadioButton
-                      value='second'
-                      status={
-                        notificationsChecked === 'second'
-                          ? 'checked'
-                          : 'unchecked'
-                      }
-                      onPress={() => setNotificationsChecked('second')}
-                      color={theme.purple}
-                      uncheckedColor={theme.gray}
-                    />
-                    <TouchableOpacity
-                      activeOpacity={0.7}
-                      onPress={() => setNotificationsChecked('second')}
-                    >
-                      <Text
-                        style={
-                          notificationsChecked === 'second'
-                            ? [
-                                styles.radiobuttonItemTextSelected,
-                                { color: theme.purple },
-                              ]
-                            : [
-                                styles.radiobuttonItemTextUnselected,
-                                { color: theme.gray },
-                              ]
-                        }
-                      >
-                        Ocultar
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-              <SectionDivider marginBottom={20} marginTop={20} /> */}
           </View>
         </View>
       </ScrollView>

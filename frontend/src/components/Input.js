@@ -86,6 +86,7 @@ const Input = ({
               ? 'email-address'
               : 'default'
           }
+          autoCapitalize='none'
         />
       )}
 
