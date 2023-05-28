@@ -34,6 +34,7 @@ import {
   UPDATE_RESERVATION_STATUS,
 } from '../hooks/mutations';
 import HomeSkeleton from '../components/HomeSkeleton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = ({ navigation }) => {
   // Pulling Theme and user from Context
@@ -45,6 +46,7 @@ const Home = ({ navigation }) => {
     user,
     setLockStatus,
     isFirstTimeSigningIn,
+    setIsFirstTimeSigningIn,
   } = useContext(userContext);
 
   // Creating alert element for messages to user
@@ -62,6 +64,8 @@ const Home = ({ navigation }) => {
   const [availableCubicles, setAvailableCubicles] = useState(0);
   const [historialCount, setHistorialCount] = useState(0);
   const [reservedNumber, setReservedNumber] = useState(0);
+
+  const [loadedData, setLoadedData] = useState(false);
 
   // Mutation that handles delete reservation in db
   const [deleteReservation, { loading: loadingDeleteReservation }] =
@@ -267,6 +271,24 @@ const Home = ({ navigation }) => {
 
   if (errorCubicles) return Alert.alert(`Error! ${errorCubicles.message}`);
 
+  const checkFirstTimeSignIn = async () => {
+    try {
+      const firstTimeSignIn = await AsyncStorage.getItem('firstTimeSignIn');
+
+      if (firstTimeSignIn === null) {
+        // User is signing in for the first time
+        await AsyncStorage.setItem('firstTimeSignIn', 'false');
+        return true;
+      } else {
+        // User has signed in before
+        return false;
+      }
+    } catch (error) {
+      console.error('Error checking first-time sign-in:', error);
+      return false;
+    }
+  };
+
   // When component Mounts and Unmounts from navigation
   useFocusEffect(
     useCallback(() => {
@@ -287,6 +309,16 @@ const Home = ({ navigation }) => {
       };
     }, [])
   );
+
+  useEffect(() => {
+    (async () => {
+      const isFirstTime = await checkFirstTimeSignIn();
+      console.log(`Is firstTime: ${isFirstTime}`);
+      if (isFirstTime) {
+        setIsFirstTimeSigningIn(true);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     refetchReservationsFalse();
@@ -312,7 +344,14 @@ const Home = ({ navigation }) => {
     }
   }, [dataReservationsFalseAdmin]);
 
-  if (user) {
+  if (
+    !loadingCubicles &&
+    !loadingReservationsFalse &&
+    !loadingReservationsFalseAdmin &&
+    !loadingReservationsTrue &&
+    !loadingReservationsTrueAdmin &&
+    user
+  ) {
     return (
       <View
         style={[styles.container, { backgroundColor: theme.background }]}
@@ -331,15 +370,14 @@ const Home = ({ navigation }) => {
             Reserva un cubículo cuando quieras.
           </Text>
           {/* Cards */}
-
           <CardsList
             navigation={navigation}
             reservedNumber={
               user.role !== 'admin' ? myReservations.length : reservedNumber
             }
             availableCubicles={availableCubicles}
-            loadingCubicles={loadingCubicles}
             historialCount={historialCount}
+            loadingCubicles={loadingCubicles}
           />
 
           {/* Separation Line */}
@@ -347,11 +385,7 @@ const Home = ({ navigation }) => {
           <Text style={[styles.reservationsTitle, { color: theme.dark }]}>
             Próximas Reservaciones
           </Text>
-          {loadingReservationsFalse ? (
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-              <ActivityIndicator size='small' color={theme.dark} />
-            </View>
-          ) : myReservations.length > 0 ? (
+          {myReservations.length > 0 ? (
             myReservations.map((reservation, index) => {
               return (
                 <TouchableOpacity
