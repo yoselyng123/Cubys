@@ -10,6 +10,7 @@ import ScreenDescription from '../components/ScreenDescription';
 /* Apollo */
 import { useQuery } from '@apollo/client';
 import { GET_RESERVATIONS_BY_STATUS } from '../hooks/queries';
+import HistorySkeleton from '../components/HistorySkeleton';
 
 const History = ({ navigation }) => {
   const theme = useContext(themeContext);
@@ -33,35 +34,41 @@ const History = ({ navigation }) => {
     }
   }, [dataReservationsTrue]);
 
-  return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <Header
-        style={styles.header}
-        title='Historial'
-        navigateAvailable={true}
-        navigation={navigation}
-      />
-      <View style={styles.contentWrapper}>
-        <ScreenDescription description='Aquí puedes ver tus reservaciones pasadas.' />
+  useEffect(() => {
+    console.log(loadingReservationsTrue);
+  }, [loadingReservationsTrue]);
 
-        <View style={styles.scrollContainer}>
-          {loadingReservationsTrue ? (
-            <ActivityIndicator size='small' color={theme.dark} />
-          ) : dataReservationsTrue.getMyReservationsByStatus.length > 0 ? (
-            <FlatList
-              data={dataReservationsTrue.getMyReservationsByStatus}
-              renderItem={({ item }) => (
-                <Reservation info={item} id={item.cubicleID} />
-              )}
-              keyExtractor={(item) => item.id}
-            />
-          ) : (
-            <NoReservations />
-          )}
+  if (loadingReservationsTrue) {
+    return (
+      <View style={[styles.container, { backgroundColor: theme.background }]}>
+        <Header
+          style={styles.header}
+          title='Historial'
+          navigateAvailable={true}
+          navigation={navigation}
+        />
+        <View style={styles.contentWrapper}>
+          <ScreenDescription description='Aquí puedes ver tus reservaciones pasadas.' />
+
+          <View style={styles.scrollContainer}>
+            {dataReservationsTrue.getMyReservationsByStatus.length > 0 ? (
+              <FlatList
+                data={dataReservationsTrue.getMyReservationsByStatus}
+                renderItem={({ item }) => (
+                  <Reservation info={item} id={item.cubicleID} />
+                )}
+                keyExtractor={(item) => item.id}
+              />
+            ) : (
+              <NoReservations />
+            )}
+          </View>
         </View>
       </View>
-    </View>
-  );
+    );
+  } else {
+    return <HistorySkeleton navigation={navigation} />;
+  }
 };
 
 export default History;

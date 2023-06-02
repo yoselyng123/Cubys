@@ -1,10 +1,17 @@
-import { StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Alert,
+  Animated,
+} from 'react-native';
 /* Assets */
 import Tag from './Tag';
 import colors from '../assets/colors';
 import { Ionicons } from '@expo/vector-icons';
 import themeContext from '../context/themeContext';
-import { useContext } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 /* APOLLO SERVER */
 import { useQuery } from '@apollo/client';
 import { GET_CUBICLE_BY_ID } from '../hooks/queries';
@@ -59,11 +66,30 @@ const Reservation = ({
     }
   };
 
+  const opacity = useRef(new Animated.Value(0.4));
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity.current, {
+          toValue: 1,
+          useNativeDriver: true,
+          duration: 500,
+        }),
+        Animated.timing(opacity.current, {
+          toValue: 0.4,
+          useNativeDriver: true,
+          duration: 800,
+        }),
+      ])
+    ).start();
+  }, [opacity]);
+
   if (loading) {
     return (
-      <View
-        style={[styles.containerLoading, { backgroundColor: theme.loading }]}
-      ></View>
+      <Animated.View
+        style={[styles.reservation, { opacity: opacity.current }]}
+      />
     );
   } else {
     return (
@@ -231,5 +257,11 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     color: colors.dark,
     letterSpacing: 0.6,
+  },
+  reservation: {
+    backgroundColor: '#D9D9D9',
+    width: '100%',
+    height: 185,
+    borderRadius: 10,
   },
 });

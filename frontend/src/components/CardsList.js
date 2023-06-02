@@ -16,7 +16,6 @@ const CardsList = ({
   reservedNumber,
   availableCubicles,
   historialCount,
-  isFirstTime,
 }) => {
   const theme = useContext(themeContext);
 
