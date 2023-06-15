@@ -11,11 +11,12 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "notification":{
-      "icon":"./src/assets/icon.png"
-   },
+    "notification": {
+      "icon": "./src/assets/icon.png"
+    },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/189727f1-db4f-4056-b1c0-01f46401b78c"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -43,6 +44,14 @@
           "iosDisplayInForeground": true
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "189727f1-db4f-4056-b1c0-01f46401b78c"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    }
   }
 }

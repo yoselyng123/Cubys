@@ -62,13 +62,13 @@ const CustomSwitch = ({ cubicle, setLoadingToggleDoor }) => {
 
   useEffect(() => {
     if (dataToggleDoor) {
-      setActive(dataToggleDoor.toggleDoor.open);
+      setActive(!dataToggleDoor.toggleDoor.open);
     }
   }, [dataToggleDoor]);
 
   // useEffect for change the switchTranslate Value
   useEffect(() => {
-    if (!active) {
+    if (active) {
       switchTranslate.value = 19.9;
     } else {
       switchTranslate.value = 0;

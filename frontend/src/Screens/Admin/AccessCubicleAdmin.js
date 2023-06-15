@@ -93,7 +93,9 @@ const AccessCubicleAdmin = ({ navigation }) => {
       <ScreenDescription description='Usa este botón para acceder a los cubículos.' />
 
       <ScrollView style={styles.contentWrapper}>
-        {firstFloorList.length > 0 && secondFloorList.length > 0 ? (
+        {firstFloorList.length > 0 &&
+        secondFloorList.length > 0 &&
+        !loadingDoors ? (
           <>
             <View>
               <Text style={[styles.floorTitleText, { color: theme.gray }]}>
